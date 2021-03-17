@@ -49,6 +49,16 @@
                     "COMPETES Dummy",
                     "left"
                 ]
+            },
+            {
+                "from": [
+                    "COMPETES Dummy",
+                    "right"
+                ],
+                "to": [
+                    "DB 1",
+                    "left"
+                ]
             }
         ]
     },
@@ -56,8 +66,27 @@
         "DB": {
             "type": "Data Store",
             "description": "",
-            "x": 89.25,
-            "y": 2.0,
+            "x": 95.33937523647376,
+            "y": 3.014895872745619,
+            "url": {
+                "dialect": "sqlite",
+                "username": "",
+                "password": "",
+                "host": "",
+                "port": "",
+                "database": {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/items/db/DB.sqlite"
+                }
+            },
+            "cancel_on_error": false
+        },
+        "DB 1": {
+            "type": "Data Store",
+            "description": "",
+            "x": 405.806433247213,
+            "y": 5.034819271057238,
             "url": {
                 "dialect": "sqlite",
                 "username": "",
@@ -75,8 +104,8 @@
         "Load Init File": {
             "type": "Data Connection",
             "description": "Loads all initialization values",
-            "x": -269.75,
-            "y": 2.0,
+            "x": -263.66062476352624,
+            "y": 3.014895872745619,
             "references": [
                 {
                     "type": "path",
@@ -88,8 +117,8 @@
         "COMPETES Dummy": {
             "type": "Tool",
             "description": "",
-            "x": 240.07124952705254,
-            "y": -0.029791745491237975,
+            "x": 249.18151632616062,
+            "y": 4.005995689888721,
             "specification": "COMPETES",
             "execute_in_work": true,
             "cmd_line_args": []
@@ -97,8 +126,8 @@
         "Import Init Data to DB": {
             "type": "Importer",
             "description": "",
-            "x": -92.75,
-            "y": 2.0,
+            "x": -86.66062476352624,
+            "y": 3.014895872745619,
             "specification": "Import Init Data to DB - init_ScenarioNLIntermittent.xlsx - 0",
             "cancel_on_error": true,
             "file_selection": [

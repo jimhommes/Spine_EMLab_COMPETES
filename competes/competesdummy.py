@@ -10,15 +10,11 @@ import random
 from spinedb import SpineDB
 
 # Input DB
-input_db_url = sys.argv[1]
-input_db = SpineDB(input_db_url)
-
-# Output DB
-output_db_url = sys.argv[2]
-output_db = SpineDB(output_db_url)
+db_url = sys.argv[1]
+db = SpineDB(db_url)
 
 # Reading SegmentLength
-input_db_data = input_db.export_data()
+input_db_data = db.export_data()
 segmentLength_parameterValueObject = [obj[3] for obj in input_db_data['object_parameter_values'] if obj[0] == 'emlabModel' and obj[1] == 'emlabModel' and obj[2] == 'SimulationLength']
 segmentLength = int(segmentLength_parameterValueObject[0])
 
@@ -28,4 +24,4 @@ def addRandomness(number):
 
 
 output = [round(addRandomness(i), 2) for i in range(1, segmentLength)]
-output_db.import_object_parameter_values([('actualOutput', 'actualOutput', 'hourlyDemand', {'type': 'time_series', 'data': output})])
+db.import_object_parameter_values([('actualOutput', 'actualOutput', 'hourlyDemand', {'type': 'time_series', 'data': output})])
