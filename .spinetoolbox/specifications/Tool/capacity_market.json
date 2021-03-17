@@ -1,0 +1,14 @@
+{
+    "name": "Capacity Market",
+    "tooltype": "python",
+    "includes": [
+        "capacity_market.py"
+    ],
+    "description": "",
+    "inputfiles": [],
+    "inputfiles_opt": [],
+    "outputfiles": [],
+    "cmdline_args": [],
+    "execute_in_work": true,
+    "includes_main_path": "../../../emlab"
+}
