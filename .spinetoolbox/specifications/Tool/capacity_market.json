@@ -2,6 +2,7 @@
     "name": "Capacity Market",
     "tooltype": "python",
     "includes": [
+        "capacity_market.py",
         "capacity_market.py"
     ],
     "description": "",

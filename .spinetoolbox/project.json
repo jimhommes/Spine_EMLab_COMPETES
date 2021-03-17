@@ -9,6 +9,11 @@
                     "type": "path",
                     "relative": true,
                     "path": "competes/competes.json"
+                },
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/specifications/Tool/capacity_market.json"
                 }
             ],
             "Importer": [
@@ -56,7 +61,37 @@
                     "right"
                 ],
                 "to": [
-                    "DB 1",
+                    "Capacity Market",
+                    "bottom"
+                ]
+            },
+            {
+                "from": [
+                    "DB",
+                    "right"
+                ],
+                "to": [
+                    "Capacity Market",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "Capacity Market",
+                    "right"
+                ],
+                "to": [
+                    "View 1",
+                    "bottom"
+                ]
+            },
+            {
+                "from": [
+                    "DB",
+                    "right"
+                ],
+                "to": [
+                    "View 1",
                     "left"
                 ]
             }
@@ -66,8 +101,8 @@
         "DB": {
             "type": "Data Store",
             "description": "",
-            "x": 95.33937523647376,
-            "y": 3.014895872745619,
+            "x": 17.403821502304254,
+            "y": -65.02319518973547,
             "url": {
                 "dialect": "sqlite",
                 "username": "",
@@ -80,32 +115,13 @@
                     "path": ".spinetoolbox/items/db/DB.sqlite"
                 }
             },
-            "cancel_on_error": false
-        },
-        "DB 1": {
-            "type": "Data Store",
-            "description": "",
-            "x": 405.806433247213,
-            "y": 5.034819271057238,
-            "url": {
-                "dialect": "sqlite",
-                "username": "",
-                "password": "",
-                "host": "",
-                "port": "",
-                "database": {
-                    "type": "path",
-                    "relative": true,
-                    "path": ".spinetoolbox/items/db/DB.sqlite"
-                }
-            },
-            "cancel_on_error": false
+            "cancel_on_error": true
         },
         "Load Init File": {
             "type": "Data Connection",
             "description": "Loads all initialization values",
-            "x": -263.66062476352624,
-            "y": 3.014895872745619,
+            "x": -341.59617849769575,
+            "y": -65.02319518973547,
             "references": [
                 {
                     "type": "path",
@@ -117,17 +133,32 @@
         "COMPETES Dummy": {
             "type": "Tool",
             "description": "",
-            "x": 249.18151632616062,
-            "y": 4.005995689888721,
+            "x": 69.67703849861107,
+            "y": 69.02319518973547,
             "specification": "COMPETES",
             "execute_in_work": true,
             "cmd_line_args": []
         },
+        "Capacity Market": {
+            "type": "Tool",
+            "description": "",
+            "x": 191.8996847669636,
+            "y": -2.024811311750227,
+            "specification": "Capacity Market",
+            "execute_in_work": true,
+            "cmd_line_args": []
+        },
+        "View 1": {
+            "type": "View",
+            "description": "",
+            "x": 334.09617849769575,
+            "y": -63.981855008712074
+        },
         "Import Init Data to DB": {
             "type": "Importer",
             "description": "",
-            "x": -86.66062476352624,
-            "y": 3.014895872745619,
+            "x": -164.59617849769575,
+            "y": -65.02319518973547,
             "specification": "Import Init Data to DB - init_ScenarioNLIntermittent.xlsx - 0",
             "cancel_on_error": true,
             "file_selection": [
