@@ -1,9 +1,11 @@
 {
     "project": {
-        "version": 6,
+        "version": 2,
         "name": "Spine_EMLab_COMPETES",
         "description": "",
-        "specifications": {},
+        "specifications": {
+            "Tool": []
+        },
         "connections": []
     },
     "items": {}
