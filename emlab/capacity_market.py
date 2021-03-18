@@ -11,3 +11,5 @@ from spinedb import SpineDB
 # Input DB
 db_url = sys.argv[1]
 db = SpineDB(db_url)
+db_data = db.export_data()
+

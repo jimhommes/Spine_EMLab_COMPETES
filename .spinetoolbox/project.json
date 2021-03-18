@@ -51,6 +51,16 @@
                     "right"
                 ],
                 "to": [
+                    "Capacity Market",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "DB",
+                    "bottom"
+                ],
+                "to": [
                     "COMPETES Dummy",
                     "left"
                 ]
@@ -71,7 +81,7 @@
                     "right"
                 ],
                 "to": [
-                    "Capacity Market",
+                    "View 1",
                     "left"
                 ]
             },
@@ -83,16 +93,6 @@
                 "to": [
                     "View 1",
                     "bottom"
-                ]
-            },
-            {
-                "from": [
-                    "DB",
-                    "right"
-                ],
-                "to": [
-                    "View 1",
-                    "left"
                 ]
             }
         ]
@@ -101,8 +101,8 @@
         "DB": {
             "type": "Data Store",
             "description": "",
-            "x": 17.403821502304254,
-            "y": -65.02319518973547,
+            "x": 72.11366699772975,
+            "y": -21.40767604967772,
             "url": {
                 "dialect": "sqlite",
                 "username": "",
@@ -120,8 +120,8 @@
         "Load Init File": {
             "type": "Data Connection",
             "description": "Loads all initialization values",
-            "x": -341.59617849769575,
-            "y": -65.02319518973547,
+            "x": -286.88633300227025,
+            "y": -21.40767604967772,
             "references": [
                 {
                     "type": "path",
@@ -130,35 +130,45 @@
                 }
             ]
         },
-        "COMPETES Dummy": {
-            "type": "Tool",
-            "description": "",
-            "x": 69.67703849861107,
-            "y": 69.02319518973547,
-            "specification": "COMPETES",
-            "execute_in_work": true,
-            "cmd_line_args": []
-        },
         "Capacity Market": {
             "type": "Tool",
             "description": "",
-            "x": 191.8996847669636,
-            "y": -2.024811311750227,
+            "x": 197.88986864363824,
+            "y": -23.151283763351472,
             "specification": "Capacity Market",
             "execute_in_work": true,
-            "cmd_line_args": []
+            "cmd_line_args": [
+                {
+                    "type": "resource",
+                    "arg": "db_url@DB"
+                }
+            ]
+        },
+        "COMPETES Dummy": {
+            "type": "Tool",
+            "description": "",
+            "x": 98.51569922408922,
+            "y": 109.82896891813616,
+            "specification": "COMPETES",
+            "execute_in_work": true,
+            "cmd_line_args": [
+                {
+                    "type": "resource",
+                    "arg": "db_url@DB"
+                }
+            ]
         },
         "View 1": {
             "type": "View",
             "description": "",
-            "x": 334.09617849769575,
-            "y": -63.981855008712074
+            "x": 222.30327014747905,
+            "y": -157.8153297323209
         },
         "Import Init Data to DB": {
             "type": "Importer",
             "description": "",
-            "x": -164.59617849769575,
-            "y": -65.02319518973547,
+            "x": -109.88633300227025,
+            "y": -21.40767604967772,
             "specification": "Import Init Data to DB - init_ScenarioNLIntermittent.xlsx - 0",
             "cancel_on_error": true,
             "file_selection": [

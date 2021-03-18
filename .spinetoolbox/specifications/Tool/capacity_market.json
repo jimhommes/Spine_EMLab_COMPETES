@@ -3,7 +3,7 @@
     "tooltype": "python",
     "includes": [
         "capacity_market.py",
-        "capacity_market.py"
+        "spinedb.py"
     ],
     "description": "",
     "inputfiles": [],
