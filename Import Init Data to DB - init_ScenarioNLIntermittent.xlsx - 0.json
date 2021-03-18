@@ -3,43 +3,6 @@
     "item_type": "Importer",
     "mapping": {
         "table_mappings": {
-            "dutchPlants2015": [
-                {
-                    "Mapping": {
-                        "mapping": [
-                            {
-                                "map_type": "ObjectClass",
-                                "position": "table_name",
-                                "value": "dutchPlants2015"
-                            },
-                            {
-                                "map_type": "Object",
-                                "position": 0
-                            },
-                            {
-                                "map_type": "ObjectMetadata",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterDefinition",
-                                "position": "header"
-                            },
-                            {
-                                "map_type": "Alternative",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterValueMetadata",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterValue",
-                                "position": "hidden"
-                            }
-                        ]
-                    }
-                }
-            ],
             "ldcNLDE-hourly": [
                 {
                     "Mapping 1": {
@@ -93,7 +56,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "renewablesNinja2015Profiles"
                             },
                             {
                                 "map_type": "Object",
@@ -924,12 +888,45 @@
                         ]
                     }
                 }
+            ],
+            "PowerPlants": [
+                {
+                    "Mapping 1": {
+                        "mapping": [
+                            {
+                                "map_type": "ObjectClass",
+                                "position": "table_name"
+                            },
+                            {
+                                "map_type": "Object",
+                                "position": 0
+                            },
+                            {
+                                "map_type": "ObjectMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterDefinition",
+                                "position": -1
+                            },
+                            {
+                                "map_type": "Alternative",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterValueMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterValue",
+                                "position": "hidden"
+                            }
+                        ]
+                    }
+                }
             ]
         },
         "table_options": {
-            "dutchPlants2015": {
-                "header": true
-            },
             "ldcNLDE-hourly": {
                 "header": false
             },
@@ -967,18 +964,10 @@
             "GeometricTrends": {},
             "PowerGeneratingTechnologies": {},
             "PowerGeneratingTechnologyTarget": {},
-            "TargetInvestors": {}
+            "TargetInvestors": {},
+            "PowerPlants": {}
         },
         "table_types": {
-            "dutchPlants2015": {
-                "0": "string",
-                "1": "string",
-                "2": "string",
-                "3": "string",
-                "4": "string",
-                "5": "string",
-                "6": "string"
-            },
             "ldcNLDE-hourly": {
                 "0": "string",
                 "1": "string",
@@ -1150,6 +1139,15 @@
             "TargetInvestorTargets": {
                 "0": "string",
                 "1": "string"
+            },
+            "PowerPlants": {
+                "0": "string",
+                "1": "float",
+                "2": "float",
+                "3": "float",
+                "4": "float",
+                "5": "float",
+                "6": "float"
             }
         },
         "table_row_types": {
@@ -1215,10 +1213,13 @@
             },
             "TargetInvestors": {
                 "0": "string"
+            },
+            "PowerPlants": {
+                "0": "string"
             }
         },
         "selected_tables": [
-            "dutchPlants2015",
+            "PowerPlants",
             "ldcNLDE-hourly",
             "renewablesNinja2015Profiles",
             "emlabModel",
