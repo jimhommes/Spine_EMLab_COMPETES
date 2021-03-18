@@ -3,7 +3,8 @@
     "tooltype": "python",
     "includes": [
         "capacity_market.py",
-        "spinedb.py"
+        "spinedb.py",
+        "repository.py"
     ],
     "description": "",
     "inputfiles": [],
