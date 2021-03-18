@@ -27,7 +27,9 @@ for energyProducer in reps.energyProducers.values():
         #   fuelConsumptionPerMWhElectricityProduced = 3600 / (pp.efficiency * ss.energydensity)
         #   lastKnownFuelPrice
         substances = reps.get_substances_by_powerplant(powerPlant.name)
+        print(substances)
         if len(substances) > 0:         # Only done for 1 substance atm
             mc = 3600 / (int(powerPlant.parameters['Efficiency']) * substances[0].parameters['energyDensity'])
             capacity = int(powerPlant.parameters['Capacity'])
             reps.create_powerplant_dispatch_plan(powerPlant, energyProducer, market, capacity, mc)
+

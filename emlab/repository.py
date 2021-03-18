@@ -9,7 +9,7 @@ def db_objects_to_dict(db_data, to_dict, object_class_name, class_to_create):
 
 def db_relationships_to_arr(db_data, to_arr, relationship_class_name):
     for unit in [i for i in db_data['relationships'] if i[0] == relationship_class_name]:
-        to_arr.append(unit[1], unit[2])
+        to_arr.append((unit[1][0], unit[1][1]))
 
 
 class ImportObject:
@@ -39,10 +39,10 @@ class Repository:
         db_objects_to_dict(db_data, self.electricitySpotMarkets, 'ElectricitySpotMarkets', ElectricitySpotMarket)
 
     def get_powerplants_by_owner(self, owner):
-        return [i for i in self.powerPlants if i.parameters['Owner'] == owner]
+        return [i for i in self.powerPlants.values() if i.parameters['Owner'] == owner]
 
     def get_substances_by_powerplant(self, powerplant_name):
-        return [self.substances[i] for i in self.powerPlantsFuelMix if i[0] == powerplant_name]
+        return [self.substances[i[1]] for i in self.powerPlantsFuelMix if i[0] == powerplant_name]
 
     def create_powerplant_dispatch_plan(self, plant, bidder, bidding_market, amount, price):
         ppdp = PowerPlantDispatchPlan()
