@@ -7,6 +7,7 @@
 
 import sys
 import random
+from datetime import datetime
 from spinedb import SpineDB
 
 # Input DB
@@ -24,4 +25,8 @@ def addRandomness(number):
 
 
 output = [round(addRandomness(i), 2) for i in range(1, segmentLength)]
+db.import_object_classes(['actualOutput'])
+db.import_objects([('actualOutput', 'actualOutput')])
+db.import_data({'object_parameters': [['actualOutput', 'hourlyDemand']]})
 db.import_object_parameter_values([('actualOutput', 'actualOutput', 'hourlyDemand', {'type': 'time_series', 'data': output})])
+db.commit('COMPETES Dummy Commit: ' + str(datetime.now()))
