@@ -32,6 +32,7 @@ class Repository:
         self.electricitySpotMarkets = {}
         self.powerPlantDispatchPlans = []
         self.powerGeneratingTechnologies = {}
+        self.load = {}
 
         db_objects_to_dict(db_data, self.energyProducers, 'EnergyProducers', EnergyProducer)
         db_objects_to_dict(db_data, self.powerPlants, 'PowerPlants', PowerPlant)
@@ -40,6 +41,7 @@ class Repository:
         db_objects_to_dict(db_data, self.electricitySpotMarkets, 'ElectricitySpotMarkets', ElectricitySpotMarket)
         db_objects_to_dict(db_data, self.powerGeneratingTechnologies, 'PowerGeneratingTechnologies',
                            PowerGeneratingTechnology)
+        db_objects_to_dict(db_data, self.load, 'ldcNLDE-hourly', HourlyLoad)
 
     def get_powerplants_by_owner(self, owner):
         return [i for i in self.powerPlants.values() if i.parameters['Owner'] == owner]
@@ -75,6 +77,10 @@ class ElectricitySpotMarket(ImportObject):
 
 
 class PowerGeneratingTechnology(ImportObject):
+    pass
+
+
+class HourlyLoad(ImportObject):
     pass
 
 

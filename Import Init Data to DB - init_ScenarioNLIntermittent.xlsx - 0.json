@@ -23,7 +23,7 @@
                             {
                                 "map_type": "ParameterDefinition",
                                 "position": "hidden",
-                                "value": "Idc"
+                                "value": "ldc"
                             },
                             {
                                 "map_type": "Alternative",
@@ -820,7 +820,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "TargetInvestors"
                             },
                             {
                                 "map_type": "Object",
@@ -895,7 +896,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "PowerPlants"
                             },
                             {
                                 "map_type": "Object",
@@ -970,8 +972,8 @@
         "table_types": {
             "ldcNLDE-hourly": {
                 "0": "string",
-                "1": "string",
-                "2": "string"
+                "1": "float",
+                "2": "float"
             },
             "renewablesNinja2015Profiles": {
                 "0": "string",
@@ -1142,10 +1144,10 @@
             },
             "PowerPlants": {
                 "0": "string",
-                "1": "float",
-                "2": "float",
+                "1": "string",
+                "2": "string",
                 "3": "float",
-                "4": "float",
+                "4": "string",
                 "5": "float",
                 "6": "float"
             }

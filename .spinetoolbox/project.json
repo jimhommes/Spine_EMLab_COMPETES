@@ -101,8 +101,8 @@
         "DB": {
             "type": "Data Store",
             "description": "",
-            "x": 71.0943265896085,
-            "y": -21.40767604967772,
+            "x": 99.12618781294344,
+            "y": 2.0371533371114765,
             "url": {
                 "dialect": "sqlite",
                 "username": "",
@@ -120,8 +120,8 @@
         "Load Init File": {
             "type": "Data Connection",
             "description": "Loads all initialization values",
-            "x": -286.88633300227025,
-            "y": -21.40767604967772,
+            "x": -258.8544717789353,
+            "y": 2.0371533371114765,
             "references": [
                 {
                     "type": "path",
@@ -133,8 +133,8 @@
         "Capacity Market": {
             "type": "Tool",
             "description": "",
-            "x": 197.88986864363824,
-            "y": -23.151283763351472,
+            "x": 224.66015540795502,
+            "y": 0.2935456234377227,
             "specification": "Capacity Market",
             "execute_in_work": true,
             "cmd_line_args": [
@@ -147,8 +147,8 @@
         "COMPETES Dummy": {
             "type": "Tool",
             "description": "",
-            "x": 98.51569922408922,
-            "y": 109.82896891813616,
+            "x": 126.54756044742416,
+            "y": 133.27379830492535,
             "specification": "COMPETES",
             "execute_in_work": true,
             "cmd_line_args": [
@@ -161,14 +161,14 @@
         "View 1": {
             "type": "View",
             "description": "",
-            "x": 223.32261055560033,
-            "y": -152.71862769171454
+            "x": 251.35447177893528,
+            "y": -129.27379830492535
         },
         "Import Init Data to DB": {
             "type": "Importer",
             "description": "",
-            "x": -109.88633300227025,
-            "y": -21.40767604967772,
+            "x": -81.85447177893529,
+            "y": 0.7755788780932846,
             "specification": "Import Init Data to DB - init_ScenarioNLIntermittent.xlsx - 0",
             "cancel_on_error": true,
             "file_selection": [
