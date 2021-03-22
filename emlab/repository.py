@@ -48,7 +48,7 @@ class Repository:
 
     def get_substances_by_powerplant(self, powerplant_name):
         return [self.substances[i[1]] for i in self.powerPlantsFuelMix if i[0] == self.powerPlants[powerplant_name]
-                .parameters['Technology']]
+            .parameters['Technology']]
 
     def create_powerplant_dispatch_plan(self, plant, bidder, bidding_market, amount, price):
         ppdp = PowerPlantDispatchPlan()
@@ -58,6 +58,10 @@ class Repository:
         ppdp.amount = amount
         ppdp.price = price
         self.powerPlantDispatchPlans.append(ppdp)
+
+    def get_sorted_dispatch_plans_by_market(self, market_name):
+        return sorted([i for i in self.powerPlantDispatchPlans if i.biddingMarket.name == market_name],
+                      key=lambda i: i.price)
 
 
 class EnergyProducer(ImportObject):

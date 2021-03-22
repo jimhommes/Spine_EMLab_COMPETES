@@ -133,8 +133,8 @@
         "Capacity Market": {
             "type": "Tool",
             "description": "",
-            "x": 224.66015540795502,
-            "y": 0.2935456234377227,
+            "x": 225.6687958488339,
+            "y": 3.319466946074286,
             "specification": "Capacity Market",
             "execute_in_work": true,
             "cmd_line_args": [

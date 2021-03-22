@@ -4,6 +4,7 @@
     "includes": [
         "capacity_market.py",
         "spinedb.py",
+        "repository.py",
         "repository.py"
     ],
     "description": "",

@@ -6,6 +6,7 @@
 
 import sys
 import random
+import json
 from repository import *
 from spinedb import SpineDB
 from datetime import datetime
@@ -18,14 +19,14 @@ db_data = db.export_data()
 # Create Objects from the DB Data in the Repository
 reps = Repository(db_data)
 
-# For every energy producer we will submit bids to the Capacity Market
+# Create the DB Object structure for the PPDPs
 db.import_object_classes(['PowerPlantDispatchPlans'])
 db.import_data({'object_parameters': [['PowerPlantDispatchPlans', 'Market']]})
 db.import_data({'object_parameters': [['PowerPlantDispatchPlans', 'Price']]})
 db.import_data({'object_parameters': [['PowerPlantDispatchPlans', 'Capacity']]})
 db.import_data({'object_parameters': [['PowerPlantDispatchPlans', 'EnergyProducer']]})
 
-
+# For every energy producer we will submit bids to the Capacity Market
 for energyProducer in reps.energyProducers.values():
     market = reps.electricitySpotMarkets[energyProducer.parameters['investorMarket']]
 
@@ -48,8 +49,28 @@ for energyProducer in reps.energyProducers.values():
                                                ('PowerPlantDispatchPlans', powerPlant.name, 'EnergyProducer',
                                                 energyProducer.name)])
 
-db.commit('EM-Lab Capacity Market: Submit Bids to DB: ' + str(datetime.now()))
+db.commit('EM-Lab Capacity Market: Submit Bids: ' + str(datetime.now()))
 
-# Create Market Clearing Price
-# for market in reps.electricitySpotMarkets.values():
-# print(reps.load['NL'].parameters['ldc'].to_database())
+# Create the DB Object structure for Clearing Prices
+db.import_object_classes(['MarketClearingPoints'])
+db.import_data({'object_parameters': [['MarketClearingPoints', 'Market']]})
+db.import_data({'object_parameters': [['MarketClearingPoints', 'Price']]})
+db.import_data({'object_parameters': [['MarketClearingPoints', 'TotalCapacity']]})
+
+# Calculate and submit Market Clearing Price
+peak_load = max(json.loads(reps.load['NL'].parameters['ldc'].to_database())['data'].values())
+for market in reps.electricitySpotMarkets.values():
+    sorted_ppdp = reps.get_sorted_dispatch_plans_by_market(market.name)
+    clearing_price = 0
+    total_load = 0
+    for ppdp in sorted_ppdp:
+        if total_load < peak_load:
+            total_load += ppdp.amount
+            clearing_price = ppdp.price
+
+    db.import_objects([('MarketClearingPoints', 'ClearingPoint')])
+    db.import_object_parameter_values([('MarketClearingPoints', 'ClearingPoint', 'Market', market.name),
+                                       ('MarketClearingPoints', 'ClearingPoint', 'Price', clearing_price),
+                                       ('MarketClearingPoints', 'ClearingPoint', 'TotalCapacity', total_load)])
+
+db.commit('EM-Lab Capacity Market: Submit Clearing Point: ' + str(datetime.now()))
