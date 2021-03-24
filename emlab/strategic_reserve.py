@@ -1,8 +1,6 @@
 #
 # Strategic Reserve recreated from EM-Lab.
 #
-# Jim Hommes - 17-3-2021
-#
 
 import sys
 import random
@@ -51,37 +49,40 @@ clearingEpsilon = 0.001
 dispatchPrice = strategicReserveOperator.getReservePriceSR()
 
 if (volumetobeContracted == 0) {
-    isORMarketCleared = true} 
-    else if (isORMarketCleared == false) {
-        # if not enough volume is contracted contract
-   if (volumetobeContracted - (sumofContractedBids + currentPPDP.getAmount()) >= clearingEpsilon) {
-        sumofContractedBids += currentPPDP.getAmount();
-        currentPPDP.setOldPrice(currentPPDP.getPrice());
-        currentPPDP.setPrice(dispatchPrice);
+    isORMarketCleared = true}
+else if (isORMarketCleared == false) {
+    # if not enough volume is contracted contract
+    if (volumetobeContracted - (sumofContractedBids + currentPPDP.getAmount()) >= clearingEpsilon) {
+        sumofContractedBids += currentPPDP.getAmount()
+        currentPPDP.setOldPrice(currentPPDP.getPrice())
+        currentPPDP.setPrice(dispatchPrice)
 
-    # pays O&M costs to the generated for the contracted capacity
-        Loan = 0;
+        # pays O&M costs to the generated for the contracted capacity
+        Loan = 0
         if ((currentPPDP.getPowerPlant().getLoan().getTotalNumberOfPayments() - currentPPDP.getPowerPlant().getLoan().getNumberOfPaymentsDone()) > 0) {
             Loan = (currentPPDP.getPowerPlant().getLoan().getAmountPerPayment())}
-        money = ((currentPPDP.getPowerPlant().getActualFixedOperatingCost()) + Loan) / segmentCounter
-        getReps().createCashFlow(strategicReserveOperator, currentPPDP.getBidder(), money, CashFlow.STRRESPAYMENT, getCurrentTick(), currentPPDP.getPowerPlant()); }
+        money = ((currentPPDP.getPowerPlant(
+        ).getActualFixedOperatingCost()) + Loan) / segmentCounter
+        getReps().createCashFlow(strategicReserveOperator, currentPPDP.getBidder(),
+                                 money, CashFlow.STRRESPAYMENT, getCurrentTick(), currentPPDP.getPowerPlant())
+    }
     # if enough volume is contracted contract partially the last volume
-    } else if (volumetobeContracted - (sumofContractedBids + currentPPDP.getAmount()) < clearingEpsilon) {
-        currentPPDP.setSRstatus(PowerPlantDispatchPlan.PARTLY_CONTRACTED);
-
-        sumofContractedBids += currentPPDP.getAmount();
-        currentPPDP.setOldPrice(currentPPDP.getPrice());
-        currentPPDP.setPrice(dispatchPrice);
-        isORMarketCleared = true;
+} else if (volumetobeContracted - (sumofContractedBids + currentPPDP.getAmount()) < clearingEpsilon) {
+    currentPPDP.setSRstatus(PowerPlantDispatchPlan.PARTLY_CONTRACTED)
+    sumofContractedBids += currentPPDP.getAmount()
+    currentPPDP.setOldPrice(currentPPDP.getPrice())
+    currentPPDP.setPrice(dispatchPrice)
+    isORMarketCleared = true
     # pays O&M costs to the generated for the contracted capacity
-        Loan = 0;
-        if ((currentPPDP.getPowerPlant().getLoan().getTotalNumberOfPayments() - currentPPDP.getPowerPlant().getLoan().getNumberOfPaymentsDone()) > 0) {
-            Loan = (currentPPDP.getPowerPlant().getLoan().getAmountPerPayment())
-            }
-        money = ((currentPPDP.getPowerPlant().getActualFixedOperatingCost()) + Loan) / segmentCounter
-        getReps().createCashFlow(strategicReserveOperator, currentPPDP.getBidder(), money, CashFlow.STRRESPAYMENT, getCurrentTick(), currentPPDP.getPowerPlant())
-        }
-     else {
-    currentPPDP.setSRstatus(PowerPlantDispatchPlan.NOT_CONTRACTED)}
-
-
+    Loan = 0
+    if ((currentPPDP.getPowerPlant().getLoan().getTotalNumberOfPayments() - currentPPDP.getPowerPlant().getLoan().getNumberOfPaymentsDone()) > 0) {
+        Loan = (currentPPDP.getPowerPlant().getLoan().getAmountPerPayment())
+    }
+    money = ((currentPPDP.getPowerPlant(
+    ).getActualFixedOperatingCost()) + Loan) / segmentCounter
+    getReps().createCashFlow(strategicReserveOperator, currentPPDP.getBidder(),
+                             money, CashFlow.STRRESPAYMENT, getCurrentTick(), currentPPDP.getPowerPlant())
+}
+else {
+    currentPPDP.setSRstatus(PowerPlantDispatchPlan.NOT_CONTRACTED)
+}
