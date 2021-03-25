@@ -1,6 +1,6 @@
 #
 # The Repository: home of all objects that play a part in the model.
-# It's used to access all objects and to read input from the Database.
+# All objects are read through the SpineDBReader and stored in the Repository.
 #
 # Jim Hommes - 25-3-2021
 #
