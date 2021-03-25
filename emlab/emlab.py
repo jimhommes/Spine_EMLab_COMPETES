@@ -6,9 +6,11 @@
 #
 
 import sys
+from spinedb_reader_writer import *
 from electricityspotmarket_submitbids import *
 from electricityspotmarket_clear import *
-from spinedb_reader_writer import *
+from capacitymarket_submitbids import *
+
 
 run_capacity_market = False
 run_electricity_spot_market = False
@@ -31,6 +33,7 @@ reps = spinedb_reader_writer.read_db_and_create_repository()
 # Init all modules and commit structure to Spine
 electricity_spot_market_submit_bids = ElectricitySpotMarketSubmitBids(reps)
 electricity_spot_market_clear = ElectricitySpotMarketClearing(reps)
+capacity_market_submit_bids = CapacityMarketSubmitBids(reps)
 spinedb_reader_writer.commit('Initialize all module import structures')
 
 # Submit bids to Electricity Spot Market
@@ -40,3 +43,7 @@ if run_electricity_spot_market:
 # Clear Electricity Spot Market
 if run_electricity_spot_market:
     electricity_spot_market_clear.act()
+
+# Submit bids to Capacity Market
+if run_capacity_market:
+    capacity_market_submit_bids.act()
