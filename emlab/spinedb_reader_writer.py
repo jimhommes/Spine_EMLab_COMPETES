@@ -46,6 +46,7 @@ class SpineDBReaderWriter:
         db_objects_to_dict(db_data, reps.powerGeneratingTechnologies, 'PowerGeneratingTechnologies',
                            PowerGeneratingTechnology)
         db_objects_to_dict(db_data, reps.load, 'ldcNLDE-hourly', HourlyLoad)
+        db_objects_to_dict(db_data, reps.capacityMarkets, 'CapacityMarkets', CapacityMarket)
         return reps
 
     def import_object_class(self, object_class_name):

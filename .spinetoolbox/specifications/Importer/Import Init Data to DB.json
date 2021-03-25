@@ -927,6 +927,42 @@
                         ]
                     }
                 }
+            ],
+            "CapacityMarkets": [
+                {
+                    "Mapping 1": {
+                        "mapping": [
+                            {
+                                "map_type": "ObjectClass",
+                                "position": "table_name"
+                            },
+                            {
+                                "map_type": "Object",
+                                "position": 0
+                            },
+                            {
+                                "map_type": "ObjectMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterDefinition",
+                                "position": -1
+                            },
+                            {
+                                "map_type": "Alternative",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterValueMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterValue",
+                                "position": "hidden"
+                            }
+                        ]
+                    }
+                }
             ]
         },
         "table_options": {
@@ -968,7 +1004,8 @@
             "PowerGeneratingTechnologies": {},
             "PowerGeneratingTechnologyTarget": {},
             "TargetInvestors": {},
-            "PowerPlants": {}
+            "PowerPlants": {},
+            "CapacityMarkets": {}
         },
         "table_types": {
             "ldcNLDE-hourly": {
@@ -1151,6 +1188,12 @@
                 "4": "string",
                 "5": "float",
                 "6": "float"
+            },
+            "CapacityMarkets": {
+                "0": "string",
+                "1": "float",
+                "2": "float",
+                "3": "float"
             }
         },
         "table_row_types": {
@@ -1219,6 +1262,10 @@
             },
             "PowerPlants": {
                 "0": "string"
+            },
+            "CapacityMarkets": {
+                "1": "string",
+                "0": "string"
             }
         },
         "selected_tables": [
@@ -1235,6 +1282,7 @@
             "InterconnectorNodes",
             "LoadDurationCurves",
             "ElectricitySpotMarkets",
+            "CapacityMarkets",
             "CO2Auction",
             "EnergyConsumers",
             "EnergyProducers",
