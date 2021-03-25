@@ -10,13 +10,9 @@ from datetime import datetime
 
 class ElectricitySpotMarketSubmitBids:
 
-    def __init__(self, reps, spinedb_reader_writer):
+    def __init__(self, reps):
         self.reps = reps
-        self.db = spinedb_reader_writer
-
-        spinedb_reader_writer.import_object_class(spinedb_reader_writer.ppdp_object_class_name)
-        spinedb_reader_writer.import_parameters(spinedb_reader_writer.ppdp_object_class_name,
-                                                ['Market', 'Price', 'Capacity', 'EnergyProducer'])
+        reps.dbrw.init_powerplantdispatchplan_structure()
 
     def act(self):
         # For every energy producer we will submit bids to the Capacity Market
@@ -25,8 +21,6 @@ class ElectricitySpotMarketSubmitBids:
 
             # For every plant owned by energyProducer
             for powerPlant in self.reps.get_powerplants_by_owner(energyProducer.name):
-                self.db.import_object(self.db.ppdp_object_class_name, powerPlant.name)
-
                 # Calculate marginal cost mc
                 #   fuelConsumptionPerMWhElectricityProduced = 3600 / (pp.efficiency * ss.energydensity)
                 #   lastKnownFuelPrice
@@ -36,10 +30,3 @@ class ElectricitySpotMarketSubmitBids:
                         substances[0].parameters['energyDensity']))
                     capacity = int(powerPlant.parameters['Capacity'])
                     self.reps.create_powerplant_dispatch_plan(powerPlant, energyProducer, market, capacity, mc)
-
-                    self.db.import_object_parameter_values(self.db.ppdp_object_class_name, powerPlant.name,
-                                                           [('Market', market.name), ('Price', mc),
-                                                            ('Capacity', capacity),
-                                                            ('EnergyProducer', energyProducer.name)])
-
-        self.db.commit('EM-Lab Capacity Market: Submit Bids: ' + str(datetime.now()))

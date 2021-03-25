@@ -5,6 +5,7 @@
 # Jim Hommes - 25-3-2021
 #
 from repository import *
+from spinedb import SpineDB
 
 
 # Common function to read a SpineDB entry to a Python dict with {object_class_name: class_to_create}
@@ -27,13 +28,15 @@ def db_relationships_to_arr(db_data, to_arr, relationship_class_name):
 
 class SpineDBReaderWriter:
 
-    def __init__(self, db):
-        self.db = db
+    def __init__(self, db_url):
+        self.db_url = db_url
+        self.db = SpineDB(db_url)
         self.ppdp_object_class_name = 'PowerPlantDispatchPlans'
         self.mcp_object_class_name = 'MarketClearingPoints'
 
     def read_db_and_create_repository(self):
         reps = Repository()
+        reps.dbrw = self
         db_data = self.db.export_data()
         db_objects_to_dict(db_data, reps.energyProducers, 'EnergyProducers', EnergyProducer)
         db_objects_to_dict(db_data, reps.powerPlants, 'PowerPlants', PowerPlant)
@@ -66,4 +69,15 @@ class SpineDBReaderWriter:
 
     def import_object_parameter_values(self, object_class_name, object_name, arr_of_tuples):
         import_arr = [(object_class_name, object_name, i[0], i[1]) for i in arr_of_tuples]
-        self.db.import_parameter_values(import_arr)
+        self.db.import_object_parameter_values(import_arr)
+
+    def commit(self, commit_message):
+        self.db.commit(commit_message)
+
+    def init_marketclearingpoint_structure(self):
+        self.import_object_class(self.mcp_object_class_name)
+        self.import_object_parameters(self.mcp_object_class_name, ['Market', 'Price', 'TotalCapacity'])
+
+    def init_powerplantdispatchplan_structure(self):
+        self.import_object_class(self.ppdp_object_class_name)
+        self.import_object_parameters(self.ppdp_object_class_name, ['Market', 'Price', 'Capacity', 'EnergyProducer'])

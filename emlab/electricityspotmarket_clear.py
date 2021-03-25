@@ -11,13 +11,9 @@ from datetime import datetime
 
 class ElectricitySpotMarketClearing:
 
-    def __init__(self, reps, spinedb_reader_writer):
+    def __init__(self, reps):
         self.reps = reps
-        self.db = spinedb_reader_writer
-
-        spinedb_reader_writer.import_object_class(spinedb_reader_writer.mcp_object_class_name)
-        spinedb_reader_writer.import_parameters(spinedb_reader_writer.mcp_object_class_name,
-                                                ['Market', 'Price', 'TotalCapacity'])
+        reps.dbrw.init_marketclearingpoint_structure()
 
     def act(self):
         # Calculate and submit Market Clearing Price
@@ -31,9 +27,4 @@ class ElectricitySpotMarketClearing:
                     total_load += ppdp.amount
                     clearing_price = ppdp.price
 
-            self.db.import_object(self.db.mcp_object_class_name, 'ClearingPoint')
-            self.db.import_object_parameter_values(self.db.mcp_object_class_name, 'ClearingPoint',
-                                                   [('Market', market.name), ('Price', clearing_price),
-                                                    ('TotalCapacity', total_load)])
-
-        self.db.commit('EM-Lab Capacity Market: Submit Clearing Point: ' + str(datetime.now()))
+            self.reps.create_market_clearingpoint(market.name, clearing_price, total_load)
