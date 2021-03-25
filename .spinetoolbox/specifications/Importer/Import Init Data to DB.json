@@ -1,5 +1,5 @@
 {
-    "name": "Import Init Data to DB - init_ScenarioNLIntermittent.xlsx - 0",
+    "name": "Import Init Data to DB",
     "item_type": "Importer",
     "mapping": {
         "table_mappings": {
@@ -238,7 +238,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "PowerGridNodes"
                             },
                             {
                                 "map_type": "Object",

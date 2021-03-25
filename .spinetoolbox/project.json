@@ -25,7 +25,7 @@
                 {
                     "type": "path",
                     "relative": true,
-                    "path": "Import Init Data to DB - init_ScenarioNLIntermittent.xlsx - 0.json"
+                    "path": ".spinetoolbox/specifications/Importer/Import Init Data to DB.json"
                 }
             ]
         },
@@ -141,7 +141,7 @@
             "x": 225.6687958488339,
             "y": 3.319466946074286,
             "specification": "Electricity Spot Market",
-            "execute_in_work": true,
+            "execute_in_work": false,
             "cmd_line_args": [
                 {
                     "type": "resource",
@@ -174,7 +174,7 @@
             "description": "",
             "x": -81.85447177893529,
             "y": 0.7755788780932846,
-            "specification": "Import Init Data to DB - init_ScenarioNLIntermittent.xlsx - 0",
+            "specification": "Import Init Data to DB",
             "cancel_on_error": true,
             "file_selection": [
                 [
