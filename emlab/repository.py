@@ -1,3 +1,13 @@
+#
+# The Repository: home of all objects that play a part in the model.
+# It's used to access all objects and to read input from the Database.
+#
+# Jim Hommes - 25-3-2021
+#
+
+# Common function to read a SpineDB entry to a Python dict with {object_class_name: class_to_create}
+# class_to_create should inherit ImportObject
+# All parameters are then added to ImportObject.parameters
 def db_objects_to_dict(db_data, to_dict, object_class_name, class_to_create):
     for unit in [i for i in db_data['objects'] if i[0] == object_class_name]:
         to_dict[unit[1]] = class_to_create(unit)
@@ -7,11 +17,15 @@ def db_objects_to_dict(db_data, to_dict, object_class_name, class_to_create):
             unit.add_parameter_value(parameterValue)
 
 
+# Function used to translate SpineDB relationships to an array of tuples
 def db_relationships_to_arr(db_data, to_arr, relationship_class_name):
     for unit in [i for i in db_data['relationships'] if i[0] == relationship_class_name]:
         to_arr.append((unit[1][0], unit[1][1]))
 
 
+# Parent Class for all objects imported from Spine
+# Will probably become redundant in the future as it's neater to translate parameters to Python parameters
+#   instead of a dict like this
 class ImportObject:
     def __init__(self, import_obj):
         self.name = import_obj[1]
@@ -21,18 +35,21 @@ class ImportObject:
         self.parameters[import_obj[2]] = import_obj[3]
 
 
+# The Repository class reads DB data at initialization and loads all objects and relationships
+# Also provides all functions that require e.g. sorting
 class Repository:
     def __init__(self, db_data):
         self.energyProducers = {}
         self.powerPlants = {}
         self.substances = {}
         self.powerPlantsFuelMix = []
-        self.tempFixedFuelPrices = {'biomass': 10, 'fuelOil': 20, 'hardCoal': 30, 'ligniteCoal': 10, 'naturalGas': 5,
-                                    'uranium': 40}
         self.electricitySpotMarkets = {}
         self.powerPlantDispatchPlans = []
         self.powerGeneratingTechnologies = {}
         self.load = {}
+
+        self.tempFixedFuelPrices = {'biomass': 10, 'fuelOil': 20, 'hardCoal': 30, 'ligniteCoal': 10, 'naturalGas': 5,
+                                    'uranium': 40}
 
         db_objects_to_dict(db_data, self.energyProducers, 'EnergyProducers', EnergyProducer)
         db_objects_to_dict(db_data, self.powerPlants, 'PowerPlants', PowerPlant)
@@ -63,6 +80,8 @@ class Repository:
         return sorted([i for i in self.powerPlantDispatchPlans if i.biddingMarket.name == market_name],
                       key=lambda i: i.price)
 
+
+# Objects that are imported. Pass because they inherit name and parameters from ImportObject
 
 class EnergyProducer(ImportObject):
     pass

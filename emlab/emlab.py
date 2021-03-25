@@ -11,15 +11,15 @@ from spinedb import SpineDB
 from electricityspotmarket_submitbids import *
 from electricityspotmarket_clear import *
 
-# Input DB
+# Read input database from Spine
 db_url = sys.argv[1]
 db = SpineDB(db_url)
 db_data = db.export_data()
 
-# Create Objects from the DB Data in the Repository
+# Create Objects from the DB in the Repository
 reps = Repository(db_data)
 
-# Init all modules
+# Init all modules and commit structure to Spine
 electricity_spot_market_submit_bids = ElectricitySpotMarketSubmitBids(reps, db)
 electricity_spot_market_clear = ElectricitySpotMarketClearing(reps, db)
 db.commit('Initialize all module import structures')
