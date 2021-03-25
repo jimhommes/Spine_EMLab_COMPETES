@@ -4,9 +4,7 @@
 #
 # Jim Hommes - 25-3-2021
 #
-
 import json
-from datetime import datetime
 
 
 class ElectricitySpotMarketClearing:

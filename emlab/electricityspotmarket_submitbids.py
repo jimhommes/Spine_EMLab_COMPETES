@@ -5,8 +5,6 @@
 # Jim Hommes - 25-3-2021
 #
 
-from datetime import datetime
-
 
 class ElectricitySpotMarketSubmitBids:
 
