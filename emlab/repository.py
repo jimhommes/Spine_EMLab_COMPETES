@@ -57,9 +57,9 @@ class Repository:
 
         self.dbrw.import_object(self.dbrw.ppdp_object_class_name, plant.name)
         self.dbrw.import_object_parameter_values(self.dbrw.ppdp_object_class_name, plant.name,
-                                               [('Market', bidding_market.name), ('Price', price),
-                                                ('Capacity', amount),
-                                                ('EnergyProducer', bidder.name)])
+                                                 [('Market', bidding_market.name), ('Price', price),
+                                                  ('Capacity', amount),
+                                                  ('EnergyProducer', bidder.name)])
         self.dbrw.commit('EM-Lab Capacity Market: Submit Bids: ' + str(datetime.now()))
 
     def get_sorted_dispatch_plans_by_market(self, market_name):
@@ -84,7 +84,7 @@ class Repository:
                 substances[0].parameters['energyDensity']))
             # Check if plant's bid is accepted
             mcp_price = self.marketClearingPoints[0]
-            if mcp_price <= mc:
+            if mcp_price.price <= mc:
                 return int(plant.parameters['Capacity'])
             else:
                 return 0
@@ -109,7 +109,10 @@ class ElectricitySpotMarket(ImportObject):
 
 
 class CapacityMarket(ImportObject):
-    pass
+
+    def get_sloping_demand_curve(self, d_peak):
+        return SlopingDemandCurve(float(self.parameters['InstalledReserveMargin']), float(self.parameters['LowerMargin']),
+                                  float(self.parameters['UpperMargin']), d_peak, float(self.parameters['PriceCap']))
 
 
 class PowerGeneratingTechnology(ImportObject):
@@ -127,6 +130,8 @@ class PowerPlantDispatchPlan:
         self.biddingMarket = None
         self.amount = None
         self.price = None
+        self.status = 'Awaiting confirmation'
+        self.acceptedAmount = 0
 
 
 class MarketClearingPoint:
@@ -134,3 +139,23 @@ class MarketClearingPoint:
         self.market = market
         self.price = price
         self.capacity = capacity
+
+
+class SlopingDemandCurve:
+    def __init__(self, irm, lm, um, d_peak, price_cap):
+        self.irm = irm
+        self.lm = lm
+        self.lmVolume = d_peak * (1 + irm - lm)
+        self.um = um
+        self.umVolume = d_peak * (1 + irm + um)
+        self.d_peak = d_peak
+        self.price_cap = price_cap
+
+    def get_price_at_volume(self, volume):
+        m = self.price_cap / (self.umVolume - self.lmVolume)
+        if volume < self.lmVolume:
+            return self.price_cap
+        elif self.lmVolume <= volume <= self.umVolume:
+            return self.price_cap - m * (volume - self.lmVolume)
+        elif self.umVolume < volume:
+            return 0
