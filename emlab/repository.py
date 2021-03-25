@@ -71,7 +71,7 @@ class Repository:
         self.marketClearingPoints.append(mcp)
 
         self.dbrw.import_object(self.dbrw.mcp_object_class_name, 'ClearingPoint')
-        self.dbrw.import_object_parameter_values(self.dbrw.mcp_object_class_name, 'ClearingPoint',
+        self.dbrw.import_object_parameter_values(self.dbrw.mcp_object_class_name, 'ClearingPoint-' + str(datetime.now()),
                                                  [('Market', market_name), ('Price', clearing_price),
                                                   ('TotalCapacity', total_capacity)])
         self.dbrw.commit('EM-Lab Capacity Market: Submit Clearing Point: ' + str(datetime.now()))
