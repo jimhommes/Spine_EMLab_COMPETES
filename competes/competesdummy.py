@@ -9,8 +9,8 @@ import sys
 import random
 from datetime import datetime
 from spinedb import SpineDB
-from emlab.repository import *
-from emlab.spinedb_reader_writer import *
+from repository import *
+from spinedb_reader_writer import *
 from electricityspotmarket import *
 
 # Input DB
