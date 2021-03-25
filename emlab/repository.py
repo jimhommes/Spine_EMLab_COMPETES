@@ -54,11 +54,11 @@ class Repository:
         ppdp.price = price
         self.powerPlantDispatchPlans.append(ppdp)
 
-        self.dbrw.import_object(self.dbrw.ppdp_object_class_name, plant)
-        self.dbrw.import_object_parameter_values(self.dbrw.ppdp_object_class_name, plant,
-                                               [('Market', bidding_market), ('Price', price),
+        self.dbrw.import_object(self.dbrw.ppdp_object_class_name, plant.name)
+        self.dbrw.import_object_parameter_values(self.dbrw.ppdp_object_class_name, plant.name,
+                                               [('Market', bidding_market.name), ('Price', price),
                                                 ('Capacity', amount),
-                                                ('EnergyProducer', bidder)])
+                                                ('EnergyProducer', bidder.name)])
         self.dbrw.commit('EM-Lab Capacity Market: Submit Bids: ' + str(datetime.now()))
 
     def get_sorted_dispatch_plans_by_market(self, market_name):
