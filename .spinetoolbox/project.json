@@ -14,6 +14,11 @@
                     "type": "path",
                     "relative": true,
                     "path": ".spinetoolbox/specifications/Tool/capacity_market.json"
+                },
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/specifications/Tool/electricity_spot_market.json"
                 }
             ],
             "Importer": [
@@ -51,7 +56,7 @@
                     "right"
                 ],
                 "to": [
-                    "Capacity Market",
+                    "Electricity Spot Market",
                     "left"
                 ]
             },
@@ -71,7 +76,7 @@
                     "right"
                 ],
                 "to": [
-                    "Capacity Market",
+                    "Electricity Spot Market",
                     "bottom"
                 ]
             },
@@ -87,7 +92,7 @@
             },
             {
                 "from": [
-                    "Capacity Market",
+                    "Electricity Spot Market",
                     "right"
                 ],
                 "to": [
@@ -130,12 +135,12 @@
                 }
             ]
         },
-        "Capacity Market": {
+        "Electricity Spot Market": {
             "type": "Tool",
             "description": "",
             "x": 225.6687958488339,
             "y": 3.319466946074286,
-            "specification": "Capacity Market",
+            "specification": "Electricity Spot Market",
             "execute_in_work": true,
             "cmd_line_args": [
                 {

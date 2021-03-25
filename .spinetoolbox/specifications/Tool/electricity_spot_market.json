@@ -1,5 +1,5 @@
 {
-    "name": "Capacity Market",
+    "name": "Electricity Spot Market",
     "tooltype": "python",
     "includes": [
         "emlab.py",
