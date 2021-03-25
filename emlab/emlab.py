@@ -11,6 +11,17 @@ from spinedb import SpineDB
 from electricityspotmarket_submitbids import *
 from electricityspotmarket_clear import *
 
+run_capacity_market = False
+run_electricity_spot_market = False
+
+# Loop over provided arguments and select modules
+for arg in sys.argv[2:]:
+    if arg == 'run_capacity_market':
+        run_electricity_spot_market = True
+        run_capacity_market = True
+    if arg == 'run_electricity_spot_market':
+        run_electricity_spot_market = True
+
 # Read input database from Spine
 db_url = sys.argv[1]
 db = SpineDB(db_url)
@@ -25,7 +36,9 @@ electricity_spot_market_clear = ElectricitySpotMarketClearing(reps, db)
 db.commit('Initialize all module import structures')
 
 # Submit bids to Electricity Spot Market
-electricity_spot_market_submit_bids.act()
+if run_electricity_spot_market:
+    electricity_spot_market_submit_bids.act()
 
 # Clear Electricity Spot Market
-electricity_spot_market_clear.act()
+if run_electricity_spot_market:
+    electricity_spot_market_clear.act()

@@ -146,6 +146,10 @@
                 {
                     "type": "resource",
                     "arg": "db_url@DB"
+                },
+                {
+                    "type": "literal",
+                    "arg": "run_capacity_market"
                 }
             ]
         },
