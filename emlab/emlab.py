@@ -9,7 +9,7 @@ import sys
 from spinedb import SpineDB
 from electricityspotmarket_submitbids import *
 from electricityspotmarket_clear import *
-from spinedb_reader import *
+from spinedb_reader_writer import *
 
 run_capacity_market = False
 run_electricity_spot_market = False
@@ -27,8 +27,8 @@ db_url = sys.argv[1]
 db = SpineDB(db_url)
 
 # Create Objects from the DB in the Repository
-spinedb_reader = SpineDBReader(db)
-reps = spinedb_reader.read_db_and_create_repository()
+spinedb_reader_writer = SpineDBReaderWriter(db)
+reps = spinedb_reader_writer.read_db_and_create_repository()
 
 # Init all modules and commit structure to Spine
 electricity_spot_market_submit_bids = ElectricitySpotMarketSubmitBids(reps, db)

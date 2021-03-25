@@ -5,24 +5,6 @@
 # Jim Hommes - 25-3-2021
 #
 
-# Common function to read a SpineDB entry to a Python dict with {object_class_name: class_to_create}
-# class_to_create should inherit ImportObject
-# All parameters are then added to ImportObject.parameters
-def db_objects_to_dict(db_data, to_dict, object_class_name, class_to_create):
-    for unit in [i for i in db_data['objects'] if i[0] == object_class_name]:
-        to_dict[unit[1]] = class_to_create(unit)
-
-    for unit in to_dict.values():
-        for parameterValue in [i for i in db_data['object_parameter_values'] if i[1] == unit.name]:
-            unit.add_parameter_value(parameterValue)
-
-
-# Function used to translate SpineDB relationships to an array of tuples
-def db_relationships_to_arr(db_data, to_arr, relationship_class_name):
-    for unit in [i for i in db_data['relationships'] if i[0] == relationship_class_name]:
-        to_arr.append((unit[1][0], unit[1][1]))
-
-
 # Parent Class for all objects imported from Spine
 # Will probably become redundant in the future as it's neater to translate parameters to Python parameters
 #   instead of a dict like this
@@ -38,7 +20,7 @@ class ImportObject:
 # The Repository class reads DB data at initialization and loads all objects and relationships
 # Also provides all functions that require e.g. sorting
 class Repository:
-    def __init__(self, db_data):
+    def __init__(self):
         self.energyProducers = {}
         self.powerPlants = {}
         self.substances = {}
@@ -50,15 +32,6 @@ class Repository:
 
         self.tempFixedFuelPrices = {'biomass': 10, 'fuelOil': 20, 'hardCoal': 30, 'ligniteCoal': 10, 'naturalGas': 5,
                                     'uranium': 40}
-
-        db_objects_to_dict(db_data, self.energyProducers, 'EnergyProducers', EnergyProducer)
-        db_objects_to_dict(db_data, self.powerPlants, 'PowerPlants', PowerPlant)
-        db_objects_to_dict(db_data, self.substances, 'Substances', Substance)
-        db_relationships_to_arr(db_data, self.powerPlantsFuelMix, 'PowerGeneratingTechnologyFuel')
-        db_objects_to_dict(db_data, self.electricitySpotMarkets, 'ElectricitySpotMarkets', ElectricitySpotMarket)
-        db_objects_to_dict(db_data, self.powerGeneratingTechnologies, 'PowerGeneratingTechnologies',
-                           PowerGeneratingTechnology)
-        db_objects_to_dict(db_data, self.load, 'ldcNLDE-hourly', HourlyLoad)
 
     def get_powerplants_by_owner(self, owner):
         return [i for i in self.powerPlants.values() if i.parameters['Owner'] == owner]
