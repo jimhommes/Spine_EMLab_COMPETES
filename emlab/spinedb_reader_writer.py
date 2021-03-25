@@ -47,6 +47,19 @@ class SpineDBReaderWriter:
                            PowerGeneratingTechnology)
         db_objects_to_dict(db_data, reps.load, 'ldcNLDE-hourly', HourlyLoad)
         db_objects_to_dict(db_data, reps.capacityMarkets, 'CapacityMarkets', CapacityMarket)
+
+        for unit in [i for i in db_data['objects'] if i[0] == 'MarketClearingPoints']:
+            price = 0
+            market = ''
+            capacity = 0
+            for parameterValue in [i for i in db_data['object_parameter_values'] if i[1] == unit[1]]:
+                if parameterValue[2] == 'Price':
+                    price = float(parameterValue[3])
+                if parameterValue[2] == 'Market':
+                    market = parameterValue[3]
+                if parameterValue[2] == 'TotalCapacity':
+                    capacity = float(parameterValue[3])
+            reps.marketClearingPoints.append(MarketClearingPoint(market, price, capacity))
         return reps
 
     def import_object_class(self, object_class_name):
