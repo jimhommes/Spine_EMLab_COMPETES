@@ -7,10 +7,8 @@
 
 import sys
 from spinedb_reader_writer import *
-from electricityspotmarket_submitbids import *
-from electricityspotmarket_clear import *
-from capacitymarket_submitbids import *
-from capacitymarket_clear import *
+from electricityspotmarket import *
+from capacitymarket import *
 
 
 run_capacity_market = False
