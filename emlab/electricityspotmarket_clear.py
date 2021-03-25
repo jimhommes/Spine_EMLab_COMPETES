@@ -11,13 +11,13 @@ from datetime import datetime
 
 class ElectricitySpotMarketClearing:
 
-    def __init__(self, reps, db):
+    def __init__(self, reps, spinedb_reader_writer):
         self.reps = reps
-        self.db = db
-        db.import_object_classes(['MarketClearingPoints'])
-        db.import_data({'object_parameters': [['MarketClearingPoints', 'Market']]})
-        db.import_data({'object_parameters': [['MarketClearingPoints', 'Price']]})
-        db.import_data({'object_parameters': [['MarketClearingPoints', 'TotalCapacity']]})
+        self.db = spinedb_reader_writer
+
+        spinedb_reader_writer.import_object_class(spinedb_reader_writer.mcp_object_class_name)
+        spinedb_reader_writer.import_parameters(spinedb_reader_writer.mcp_object_class_name,
+                                                ['Market', 'Price', 'TotalCapacity'])
 
     def act(self):
         # Calculate and submit Market Clearing Price
@@ -31,9 +31,9 @@ class ElectricitySpotMarketClearing:
                     total_load += ppdp.amount
                     clearing_price = ppdp.price
 
-            self.db.import_objects([('MarketClearingPoints', 'ClearingPoint')])
-            self.db.import_object_parameter_values([('MarketClearingPoints', 'ClearingPoint', 'Market', market.name),
-                                               ('MarketClearingPoints', 'ClearingPoint', 'Price', clearing_price),
-                                               ('MarketClearingPoints', 'ClearingPoint', 'TotalCapacity', total_load)])
+            self.db.import_object(self.db.mcp_object_class_name, 'ClearingPoint')
+            self.db.import_object_parameter_values(self.db.mcp_object_class_name, 'ClearingPoint',
+                                                   [('Market', market.name), ('Price', clearing_price),
+                                                    ('TotalCapacity', total_load)])
 
         self.db.commit('EM-Lab Capacity Market: Submit Clearing Point: ' + str(datetime.now()))

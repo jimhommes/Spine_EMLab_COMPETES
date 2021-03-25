@@ -29,6 +29,8 @@ class SpineDBReaderWriter:
 
     def __init__(self, db):
         self.db = db
+        self.ppdp_object_class_name = 'PowerPlantDispatchPlans'
+        self.mcp_object_class_name = 'MarketClearingPoints'
 
     def read_db_and_create_repository(self):
         reps = Repository()
@@ -42,3 +44,26 @@ class SpineDBReaderWriter:
                            PowerGeneratingTechnology)
         db_objects_to_dict(db_data, reps.load, 'ldcNLDE-hourly', HourlyLoad)
         return reps
+
+    def import_object_class(self, object_class_name):
+        self.import_object_classes([object_class_name])
+
+    def import_object_classes(self, arr):
+        self.db.import_object_classes(arr)
+
+    def import_object_parameter(self, object_class, object_parameter):
+        self.db.import_data({'object_parameters': [[object_class, object_parameter]]})
+
+    def import_object_parameters(self, object_class, object_parameter_arr):
+        for object_parameter in object_parameter_arr:
+            self.import_object_parameter(object_class, object_parameter)
+
+    def import_object(self, object_class, object_name):
+        self.import_objects([(object_class, object_name)])
+
+    def import_objects(self, arr_of_tuples):
+        self.db.import_objects(arr_of_tuples)
+
+    def import_object_parameter_values(self, object_class_name, object_name, arr_of_tuples):
+        import_arr = [(object_class_name, object_name, i[0], i[1]) for i in arr_of_tuples]
+        self.db.import_parameter_values(import_arr)
