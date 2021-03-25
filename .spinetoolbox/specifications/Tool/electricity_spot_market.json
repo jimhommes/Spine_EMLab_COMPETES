@@ -2,18 +2,13 @@
     "name": "Electricity Spot Market",
     "tooltype": "python",
     "includes": [
-        "emlab.py",
-        "spinedb.py",
-        "repository.py",
-        "repository.py",
-        "electricityspotmarket_clear.py",
-        "electricityspotmarket_submitbids.py"
+        "emlab.py"
     ],
     "description": "",
     "inputfiles": [],
     "inputfiles_opt": [],
     "outputfiles": [],
     "cmdline_args": [],
-    "execute_in_work": true,
+    "execute_in_work": false,
     "includes_main_path": "../../../emlab"
 }
