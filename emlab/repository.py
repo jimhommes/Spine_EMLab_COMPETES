@@ -58,6 +58,8 @@ class Repository:
         ppdp.biddingMarket = bidding_market
         ppdp.amount = amount
         ppdp.price = price
+        ppdp.status = self.ppdp_status_awaiting
+        ppdp.acceptedAmount = 0
         self.powerPlantDispatchPlans.append(ppdp)
 
         self.dbrw.import_object(self.dbrw.ppdp_object_class_name, plant.name)
@@ -87,7 +89,11 @@ class Repository:
 
     def get_available_powerplant_capacity(self, plant_name):
         plant = self.powerPlants[plant_name]
-        return float(plant.parameters['Capacity']) - float(plant.parameters['AcceptedAmount'])
+        ppdps_sum_accepted_amount = sum([float(i.acceptedAmount) for i in self.get_powerplant_dispatch_plans_by_plant(self, plant_name)])
+        return float(plant.parameters['Capacity']) - ppdps_sum_accepted_amount
+
+    def get_powerplant_dispatch_plans_by_plant(self, plant_name):
+        return [i for i in self.powerPlantDispatchPlans if i.plant.name == plant_name]
 
     def set_powerplant_dispatch_plan_production(self, ppdp, status, accepted_amount):
         ppdp.status = status
