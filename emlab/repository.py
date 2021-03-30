@@ -78,17 +78,8 @@ class Repository:
         self.dbrw.commit('EM-Lab Capacity Market: Submit Clearing Point: ' + str(datetime.now()))
 
     def get_available_powerplant_capacity(self, plant_name):
-        substances = self.get_substances_by_powerplant(plant_name)
-        if len(substances) > 0:  # Only done for 1 substance atm
-            plant = self.powerPlants[plant_name]
-            mc = 3600 / (float(plant.parameters['Efficiency']) * float(
-                substances[0].parameters['energyDensity']))
-            # Check if plant's bid is accepted
-            mcp_price = self.marketClearingPoints[0]
-            if mcp_price.price <= mc:
-                return int(plant.parameters['Capacity'])
-            else:
-                return 0
+        plant = self.powerPlants[plant_name]
+        return float(plant.parameters['Capacity']) - float(plant.parameters['AcceptedAmount'])
 
 
 # Objects that are imported. Pass because they inherit name and parameters from ImportObject
