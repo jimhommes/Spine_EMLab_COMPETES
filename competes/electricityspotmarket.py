@@ -47,8 +47,18 @@ class ElectricitySpotMarketClearing:
             clearing_price = 0
             total_load = 0
             for ppdp in sorted_ppdp:
-                if total_load < peak_load:
+                if total_load + ppdp.amount <= peak_load:
                     total_load += ppdp.amount
                     clearing_price = ppdp.price
+                    self.reps.set_powerplant_dispatch_plan_production(ppdp, self.reps.ppdpStatusAccepted, ppdp.amount)
+                elif total_load < peak_load:
+                    clearing_price = ppdp.price
+                    self.reps.set_powerplant_dispatch_plan_production(ppdp, self.reps.ppdpStatusPartlyAccepted,
+                                                                      peak_load - total_load)
+                    total_load = peak_load
+                else:
+                    ppdp.status = self.reps.ppdpStatusFailed
+                    ppdp.acceptedAmount = 0
+                    self.reps.set_powerplant_dispatch_plan_production(ppdp, self.reps.ppdpStatusFailed, 0)
 
             self.reps.create_market_clearingpoint(market.name, clearing_price, total_load)

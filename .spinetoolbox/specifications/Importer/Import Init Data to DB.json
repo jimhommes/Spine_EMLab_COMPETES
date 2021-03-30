@@ -146,7 +146,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "TriangularTrends"
                             },
                             {
                                 "map_type": "Object",
@@ -182,7 +183,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "Substances"
                             },
                             {
                                 "map_type": "Object",
@@ -218,7 +220,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "Zones"
                             },
                             {
                                 "map_type": "Object",
@@ -275,7 +278,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "IntermittentResourceProfiles"
                             },
                             {
                                 "map_type": "Object",
@@ -311,7 +315,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "Interconnectors"
                             },
                             {
                                 "map_type": "Object",
@@ -347,7 +352,8 @@
                         "mapping": [
                             {
                                 "map_type": "RelationshipClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "InterconnectorNodes"
                             },
                             {
                                 "map_type": "RelationshipClassObjectClass",
@@ -386,7 +392,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "LoadDurationCurves"
                             },
                             {
                                 "map_type": "Object",
@@ -422,7 +429,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "ElectricitySpotMarkets"
                             },
                             {
                                 "map_type": "Object",
@@ -458,7 +466,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "CO2Auction"
                             },
                             {
                                 "map_type": "Object",
@@ -494,7 +503,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "EnergyConsumers"
                             },
                             {
                                 "map_type": "Object",
@@ -530,7 +540,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "EnergyProducers"
                             },
                             {
                                 "map_type": "Object",
@@ -566,7 +577,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "StepTrends"
                             },
                             {
                                 "map_type": "Object",
@@ -602,7 +614,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "Governments"
                             },
                             {
                                 "map_type": "Object",
@@ -638,7 +651,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "NationalGovernments"
                             },
                             {
                                 "map_type": "Object",
@@ -674,7 +688,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "GeometricTrends"
                             },
                             {
                                 "map_type": "Object",
@@ -710,7 +725,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "PowerGeneratingTechnologies"
                             },
                             {
                                 "map_type": "Object",
@@ -746,7 +762,8 @@
                         "mapping": [
                             {
                                 "map_type": "RelationshipClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "PowerGeneratingTechnologyFuel"
                             },
                             {
                                 "map_type": "RelationshipClassObjectClass",
@@ -1118,7 +1135,8 @@
                 "13": "string",
                 "14": "string",
                 "15": "string",
-                "16": "string"
+                "16": "string",
+                "17": "string"
             },
             "StepTrends": {
                 "0": "string",
@@ -1195,7 +1213,7 @@
                 "1": "float",
                 "2": "float",
                 "3": "float",
-                "4": "string"
+                "4": "float"
             }
         },
         "table_row_types": {
@@ -1284,7 +1302,6 @@
             "InterconnectorNodes",
             "LoadDurationCurves",
             "ElectricitySpotMarkets",
-            "CapacityMarkets",
             "CO2Auction",
             "EnergyConsumers",
             "EnergyProducers",

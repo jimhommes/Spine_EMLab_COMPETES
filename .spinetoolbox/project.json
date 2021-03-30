@@ -56,7 +56,7 @@
                     "right"
                 ],
                 "to": [
-                    "Electricity Spot Market",
+                    "Capacity Market",
                     "left"
                 ]
             },
@@ -76,7 +76,7 @@
                     "right"
                 ],
                 "to": [
-                    "Electricity Spot Market",
+                    "Capacity Market",
                     "bottom"
                 ]
             },
@@ -92,7 +92,7 @@
             },
             {
                 "from": [
-                    "Electricity Spot Market",
+                    "Capacity Market",
                     "right"
                 ],
                 "to": [
@@ -106,7 +106,7 @@
         "DB": {
             "type": "Data Store",
             "description": "",
-            "x": 99.12618781294344,
+            "x": 98.96902577799415,
             "y": 2.0371533371114765,
             "url": {
                 "dialect": "sqlite",
@@ -125,7 +125,7 @@
         "Load Init File": {
             "type": "Data Connection",
             "description": "Loads all initialization values",
-            "x": -258.8544717789353,
+            "x": -259.0116338138846,
             "y": 2.0371533371114765,
             "references": [
                 {
@@ -135,10 +135,10 @@
                 }
             ]
         },
-        "Electricity Spot Market": {
+        "Capacity Market": {
             "type": "Tool",
             "description": "",
-            "x": 225.6687958488339,
+            "x": 225.5116338138846,
             "y": 3.319466946074286,
             "specification": "Electricity Spot Market",
             "execute_in_work": false,
@@ -156,10 +156,10 @@
         "COMPETES Dummy": {
             "type": "Tool",
             "description": "",
-            "x": 126.54756044742416,
+            "x": 126.39039841247487,
             "y": 133.27379830492535,
             "specification": "COMPETES",
-            "execute_in_work": true,
+            "execute_in_work": false,
             "cmd_line_args": [
                 {
                     "type": "resource",
@@ -170,13 +170,13 @@
         "View 1": {
             "type": "View",
             "description": "",
-            "x": 251.35447177893528,
+            "x": 251.19730974398598,
             "y": -129.27379830492535
         },
         "Import Init Data to DB": {
             "type": "Importer",
             "description": "",
-            "x": -81.85447177893529,
+            "x": -82.01163381388459,
             "y": 0.7755788780932846,
             "specification": "Import Init Data to DB",
             "cancel_on_error": true,
