@@ -48,9 +48,16 @@ class CapacityMarketClearing:
             clearing_price = 0
             total_supply = 0
             for ppdp in sorted_ppdp:
-                total_supply += ppdp.amount
-                clearing_price = sdc.get_price_at_volume(total_supply)
-                if ppdp.price >= clearing_price:
-                    break
+                if total_supply + ppdp.amount <= peak_load:
+                    total_supply += ppdp.amount
+                    clearing_price = sdc.get_price_at_volume(total_supply)
+                    self.reps.set_powerplant_dispatch_plan_production(ppdp, self.reps.ppdpStatusAccepted, ppdp.amount)
+                elif total_supply < peak_load:
+                    clearing_price = sdc.get_price_at_volume(total_supply)
+                    self.reps.set_powerplant_dispatch_plan_production(ppdp, self.reps.ppdpStatusPartlyAccepted,
+                                                                      peak_load - total_supply)
+                    total_supply = peak_load
+                else:
+                    self.reps.set_powerplant_dispatch_plan_production(ppdp, self.reps.ppdpStatusFailed, 0)
 
             self.reps.create_market_clearingpoint(market.name, clearing_price, total_supply)

@@ -39,6 +39,11 @@ class Repository:
         self.tempFixedFuelPrices = {'biomass': 10, 'fuelOil': 20, 'hardCoal': 30, 'ligniteCoal': 10, 'naturalGas': 5,
                                     'uranium': 40}
 
+        self.ppdpStatusAccepted = 'Accepted'
+        self.ppdpStatusFailed = 'Failed'
+        self.ppdpStatusPartlyAccepted = 'Partly Accepted'
+        self.ppdp_status_awaiting = 'Awaiting'
+
     def get_powerplants_by_owner(self, owner):
         return [i for i in self.powerPlants.values() if i.parameters['Owner'] == owner]
 
@@ -59,7 +64,9 @@ class Repository:
         self.dbrw.import_object_parameter_values(self.dbrw.ppdp_object_class_name, plant.name,
                                                  [('Market', bidding_market.name), ('Price', price),
                                                   ('Capacity', amount),
-                                                  ('EnergyProducer', bidder.name)])
+                                                  ('EnergyProducer', bidder.name),
+                                                  ('AcceptedAmount', 0),
+                                                  ('Status', self.ppdp_status_awaiting)])
         self.dbrw.commit('EM-Lab Capacity Market: Submit Bids: ' + str(datetime.now()))
 
     def get_sorted_dispatch_plans_by_market(self, market_name):
@@ -74,12 +81,22 @@ class Repository:
         self.dbrw.import_object(self.dbrw.mcp_object_class_name, object_name)
         self.dbrw.import_object_parameter_values(self.dbrw.mcp_object_class_name, object_name,
                                                  [('Market', market_name), ('Price', clearing_price),
-                                                  ('TotalCapacity', total_capacity)])
+                                                  ('TotalCapacity', total_capacity),
+                                                  ('Status', )])
         self.dbrw.commit('EM-Lab Capacity Market: Submit Clearing Point: ' + str(datetime.now()))
 
     def get_available_powerplant_capacity(self, plant_name):
         plant = self.powerPlants[plant_name]
         return float(plant.parameters['Capacity']) - float(plant.parameters['AcceptedAmount'])
+
+    def set_powerplant_dispatch_plan_production(self, ppdp, status, accepted_amount):
+        ppdp.status = status
+        ppdp.accepted_amount = accepted_amount
+
+        self.dbrw.import_object_parameter_values(self.dbrw.ppdp_object_class_name, ppdp.plant.name,
+                                                 [('AcceptedAmount', str(accepted_amount)),
+                                                  ('Status', status)])
+        self.dbrw.commit('EM-Lab Electricit Spot Market: Clearing - Set Generation: ' + str(datetime.now()))
 
 
 # Objects that are imported. Pass because they inherit name and parameters from ImportObject

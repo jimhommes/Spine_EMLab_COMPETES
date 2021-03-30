@@ -94,4 +94,5 @@ class SpineDBReaderWriter:
 
     def init_powerplantdispatchplan_structure(self):
         self.import_object_class(self.ppdp_object_class_name)
-        self.import_object_parameters(self.ppdp_object_class_name, ['Market', 'Price', 'Capacity', 'EnergyProducer'])
+        self.import_object_parameters(self.ppdp_object_class_name, ['Market', 'Price', 'Capacity', 'EnergyProducer',
+                                                                    'AcceptedAmount', 'Status'])

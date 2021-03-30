@@ -57,8 +57,6 @@ class ElectricitySpotMarketClearing:
                                                                       peak_load - total_load)
                     total_load = peak_load
                 else:
-                    ppdp.status = self.reps.ppdpStatusFailed
-                    ppdp.acceptedAmount = 0
                     self.reps.set_powerplant_dispatch_plan_production(ppdp, self.reps.ppdpStatusFailed, 0)
 
             self.reps.create_market_clearingpoint(market.name, clearing_price, total_load)
