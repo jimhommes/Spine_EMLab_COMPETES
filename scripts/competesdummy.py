@@ -7,7 +7,7 @@
 
 import sys
 from dependencies.spinedb_reader_writer import *
-from scripts.modules.electricityspotmarket import *
+from modules.electricityspotmarket import *
 
 # Input DB
 db_url = sys.argv[1]
