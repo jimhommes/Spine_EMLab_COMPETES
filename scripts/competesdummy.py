@@ -17,5 +17,5 @@ reps = spinedbrw.read_db_and_create_repository()
 electricity_spot_market_submit_bids = ElectricitySpotMarketSubmitBids(reps)
 electricity_spot_market_clear = ElectricitySpotMarketClearing(reps)
 
-electricity_spot_market_submit_bids.act()
-electricity_spot_market_clear.act()
+electricity_spot_market_submit_bids.act_and_commit(reps.current_tick)
+electricity_spot_market_clear.act_and_commit(reps.current_tick)

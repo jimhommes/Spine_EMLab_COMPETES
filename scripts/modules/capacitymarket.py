@@ -4,13 +4,14 @@
 # Jim Hommes - 25-3-2021
 #
 import json
+from modules.defaultmodule import DefaultModule
 
 
 # Submit bids to the market
-class CapacityMarketSubmitBids:
+class CapacityMarketSubmitBids(DefaultModule):
 
     def __init__(self, reps):
-        self.reps = reps
+        super().__init__('EM-Lab Capacity Market: Submit Bids', reps)
 
     def act(self):
         # For every energy producer we will submit bids to the Capacity Market
@@ -35,10 +36,10 @@ class CapacityMarketSubmitBids:
 
 
 # Clear the market
-class CapacityMarketClearing:
+class CapacityMarketClearing(DefaultModule):
 
     def __init__(self, reps):
-        self.reps = reps
+        super().__init__('EM-Lab Capacity Market: Clear Market', reps)
 
     def act(self):
         peak_load = max(json.loads(self.reps.load['NL'].parameters['ldc'].to_database())['data'].values())

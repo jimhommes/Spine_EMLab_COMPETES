@@ -36,8 +36,8 @@ spinedb_reader_writer.commit('Initialize all module import structures')
 
 # Submit bids to Capacity Market
 if run_capacity_market:
-    capacity_market_submit_bids.act()
+    capacity_market_submit_bids.act_and_commit(reps.current_tick)
 
 # Clear Capacity Market
 if run_capacity_market:
-    capacity_market_clear.act()
+    capacity_market_clear.act_and_commit(reps.current_tick)

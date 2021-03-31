@@ -64,11 +64,9 @@ class SpineDBReaderWriter:
 
         # Determine current tick
         all_ticks = [float(i[4]) for i in db_data['object_parameter_values'] if i[4] != 'init']
-        reps.current_tick = max(all_ticks) if len(all_ticks) > 0 else 0
+        reps.current_tick = max(all_ticks) + 1 if len(all_ticks) > 0 else 0
 
         return reps
-
-
 
     def import_object_class(self, object_class_name):
         self.import_object_classes([object_class_name])

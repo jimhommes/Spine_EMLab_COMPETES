@@ -72,7 +72,6 @@ class Repository:
                                                   ('EnergyProducer', bidder.name),
                                                   ('AcceptedAmount', 0),
                                                   ('Status', self.powerplant_dispatch_plan_status_awaiting)])
-        self.dbrw.commit('EM-Lab Capacity Market: Submit Bids: ' + str(datetime.now()))
 
     def get_sorted_dispatch_plans_by_market(self, market_name):
         return sorted([i for i in self.powerplant_dispatch_plans if i.bidding_market.name == market_name],
@@ -87,7 +86,6 @@ class Repository:
         self.dbrw.import_object_parameter_values(self.dbrw.market_clearing_point_object_classname, object_name,
                                                  [('Market', market_name), ('Price', clearing_price),
                                                   ('TotalCapacity', total_capacity)])
-        self.dbrw.commit('EM-Lab Capacity Market: Submit Clearing Point: ' + str(datetime.now()))
 
     def get_available_powerplant_capacity(self, plant_name):
         plant = self.powerplants[plant_name]
@@ -105,7 +103,6 @@ class Repository:
         self.dbrw.import_object_parameter_values(self.dbrw.powerplant_dispatch_plan_classname, ppdp.plant.name,
                                                  [('AcceptedAmount', str(accepted_amount)),
                                                   ('Status', status)])
-        self.dbrw.commit('EM-Lab Electricit Spot Market: Clearing - Set Generation: ' + str(datetime.now()))
 
 
 # Objects that are imported. Pass because they inherit name and parameters from ImportObject

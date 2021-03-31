@@ -5,13 +5,14 @@
 # Jim Hommes - 25-3-2021
 #
 import json
+from modules.defaultmodule import DefaultModule
 
 
 # Submit bids
-class ElectricitySpotMarketSubmitBids:
+class ElectricitySpotMarketSubmitBids(DefaultModule):
 
     def __init__(self, reps):
-        self.reps = reps
+        super().__init__('COMPETES Dummy: Electricity Spot Market: Submit Bids', reps)
         reps.dbrw.init_powerplantdispatchplan_structure()
 
     def act(self):
@@ -33,10 +34,10 @@ class ElectricitySpotMarketSubmitBids:
 
 
 # Clear the market
-class ElectricitySpotMarketClearing:
+class ElectricitySpotMarketClearing(DefaultModule):
 
     def __init__(self, reps):
-        self.reps = reps
+        super().__init__('COMPETES Dummy: Electricity Spot Market: Clear Market', reps)
         reps.dbrw.init_marketclearingpoint_structure()
 
     def act(self):
