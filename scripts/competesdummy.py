@@ -6,11 +6,7 @@
 #
 
 import sys
-import random
-from datetime import datetime
-from spinedb import SpineDB
-from repository import *
-from spinedb_reader_writer import *
+from dependencies.spinedb_reader_writer import *
 from electricityspotmarket import *
 
 # Input DB

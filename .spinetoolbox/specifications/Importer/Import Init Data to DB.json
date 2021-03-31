@@ -27,7 +27,8 @@
                             },
                             {
                                 "map_type": "Alternative",
-                                "position": "hidden"
+                                "position": "hidden",
+                                "value": "init"
                             },
                             {
                                 "map_type": "ParameterValueMetadata",
@@ -74,7 +75,8 @@
                             },
                             {
                                 "map_type": "Alternative",
-                                "position": "hidden"
+                                "position": "hidden",
+                                "value": "init"
                             },
                             {
                                 "map_type": "ParameterValueMetadata",
@@ -126,7 +128,8 @@
                             },
                             {
                                 "map_type": "Alternative",
-                                "position": "hidden"
+                                "position": "hidden",
+                                "value": "init"
                             },
                             {
                                 "map_type": "ParameterValueMetadata",
@@ -163,7 +166,8 @@
                             },
                             {
                                 "map_type": "Alternative",
-                                "position": "hidden"
+                                "position": "hidden",
+                                "value": "init"
                             },
                             {
                                 "map_type": "ParameterValueMetadata",
@@ -200,7 +204,8 @@
                             },
                             {
                                 "map_type": "Alternative",
-                                "position": "hidden"
+                                "position": "hidden",
+                                "value": "init"
                             },
                             {
                                 "map_type": "ParameterValueMetadata",
@@ -258,7 +263,8 @@
                             },
                             {
                                 "map_type": "Alternative",
-                                "position": "hidden"
+                                "position": "hidden",
+                                "value": "init"
                             },
                             {
                                 "map_type": "ParameterValueMetadata",
@@ -295,7 +301,8 @@
                             },
                             {
                                 "map_type": "Alternative",
-                                "position": "hidden"
+                                "position": "hidden",
+                                "value": "init"
                             },
                             {
                                 "map_type": "ParameterValueMetadata",
@@ -332,7 +339,8 @@
                             },
                             {
                                 "map_type": "Alternative",
-                                "position": "hidden"
+                                "position": "hidden",
+                                "value": "init"
                             },
                             {
                                 "map_type": "ParameterValueMetadata",
@@ -409,7 +417,8 @@
                             },
                             {
                                 "map_type": "Alternative",
-                                "position": "hidden"
+                                "position": "hidden",
+                                "value": "init"
                             },
                             {
                                 "map_type": "ParameterValueMetadata",
@@ -446,7 +455,8 @@
                             },
                             {
                                 "map_type": "Alternative",
-                                "position": "hidden"
+                                "position": "hidden",
+                                "value": "init"
                             },
                             {
                                 "map_type": "ParameterValueMetadata",
@@ -483,7 +493,8 @@
                             },
                             {
                                 "map_type": "Alternative",
-                                "position": "hidden"
+                                "position": "hidden",
+                                "value": "init"
                             },
                             {
                                 "map_type": "ParameterValueMetadata",
@@ -520,7 +531,8 @@
                             },
                             {
                                 "map_type": "Alternative",
-                                "position": "hidden"
+                                "position": "hidden",
+                                "value": "init"
                             },
                             {
                                 "map_type": "ParameterValueMetadata",
@@ -557,7 +569,8 @@
                             },
                             {
                                 "map_type": "Alternative",
-                                "position": "hidden"
+                                "position": "hidden",
+                                "value": "init"
                             },
                             {
                                 "map_type": "ParameterValueMetadata",
@@ -594,7 +607,8 @@
                             },
                             {
                                 "map_type": "Alternative",
-                                "position": "hidden"
+                                "position": "hidden",
+                                "value": "init"
                             },
                             {
                                 "map_type": "ParameterValueMetadata",
@@ -631,7 +645,8 @@
                             },
                             {
                                 "map_type": "Alternative",
-                                "position": "hidden"
+                                "position": "hidden",
+                                "value": "init"
                             },
                             {
                                 "map_type": "ParameterValueMetadata",
@@ -668,7 +683,8 @@
                             },
                             {
                                 "map_type": "Alternative",
-                                "position": "hidden"
+                                "position": "hidden",
+                                "value": "init"
                             },
                             {
                                 "map_type": "ParameterValueMetadata",
@@ -705,7 +721,8 @@
                             },
                             {
                                 "map_type": "Alternative",
-                                "position": "hidden"
+                                "position": "hidden",
+                                "value": "init"
                             },
                             {
                                 "map_type": "ParameterValueMetadata",
@@ -742,7 +759,8 @@
                             },
                             {
                                 "map_type": "Alternative",
-                                "position": "hidden"
+                                "position": "hidden",
+                                "value": "init"
                             },
                             {
                                 "map_type": "ParameterValueMetadata",
@@ -802,7 +820,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "PowerGeneratingTechnologyTarget"
                             },
                             {
                                 "map_type": "Object",
@@ -818,7 +837,8 @@
                             },
                             {
                                 "map_type": "Alternative",
-                                "position": "hidden"
+                                "position": "hidden",
+                                "value": "init"
                             },
                             {
                                 "map_type": "ParameterValueMetadata",
@@ -855,7 +875,8 @@
                             },
                             {
                                 "map_type": "Alternative",
-                                "position": "hidden"
+                                "position": "hidden",
+                                "value": "init"
                             },
                             {
                                 "map_type": "ParameterValueMetadata",
@@ -875,7 +896,8 @@
                         "mapping": [
                             {
                                 "map_type": "RelationshipClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "TargetInvestorTargets"
                             },
                             {
                                 "map_type": "RelationshipClassObjectClass",
@@ -931,7 +953,8 @@
                             },
                             {
                                 "map_type": "Alternative",
-                                "position": "hidden"
+                                "position": "hidden",
+                                "value": "init"
                             },
                             {
                                 "map_type": "ParameterValueMetadata",
@@ -968,7 +991,8 @@
                             },
                             {
                                 "map_type": "Alternative",
-                                "position": "hidden"
+                                "position": "hidden",
+                                "value": "init"
                             },
                             {
                                 "map_type": "ParameterValueMetadata",
@@ -1033,23 +1057,23 @@
             },
             "renewablesNinja2015Profiles": {
                 "0": "string",
-                "1": "string",
-                "2": "string",
-                "3": "string",
-                "4": "string",
-                "5": "string",
-                "6": "string",
-                "7": "string",
-                "8": "string",
-                "9": "string",
-                "10": "string",
-                "11": "string",
-                "12": "string",
-                "13": "string",
-                "14": "string",
-                "15": "string",
-                "16": "string",
-                "17": "string"
+                "1": "float",
+                "2": "float",
+                "3": "float",
+                "4": "float",
+                "5": "float",
+                "6": "float",
+                "7": "float",
+                "8": "float",
+                "9": "float",
+                "10": "float",
+                "11": "float",
+                "12": "float",
+                "13": "float",
+                "14": "float",
+                "15": "float",
+                "16": "float",
+                "17": "float"
             },
             "emlabModel": {
                 "0": "string",
@@ -1057,16 +1081,16 @@
             },
             "TriangularTrends": {
                 "0": "string",
-                "1": "string",
-                "2": "string",
-                "3": "string",
-                "4": "string"
+                "1": "float",
+                "2": "float",
+                "3": "float",
+                "4": "float"
             },
             "Substances": {
                 "0": "string",
-                "1": "string",
-                "2": "string",
-                "3": "string",
+                "1": "float",
+                "2": "float",
+                "3": "float",
                 "4": "string"
             },
             "Zones": {
@@ -1074,7 +1098,7 @@
             },
             "PowerGridNodes": {
                 "0": "string",
-                "1": "string",
+                "1": "float",
                 "2": "string",
                 "3": "string",
                 "4": "string"
@@ -1086,7 +1110,7 @@
             },
             "Interconnectors": {
                 "0": "string",
-                "1": "string"
+                "1": "float"
             },
             "InterconnectorNodes": {
                 "0": "string",
@@ -1094,13 +1118,13 @@
             },
             "LoadDurationCurves": {
                 "0": "string",
-                "1": "string"
+                "1": "float"
             },
             "ElectricitySpotMarkets": {
                 "0": "string",
-                "1": "string",
-                "2": "string",
-                "3": "string",
+                "1": "float",
+                "2": "float",
+                "3": "float",
                 "4": "string",
                 "5": "string",
                 "6": "string",
@@ -1108,46 +1132,46 @@
             },
             "CO2Auction": {
                 "0": "string",
-                "1": "string",
-                "2": "string",
+                "1": "float",
+                "2": "float",
                 "3": "string"
             },
             "EnergyConsumers": {
                 "0": "string",
-                "1": "string",
-                "2": "string",
-                "3": "string"
+                "1": "float",
+                "2": "float",
+                "3": "float"
             },
             "EnergyProducers": {
                 "0": "string",
                 "1": "string",
-                "2": "string",
-                "3": "string",
-                "4": "string",
-                "5": "string",
-                "6": "string",
-                "7": "string",
-                "8": "string",
-                "9": "string",
-                "10": "string",
-                "11": "string",
-                "12": "string",
-                "13": "string",
-                "14": "string",
-                "15": "string",
+                "2": "float",
+                "3": "float",
+                "4": "float",
+                "5": "float",
+                "6": "float",
+                "7": "float",
+                "8": "float",
+                "9": "float",
+                "10": "float",
+                "11": "float",
+                "12": "float",
+                "13": "float",
+                "14": "float",
+                "15": "float",
                 "16": "string",
                 "17": "string"
             },
             "StepTrends": {
                 "0": "string",
-                "1": "string",
-                "2": "string",
-                "3": "string",
-                "4": "string"
+                "1": "float",
+                "2": "float",
+                "3": "float",
+                "4": "float"
             },
             "Governments": {
                 "0": "string",
-                "1": "string",
+                "1": "float",
                 "2": "string",
                 "3": "string",
                 "4": "string"
@@ -1159,24 +1183,24 @@
             },
             "GeometricTrends": {
                 "0": "string",
-                "1": "string"
+                "1": "float"
             },
             "PowerGeneratingTechnologies": {
                 "0": "string",
-                "1": "string",
-                "2": "string",
-                "3": "string",
-                "4": "string",
-                "5": "string",
-                "6": "string",
-                "7": "string",
-                "8": "string",
-                "9": "string",
-                "10": "string",
-                "11": "string",
-                "12": "string",
-                "13": "string",
-                "14": "string",
+                "1": "float",
+                "2": "float",
+                "3": "float",
+                "4": "float",
+                "5": "float",
+                "6": "float",
+                "7": "float",
+                "8": "float",
+                "9": "float",
+                "10": "float",
+                "11": "float",
+                "12": "float",
+                "13": "float",
+                "14": "float",
                 "15": "string",
                 "16": "string",
                 "17": "string"
@@ -1210,10 +1234,10 @@
             },
             "CapacityMarkets": {
                 "0": "string",
-                "1": "string",
-                "2": "string",
-                "3": "string",
-                "4": "string"
+                "1": "float",
+                "2": "float",
+                "3": "float",
+                "4": "float"
             }
         },
         "table_row_types": {

@@ -6,7 +6,7 @@
 #
 
 import sys
-from spinedb_reader_writer import *
+from dependencies.spinedb_reader_writer import *
 from capacitymarket import *
 
 

@@ -8,17 +8,12 @@
                 {
                     "type": "path",
                     "relative": true,
-                    "path": "competes/competes.json"
-                },
-                {
-                    "type": "path",
-                    "relative": true,
                     "path": ".spinetoolbox/specifications/Tool/capacity_market.json"
                 },
                 {
                     "type": "path",
                     "relative": true,
-                    "path": ".spinetoolbox/specifications/Tool/electricity_spot_market.json"
+                    "path": ".spinetoolbox/specifications/Tool/competes.json"
                 }
             ],
             "Importer": [
@@ -106,7 +101,7 @@
         "DB": {
             "type": "Data Store",
             "description": "",
-            "x": 98.96902577799415,
+            "x": 99.12618781294339,
             "y": 2.0371533371114765,
             "url": {
                 "dialect": "sqlite",
@@ -125,7 +120,7 @@
         "Load Init File": {
             "type": "Data Connection",
             "description": "Loads all initialization values",
-            "x": -259.0116338138846,
+            "x": -258.85447177893536,
             "y": 2.0371533371114765,
             "references": [
                 {
@@ -138,9 +133,9 @@
         "Capacity Market": {
             "type": "Tool",
             "description": "",
-            "x": 225.5116338138846,
+            "x": 225.66879584883384,
             "y": 3.319466946074286,
-            "specification": "Electricity Spot Market",
+            "specification": "Capacity Market",
             "execute_in_work": false,
             "cmd_line_args": [
                 {
@@ -156,7 +151,7 @@
         "COMPETES Dummy": {
             "type": "Tool",
             "description": "",
-            "x": 126.39039841247487,
+            "x": 126.5475604474241,
             "y": 133.27379830492535,
             "specification": "COMPETES",
             "execute_in_work": false,
@@ -170,13 +165,13 @@
         "View 1": {
             "type": "View",
             "description": "",
-            "x": 251.19730974398598,
+            "x": 251.35447177893522,
             "y": -129.27379830492535
         },
         "Import Init Data to DB": {
             "type": "Importer",
             "description": "",
-            "x": -82.01163381388459,
+            "x": -81.85447177893535,
             "y": 0.7755788780932846,
             "specification": "Import Init Data to DB",
             "cancel_on_error": true,
