@@ -7,7 +7,7 @@
 
 import sys
 from dependencies.spinedb_reader_writer import *
-from capacitymarket import *
+from scripts.modules.capacitymarket import *
 
 
 run_capacity_market = False
