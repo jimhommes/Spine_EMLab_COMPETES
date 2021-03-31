@@ -83,13 +83,13 @@ class Repository:
         self.dbrw.import_object(self.dbrw.mcp_object_class_name, object_name)
         self.dbrw.import_object_parameter_values(self.dbrw.mcp_object_class_name, object_name,
                                                  [('Market', market_name), ('Price', clearing_price),
-                                                  ('TotalCapacity', total_capacity),
-                                                  ('Status', )])
+                                                  ('TotalCapacity', total_capacity)])
         self.dbrw.commit('EM-Lab Capacity Market: Submit Clearing Point: ' + str(datetime.now()))
 
     def get_available_powerplant_capacity(self, plant_name):
         plant = self.powerPlants[plant_name]
-        ppdps_sum_accepted_amount = sum([float(i.acceptedAmount) for i in self.get_powerplant_dispatch_plans_by_plant(self, plant_name)])
+        ppdps_sum_accepted_amount = sum([float(i.acceptedAmount) for i in
+                                         self.get_powerplant_dispatch_plans_by_plant(plant_name)])
         return float(plant.parameters['Capacity']) - ppdps_sum_accepted_amount
 
     def get_powerplant_dispatch_plans_by_plant(self, plant_name):

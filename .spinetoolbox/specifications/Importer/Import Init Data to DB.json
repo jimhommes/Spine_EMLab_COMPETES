@@ -1210,10 +1210,10 @@
             },
             "CapacityMarkets": {
                 "0": "string",
-                "1": "float",
-                "2": "float",
-                "3": "float",
-                "4": "float"
+                "1": "string",
+                "2": "string",
+                "3": "string",
+                "4": "string"
             }
         },
         "table_row_types": {
@@ -1302,6 +1302,7 @@
             "InterconnectorNodes",
             "LoadDurationCurves",
             "ElectricitySpotMarkets",
+            "CapacityMarkets",
             "CO2Auction",
             "EnergyConsumers",
             "EnergyProducers",
