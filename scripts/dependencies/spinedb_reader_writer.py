@@ -48,6 +48,7 @@ class SpineDBReaderWriter:
         db_objects_to_dict(db_data, reps.load, 'ldcNLDE-hourly', HourlyLoad)
         db_objects_to_dict(db_data, reps.capacity_markets, 'CapacityMarkets', CapacityMarket)
 
+        # Interpret time series MarketClearingPoints
         for unit in [i for i in db_data['objects'] if i[0] == 'MarketClearingPoints']:
             price = 0
             market = ''
@@ -60,7 +61,14 @@ class SpineDBReaderWriter:
                 if parameterValue[2] == 'TotalCapacity':
                     capacity = float(parameterValue[3])
             reps.market_clearing_points.append(MarketClearingPoint(market, price, capacity))
+
+        # Determine current tick
+        all_ticks = [float(i[4]) for i in db_data['object_parameter_values'] if i[4] != 'init']
+        reps.current_tick = max(all_ticks) if len(all_ticks) > 0 else 0
+
         return reps
+
+
 
     def import_object_class(self, object_class_name):
         self.import_object_classes([object_class_name])

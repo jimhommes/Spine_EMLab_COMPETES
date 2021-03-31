@@ -25,6 +25,8 @@ class Repository:
     def __init__(self):
         self.dbrw = None
 
+        self.current_tick = 0
+
         self.energy_producers = {}
         self.powerplants = {}
         self.substances = {}
