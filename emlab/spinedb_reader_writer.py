@@ -31,22 +31,22 @@ class SpineDBReaderWriter:
     def __init__(self, db_url):
         self.db_url = db_url
         self.db = SpineDB(db_url)
-        self.ppdp_object_class_name = 'PowerPlantDispatchPlans'
-        self.mcp_object_class_name = 'MarketClearingPoints'
+        self.powerplant_dispatch_plan_classname = 'PowerPlantDispatchPlans'
+        self.market_clearing_point_object_classname = 'MarketClearingPoints'
 
     def read_db_and_create_repository(self):
         reps = Repository()
         reps.dbrw = self
         db_data = self.db.export_data()
-        db_objects_to_dict(db_data, reps.energyProducers, 'EnergyProducers', EnergyProducer)
-        db_objects_to_dict(db_data, reps.powerPlants, 'PowerPlants', PowerPlant)
+        db_objects_to_dict(db_data, reps.energy_producers, 'EnergyProducers', EnergyProducer)
+        db_objects_to_dict(db_data, reps.powerplants, 'PowerPlants', PowerPlant)
         db_objects_to_dict(db_data, reps.substances, 'Substances', Substance)
-        db_relationships_to_arr(db_data, reps.powerPlantsFuelMix, 'PowerGeneratingTechnologyFuel')
-        db_objects_to_dict(db_data, reps.electricitySpotMarkets, 'ElectricitySpotMarkets', ElectricitySpotMarket)
-        db_objects_to_dict(db_data, reps.powerGeneratingTechnologies, 'PowerGeneratingTechnologies',
+        db_relationships_to_arr(db_data, reps.powerplants_fuelmix, 'PowerGeneratingTechnologyFuel')
+        db_objects_to_dict(db_data, reps.electricity_spot_markets, 'ElectricitySpotMarkets', ElectricitySpotMarket)
+        db_objects_to_dict(db_data, reps.power_generating_technologies, 'PowerGeneratingTechnologies',
                            PowerGeneratingTechnology)
         db_objects_to_dict(db_data, reps.load, 'ldcNLDE-hourly', HourlyLoad)
-        db_objects_to_dict(db_data, reps.capacityMarkets, 'CapacityMarkets', CapacityMarket)
+        db_objects_to_dict(db_data, reps.capacity_markets, 'CapacityMarkets', CapacityMarket)
 
         for unit in [i for i in db_data['objects'] if i[0] == 'MarketClearingPoints']:
             price = 0
@@ -59,7 +59,7 @@ class SpineDBReaderWriter:
                     market = parameterValue[3]
                 if parameterValue[2] == 'TotalCapacity':
                     capacity = float(parameterValue[3])
-            reps.marketClearingPoints.append(MarketClearingPoint(market, price, capacity))
+            reps.market_clearing_points.append(MarketClearingPoint(market, price, capacity))
         return reps
 
     def import_object_class(self, object_class_name):
@@ -89,10 +89,10 @@ class SpineDBReaderWriter:
         self.db.commit(commit_message)
 
     def init_marketclearingpoint_structure(self):
-        self.import_object_class(self.mcp_object_class_name)
-        self.import_object_parameters(self.mcp_object_class_name, ['Market', 'Price', 'TotalCapacity'])
+        self.import_object_class(self.market_clearing_point_object_classname)
+        self.import_object_parameters(self.market_clearing_point_object_classname, ['Market', 'Price', 'TotalCapacity'])
 
     def init_powerplantdispatchplan_structure(self):
-        self.import_object_class(self.ppdp_object_class_name)
-        self.import_object_parameters(self.ppdp_object_class_name, ['Market', 'Price', 'Capacity', 'EnergyProducer',
-                                                                    'AcceptedAmount', 'Status'])
+        self.import_object_class(self.powerplant_dispatch_plan_classname)
+        self.import_object_parameters(self.powerplant_dispatch_plan_classname,
+                                      ['Market', 'Price', 'Capacity', 'EnergyProducer', 'AcceptedAmount', 'Status'])

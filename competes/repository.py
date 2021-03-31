@@ -60,8 +60,8 @@ class Repository:
         ppdp.price = price
         self.powerPlantDispatchPlans.append(ppdp)
 
-        self.dbrw.import_object(self.dbrw.ppdp_object_class_name, plant.name)
-        self.dbrw.import_object_parameter_values(self.dbrw.ppdp_object_class_name, plant.name,
+        self.dbrw.import_object(self.dbrw.powerplant_dispatch_plan_classname, plant.name)
+        self.dbrw.import_object_parameter_values(self.dbrw.powerplant_dispatch_plan_classname, plant.name,
                                                  [('Market', bidding_market.name), ('Price', price),
                                                   ('Capacity', amount),
                                                   ('EnergyProducer', bidder.name),
@@ -70,7 +70,7 @@ class Repository:
         self.dbrw.commit('EM-Lab Capacity Market: Submit Bids: ' + str(datetime.now()))
 
     def get_sorted_dispatch_plans_by_market(self, market_name):
-        return sorted([i for i in self.powerPlantDispatchPlans if i.biddingMarket.name == market_name],
+        return sorted([i for i in self.powerPlantDispatchPlans if i.bidding_market.name == market_name],
                       key=lambda i: i.price)
 
     def create_market_clearingpoint(self, market_name, clearing_price, total_capacity):
@@ -78,8 +78,8 @@ class Repository:
         self.marketClearingPoints.append(mcp)
 
         object_name = 'ClearingPoint-' + str(datetime.now())
-        self.dbrw.import_object(self.dbrw.mcp_object_class_name, object_name)
-        self.dbrw.import_object_parameter_values(self.dbrw.mcp_object_class_name, object_name,
+        self.dbrw.import_object(self.dbrw.market_clearing_point_object_classname, object_name)
+        self.dbrw.import_object_parameter_values(self.dbrw.market_clearing_point_object_classname, object_name,
                                                  [('Market', market_name), ('Price', clearing_price),
                                                   ('TotalCapacity', total_capacity)])
         self.dbrw.commit('EM-Lab Capacity Market: Submit Clearing Point: ' + str(datetime.now()))
@@ -101,7 +101,7 @@ class Repository:
         ppdp.status = status
         ppdp.accepted_amount = accepted_amount
 
-        self.dbrw.import_object_parameter_values(self.dbrw.ppdp_object_class_name, ppdp.plant.name,
+        self.dbrw.import_object_parameter_values(self.dbrw.powerplant_dispatch_plan_classname, ppdp.plant.name,
                                                  [('AcceptedAmount', str(accepted_amount)),
                                                   ('Status', status)])
         self.dbrw.commit('EM-Lab Electricit Spot Market: Clearing - Set Generation: ' + str(datetime.now()))
