@@ -19,20 +19,21 @@ class CapacityMarketSubmitBids(DefaultModule):
             market = self.reps.capacity_markets[energy_producer.parameters['capacityMarket']]
 
             # For every plant owned by energyProducer
-            for powerplant in self.reps.get_powerplants_by_owner(energy_producer.name):
+            for powerplant in self.reps.get_power_plants_by_owner(energy_producer.name):
                 # Calculate marginal cost mc
                 #   fuelConsumptionPerMWhElectricityProduced = 3600 / (pp.efficiency * ss.energydensity)
                 #   lastKnownFuelPrice
-                substances = self.reps.get_substances_by_powerplant(powerplant.name)
+                substances = self.reps.get_substances_by_power_plant(powerplant.name)
                 if len(substances) > 0:  # Only done for 1 substance atm
                     mc = 3600 / (float(powerplant.parameters['Efficiency']) * float(
                         substances[0].parameters['energyDensity']))
-                    capacity = self.reps.get_available_powerplant_capacity(powerplant.name)
+                    capacity = self.reps.get_available_power_plant_capacity(powerplant.name)
                     if capacity == 0:
                         price_to_bid = 0
                     else:
                         price_to_bid = mc
-                    self.reps.create_powerplant_dispatch_plan(powerplant, energy_producer, market, capacity, price_to_bid)
+                    self.reps.create_power_plant_dispatch_plan(powerplant, energy_producer, market, capacity,
+                                                               price_to_bid)
 
 
 # Clear the market
@@ -52,15 +53,15 @@ class CapacityMarketClearing(DefaultModule):
                 if total_supply + ppdp.amount <= peak_load:
                     total_supply += ppdp.amount
                     clearing_price = sdc.get_price_at_volume(total_supply)
-                    self.reps.set_powerplant_dispatch_plan_production(
-                        ppdp, self.reps.powerplant_dispatch_plan_status_accepted, ppdp.amount)
+                    self.reps.set_power_plant_dispatch_plan_production(
+                        ppdp, self.reps.power_plant_dispatch_plan_status_accepted, ppdp.amount)
                 elif total_supply < peak_load:
                     clearing_price = sdc.get_price_at_volume(total_supply)
-                    self.reps.set_powerplant_dispatch_plan_production(
-                        ppdp, self.reps.powerplant_dispatch_plan_status_partly_accepted, peak_load - total_supply)
+                    self.reps.set_power_plant_dispatch_plan_production(
+                        ppdp, self.reps.power_plant_dispatch_plan_status_partly_accepted, peak_load - total_supply)
                     total_supply = peak_load
                 else:
-                    self.reps.set_powerplant_dispatch_plan_production(
-                        ppdp, self.reps.powerplant_dispatch_plan_status_failed, 0)
+                    self.reps.set_power_plant_dispatch_plan_production(
+                        ppdp, self.reps.power_plant_dispatch_plan_status_failed, 0)
 
-            self.reps.create_market_clearingpoint(market.name, clearing_price, total_supply)
+            self.reps.create_market_clearing_point(market.name, clearing_price, total_supply)

@@ -13,7 +13,7 @@ class ElectricitySpotMarketSubmitBids(DefaultModule):
 
     def __init__(self, reps):
         super().__init__('COMPETES Dummy: Electricity Spot Market: Submit Bids', reps)
-        reps.dbrw.init_powerplantdispatchplan_structure()
+        reps.dbrw.stage_init_power_plant_dispatch_plan_structure()
 
     def act(self):
         # For every energy producer we will submit bids to the Capacity Market
@@ -21,16 +21,16 @@ class ElectricitySpotMarketSubmitBids(DefaultModule):
             market = self.reps.electricity_spot_markets[energy_producer.parameters['investorMarket']]
 
             # For every plant owned by energyProducer
-            for powerplant in self.reps.get_powerplants_by_owner(energy_producer.name):
+            for powerplant in self.reps.get_power_plants_by_owner(energy_producer.name):
                 # Calculate marginal cost mc
                 #   fuelConsumptionPerMWhElectricityProduced = 3600 / (pp.efficiency * ss.energydensity)
                 #   lastKnownFuelPrice
-                substances = self.reps.get_substances_by_powerplant(powerplant.name)
+                substances = self.reps.get_substances_by_power_plant(powerplant.name)
                 if len(substances) > 0:  # Only done for 1 substance atm
                     mc = 3600 / (float(powerplant.parameters['Efficiency']) * float(
                         substances[0].parameters['energyDensity']))
                     capacity = int(powerplant.parameters['Capacity'])
-                    self.reps.create_powerplant_dispatch_plan(powerplant, energy_producer, market, capacity, mc)
+                    self.reps.create_power_plant_dispatch_plan(powerplant, energy_producer, market, capacity, mc)
 
 
 # Clear the market
@@ -38,7 +38,7 @@ class ElectricitySpotMarketClearing(DefaultModule):
 
     def __init__(self, reps):
         super().__init__('COMPETES Dummy: Electricity Spot Market: Clear Market', reps)
-        reps.dbrw.init_marketclearingpoint_structure()
+        reps.dbrw.stage_init_market_clearing_point_structure()
 
     def act(self):
         # Calculate and submit Market Clearing Price
@@ -51,15 +51,15 @@ class ElectricitySpotMarketClearing(DefaultModule):
                 if total_load + ppdp.amount <= peak_load:
                     total_load += ppdp.amount
                     clearing_price = ppdp.price
-                    self.reps.set_powerplant_dispatch_plan_production(
-                        ppdp, self.reps.powerplant_dispatch_plan_status_accepted, ppdp.amount)
+                    self.reps.set_power_plant_dispatch_plan_production(
+                        ppdp, self.reps.power_plant_dispatch_plan_status_accepted, ppdp.amount)
                 elif total_load < peak_load:
                     clearing_price = ppdp.price
-                    self.reps.set_powerplant_dispatch_plan_production(
-                        ppdp, self.reps.powerplant_dispatch_plan_status_partly_accepted, peak_load - total_load)
+                    self.reps.set_power_plant_dispatch_plan_production(
+                        ppdp, self.reps.power_plant_dispatch_plan_status_partly_accepted, peak_load - total_load)
                     total_load = peak_load
                 else:
-                    self.reps.set_powerplant_dispatch_plan_production(
-                        ppdp, self.reps.powerplant_dispatch_plan_status_failed, 0)
+                    self.reps.set_power_plant_dispatch_plan_production(
+                        ppdp, self.reps.power_plant_dispatch_plan_status_failed, 0)
 
-            self.reps.create_market_clearingpoint(market.name, clearing_price, total_load)
+            self.reps.create_market_clearing_point(market.name, clearing_price, total_load)

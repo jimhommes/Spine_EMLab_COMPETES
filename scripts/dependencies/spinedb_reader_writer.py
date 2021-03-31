@@ -39,9 +39,9 @@ class SpineDBReaderWriter:
         reps.dbrw = self
         db_data = self.db.export_data()
         db_objects_to_dict(db_data, reps.energy_producers, 'EnergyProducers', EnergyProducer)
-        db_objects_to_dict(db_data, reps.powerplants, 'PowerPlants', PowerPlant)
+        db_objects_to_dict(db_data, reps.power_plants, 'PowerPlants', PowerPlant)
         db_objects_to_dict(db_data, reps.substances, 'Substances', Substance)
-        db_relationships_to_arr(db_data, reps.powerplants_fuelmix, 'PowerGeneratingTechnologyFuel')
+        db_relationships_to_arr(db_data, reps.power_plants_fuel_mix, 'PowerGeneratingTechnologyFuel')
         db_objects_to_dict(db_data, reps.electricity_spot_markets, 'ElectricitySpotMarkets', ElectricitySpotMarket)
         db_objects_to_dict(db_data, reps.power_generating_technologies, 'PowerGeneratingTechnologies',
                            PowerGeneratingTechnology)
@@ -63,8 +63,9 @@ class SpineDBReaderWriter:
             reps.market_clearing_points.append(MarketClearingPoint(market, price, capacity))
 
         # Determine current tick
-        all_ticks = [float(i[4]) for i in db_data['object_parameter_values'] if i[4] != 'init']
+        all_ticks = [int(i[4]) for i in db_data['object_parameter_values'] if i[4] != 'init']
         reps.current_tick = max(all_ticks) + 1 if len(all_ticks) > 0 else 0
+        self.stage_init_alternative(reps.current_tick)
 
         return reps
 
@@ -87,18 +88,39 @@ class SpineDBReaderWriter:
     def import_objects(self, arr_of_tuples):
         self.db.import_objects(arr_of_tuples)
 
-    def import_object_parameter_values(self, object_class_name, object_name, arr_of_tuples):
-        import_arr = [(object_class_name, object_name, i[0], i[1]) for i in arr_of_tuples]
+    def import_object_parameter_values(self, object_class_name, object_name, arr_of_tuples, current_tick):
+        import_arr = [(object_class_name, object_name, i[0], i[1], current_tick) for i in arr_of_tuples]
         self.db.import_object_parameter_values(import_arr)
 
     def commit(self, commit_message):
         self.db.commit(commit_message)
 
-    def init_marketclearingpoint_structure(self):
+    def stage_init_market_clearing_point_structure(self):
         self.import_object_class(self.market_clearing_point_object_classname)
         self.import_object_parameters(self.market_clearing_point_object_classname, ['Market', 'Price', 'TotalCapacity'])
 
-    def init_powerplantdispatchplan_structure(self):
+    def stage_init_power_plant_dispatch_plan_structure(self):
         self.import_object_class(self.powerplant_dispatch_plan_classname)
         self.import_object_parameters(self.powerplant_dispatch_plan_classname,
                                       ['Market', 'Price', 'Capacity', 'EnergyProducer', 'AcceptedAmount', 'Status'])
+
+    def stage_power_plant_dispatch_plan(self, ppdp, current_tick):
+        self.import_object(self.powerplant_dispatch_plan_classname, ppdp.plant.name)
+        self.import_object_parameter_values(self.powerplant_dispatch_plan_classname, ppdp.plant.name,
+                                            [('Market', ppdp.bidding_market.name),
+                                             ('Price', ppdp.price),
+                                             ('Capacity', ppdp.amount),
+                                             ('EnergyProducer', ppdp.bidder.name),
+                                             ('AcceptedAmount', ppdp.amount),
+                                             ('Status', ppdp.status)], str(current_tick))
+
+    def stage_market_clearing_point(self, mcp, current_tick):
+        object_name = 'ClearingPoint-' + str(datetime.now())
+        self.import_object(self.market_clearing_point_object_classname, object_name)
+        self.import_object_parameter_values(self.market_clearing_point_object_classname, object_name,
+                                            [('Market', mcp.market),
+                                             ('Price', mcp.price),
+                                             ('TotalCapacity', mcp.capacity)], str(current_tick))
+
+    def stage_init_alternative(self, current_tick):
+        self.db.import_alternatives([str(current_tick)])

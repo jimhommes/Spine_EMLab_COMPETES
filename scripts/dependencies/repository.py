@@ -28,12 +28,12 @@ class Repository:
         self.current_tick = 0
 
         self.energy_producers = {}
-        self.powerplants = {}
+        self.power_plants = {}
         self.substances = {}
-        self.powerplants_fuelmix = []
+        self.power_plants_fuel_mix = []
         self.electricity_spot_markets = {}
         self.capacity_markets = {}
-        self.powerplant_dispatch_plans = []
+        self.power_plant_dispatch_plans = []
         self.power_generating_technologies = {}
         self.load = {}
         self.market_clearing_points = []
@@ -42,67 +42,53 @@ class Repository:
                                             'naturalGas': 5,
                                             'uranium': 40}
 
-        self.powerplant_dispatch_plan_status_accepted = 'Accepted'
-        self.powerplant_dispatch_plan_status_failed = 'Failed'
-        self.powerplant_dispatch_plan_status_partly_accepted = 'Partly Accepted'
-        self.powerplant_dispatch_plan_status_awaiting = 'Awaiting'
+        self.power_plant_dispatch_plan_status_accepted = 'Accepted'
+        self.power_plant_dispatch_plan_status_failed = 'Failed'
+        self.power_plant_dispatch_plan_status_partly_accepted = 'Partly Accepted'
+        self.power_plant_dispatch_plan_status_awaiting = 'Awaiting'
 
-    def get_powerplants_by_owner(self, owner):
-        return [i for i in self.powerplants.values() if i.parameters['Owner'] == owner]
+    def get_power_plants_by_owner(self, owner):
+        return [i for i in self.power_plants.values() if i.parameters['Owner'] == owner]
 
-    def get_substances_by_powerplant(self, powerplant_name):
-        return [self.substances[i[1]] for i in self.powerplants_fuelmix
-                if i[0] == self.powerplants[powerplant_name].parameters['Technology']]
+    def get_substances_by_power_plant(self, powerplant_name):
+        return [self.substances[i[1]] for i in self.power_plants_fuel_mix
+                if i[0] == self.power_plants[powerplant_name].parameters['Technology']]
 
-    def create_powerplant_dispatch_plan(self, plant, bidder, bidding_market, amount, price):
+    def create_power_plant_dispatch_plan(self, plant, bidder, bidding_market, amount, price):
         ppdp = PowerPlantDispatchPlan()
         ppdp.plant = plant
         ppdp.bidder = bidder
         ppdp.bidding_market = bidding_market
         ppdp.amount = amount
         ppdp.price = price
-        ppdp.status = self.powerplant_dispatch_plan_status_awaiting
+        ppdp.status = self.power_plant_dispatch_plan_status_awaiting
         ppdp.accepted_amount = 0
-        self.powerplant_dispatch_plans.append(ppdp)
-
-        self.dbrw.import_object(self.dbrw.powerplant_dispatch_plan_classname, plant.name)
-        self.dbrw.import_object_parameter_values(self.dbrw.powerplant_dispatch_plan_classname, plant.name,
-                                                 [('Market', bidding_market.name), ('Price', price),
-                                                  ('Capacity', amount),
-                                                  ('EnergyProducer', bidder.name),
-                                                  ('AcceptedAmount', 0),
-                                                  ('Status', self.powerplant_dispatch_plan_status_awaiting)])
+        self.power_plant_dispatch_plans.append(ppdp)
+        self.dbrw.stage_power_plant_dispatch_plan(ppdp, self.current_tick)
 
     def get_sorted_dispatch_plans_by_market(self, market_name):
-        return sorted([i for i in self.powerplant_dispatch_plans if i.bidding_market.name == market_name],
+        return sorted([i for i in self.power_plant_dispatch_plans if i.bidding_market.name == market_name],
                       key=lambda i: i.price)
 
-    def create_market_clearingpoint(self, market_name, clearing_price, total_capacity):
-        mcp = MarketClearingPoint(market_name, clearing_price, total_capacity)
+    def create_market_clearing_point(self, market, price, capacity):
+        mcp = MarketClearingPoint(market, price, capacity)
         self.market_clearing_points.append(mcp)
+        self.dbrw.stage_market_clearing_point(mcp, self.current_tick)
 
-        object_name = 'ClearingPoint-' + str(datetime.now())
-        self.dbrw.import_object(self.dbrw.market_clearing_point_object_classname, object_name)
-        self.dbrw.import_object_parameter_values(self.dbrw.market_clearing_point_object_classname, object_name,
-                                                 [('Market', market_name), ('Price', clearing_price),
-                                                  ('TotalCapacity', total_capacity)])
-
-    def get_available_powerplant_capacity(self, plant_name):
-        plant = self.powerplants[plant_name]
+    def get_available_power_plant_capacity(self, plant_name):
+        plant = self.power_plants[plant_name]
         ppdps_sum_accepted_amount = sum([float(i.accepted_amount) for i in
-                                         self.get_powerplant_dispatch_plans_by_plant(plant_name)])
+                                         self.get_power_plant_dispatch_plans_by_plant(plant_name)])
         return float(plant.parameters['Capacity']) - ppdps_sum_accepted_amount
 
-    def get_powerplant_dispatch_plans_by_plant(self, plant_name):
-        return [i for i in self.powerplant_dispatch_plans if i.plant.name == plant_name]
+    def get_power_plant_dispatch_plans_by_plant(self, plant_name):
+        return [i for i in self.power_plant_dispatch_plans if i.plant.name == plant_name]
 
-    def set_powerplant_dispatch_plan_production(self, ppdp, status, accepted_amount):
+    def set_power_plant_dispatch_plan_production(self, ppdp, status, accepted_amount):
         ppdp.status = status
         ppdp.accepted_amount = accepted_amount
 
-        self.dbrw.import_object_parameter_values(self.dbrw.powerplant_dispatch_plan_classname, ppdp.plant.name,
-                                                 [('AcceptedAmount', str(accepted_amount)),
-                                                  ('Status', status)])
+        self.dbrw.stage_power_plant_dispatch_plan(ppdp, self.current_tick)
 
 
 # Objects that are imported. Pass because they inherit name and parameters from ImportObject
