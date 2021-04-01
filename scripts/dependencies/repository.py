@@ -16,7 +16,13 @@ class ImportObject:
         self.parameters = {}
 
     def add_parameter_value(self, import_obj):
-        self.parameters[import_obj[2]] = import_obj[3]
+        if import_obj[4] == 'init':
+            self.parameters[import_obj[2]] = import_obj[3]
+        else:
+            self.add_parameter_value_for_tick(import_obj)
+
+    def add_parameter_value_for_tick(self, import_obj):
+        pass
 
 
 # The Repository class reads DB data at initialization and loads all objects and relationships
