@@ -26,6 +26,44 @@ def db_relationships_to_arr(db_data, to_arr, relationship_class_name):
         to_arr.append((unit[1][0], unit[1][1]))
 
 
+def import_market_clearing_points_to_reps(db_data, reps):
+    for unit in [i for i in db_data['objects'] if i[0] == 'MarketClearingPoints']:
+        mcp = MarketClearingPoint()
+        for parameterValue in [i for i in db_data['object_parameter_values'] if i[1] == unit[1]]:
+            mcp.tick = int(parameterValue[4])
+            if parameterValue[2] == 'Price':
+                mcp.price = float(parameterValue[3])
+            if parameterValue[2] == 'Market':
+                mcp.market = parameterValue[3]
+            if parameterValue[2] == 'TotalCapacity':
+                mcp.capacity = float(parameterValue[3])
+        reps.market_clearing_points.append(mcp)
+    return reps
+
+
+def import_power_plant_dispatch_plans_to_reps(db_data, reps):
+    for unit in [i for i in db_data['objects'] if i[0] == 'PowerPlantDispatchPlans']:
+        ppdp = PowerPlantDispatchPlan()
+        for parameterValue in [i for i in db_data['object_parameter_values'] if i[1] == unit[1]]:
+            ppdp.tick = int(parameterValue[4])
+            ppdp.plant = reps.power_plants[parameterValue[1]]
+            if parameterValue[2] == 'EnergyProducer':
+                ppdp.bidder = reps.energy_producers[parameterValue[3]]
+            if parameterValue[2] == 'Market':
+                ppdp.bidding_market = reps.capacity_markets[parameterValue[3]] if \
+                    reps.capacity_markets[parameterValue[3]] is not None \
+                    else reps.electricity_spot_markets[parameterValue[3]]
+            if parameterValue[2] == 'Capacity':
+                ppdp.amount = parameterValue[3]
+            if parameterValue[2] == 'AcceptedAmount':
+                ppdp.accepted_amount = float(parameterValue[3])
+            if parameterValue[2] == 'Price':
+                ppdp.price = float(parameterValue[3])
+            if parameterValue[2] == 'Status':
+                ppdp.status = parameterValue[3]
+    return reps
+
+
 class SpineDBReaderWriter:
 
     def __init__(self, db_url):
@@ -38,6 +76,8 @@ class SpineDBReaderWriter:
         reps = Repository()
         reps.dbrw = self
         db_data = self.db.export_data()
+
+        # Import all initialized variables
         db_objects_to_dict(db_data, reps.energy_producers, 'EnergyProducers', EnergyProducer)
         db_objects_to_dict(db_data, reps.power_plants, 'PowerPlants', PowerPlant)
         db_objects_to_dict(db_data, reps.substances, 'Substances', Substance)
@@ -48,19 +88,9 @@ class SpineDBReaderWriter:
         db_objects_to_dict(db_data, reps.load, 'ldcNLDE-hourly', HourlyLoad)
         db_objects_to_dict(db_data, reps.capacity_markets, 'CapacityMarkets', CapacityMarket)
 
-        # Interpret time series MarketClearingPoints
-        for unit in [i for i in db_data['objects'] if i[0] == 'MarketClearingPoints']:
-            price = 0
-            market = ''
-            capacity = 0
-            for parameterValue in [i for i in db_data['object_parameter_values'] if i[1] == unit[1]]:
-                if parameterValue[2] == 'Price':
-                    price = float(parameterValue[3])
-                if parameterValue[2] == 'Market':
-                    market = parameterValue[3]
-                if parameterValue[2] == 'TotalCapacity':
-                    capacity = float(parameterValue[3])
-            reps.market_clearing_points.append(MarketClearingPoint(market, price, capacity))
+        # Import all time-based values (changed with ticks)
+        reps = import_market_clearing_points_to_reps(db_data, reps)
+        reps = import_power_plant_dispatch_plans_to_reps(db_data, reps)
 
         # Determine current tick
         all_ticks = [int(i[4]) for i in db_data['object_parameter_values'] if i[4] != 'init']

@@ -140,16 +140,15 @@ class PowerPlantDispatchPlan:
         self.price = None
         self.status = 'Awaiting confirmation'
         self.accepted_amount = 0
+        self.tick = -1
 
 
 class MarketClearingPoint:
-    def __init__(self, market, price, capacity):
-        self.market = market
-        self.price = price
-        self.capacity = capacity
-
-        self.name = ''
-        self.parameters = {}
+    def __init__(self):
+        self.market = None
+        self.price = 0
+        self.capacity = 0
+        self.tick = -1
 
 
 class SlopingDemandCurve:
