@@ -69,45 +69,42 @@ class SpineDBReaderWriter:
 
         return reps
 
-    def import_object_class(self, object_class_name):
-        self.import_object_classes([object_class_name])
+    def stage_object_class(self, object_class_name):
+        self.stage_object_classes([object_class_name])
 
-    def import_object_classes(self, arr):
+    def stage_object_classes(self, arr):
         self.db.import_object_classes(arr)
 
-    def import_object_parameter(self, object_class, object_parameter):
+    def stage_object_parameter(self, object_class, object_parameter):
         self.db.import_data({'object_parameters': [[object_class, object_parameter]]})
 
-    def import_object_parameters(self, object_class, object_parameter_arr):
+    def stage_object_parameters(self, object_class, object_parameter_arr):
         for object_parameter in object_parameter_arr:
-            self.import_object_parameter(object_class, object_parameter)
+            self.stage_object_parameter(object_class, object_parameter)
 
-    def import_object(self, object_class, object_name):
-        self.import_objects([(object_class, object_name)])
+    def stage_object(self, object_class, object_name):
+        self.stage_objects([(object_class, object_name)])
 
-    def import_objects(self, arr_of_tuples):
+    def stage_objects(self, arr_of_tuples):
         self.db.import_objects(arr_of_tuples)
 
-    def import_object_parameter_values(self, object_class_name, object_name, arr_of_tuples, current_tick):
+    def stage_object_parameter_values(self, object_class_name, object_name, arr_of_tuples, current_tick):
         import_arr = [(object_class_name, object_name, i[0], i[1], current_tick) for i in arr_of_tuples]
         self.db.import_object_parameter_values(import_arr)
 
-    def commit(self, commit_message):
-        self.db.commit(commit_message)
-
     def stage_init_market_clearing_point_structure(self):
-        self.import_object_class(self.market_clearing_point_object_classname)
-        self.import_object_parameters(self.market_clearing_point_object_classname, ['Market', 'Price', 'TotalCapacity'])
+        self.stage_object_class(self.market_clearing_point_object_classname)
+        self.stage_object_parameters(self.market_clearing_point_object_classname, ['Market', 'Price', 'TotalCapacity'])
 
     def stage_init_power_plant_dispatch_plan_structure(self):
-        self.import_object_class(self.powerplant_dispatch_plan_classname)
-        self.import_object_parameters(self.powerplant_dispatch_plan_classname,
-                                      ['Market', 'Price', 'Capacity', 'EnergyProducer', 'AcceptedAmount', 'Status'])
+        self.stage_object_class(self.powerplant_dispatch_plan_classname)
+        self.stage_object_parameters(self.powerplant_dispatch_plan_classname,
+                                     ['Market', 'Price', 'Capacity', 'EnergyProducer', 'AcceptedAmount', 'Status'])
 
     def stage_power_plant_dispatch_plan(self, ppdp, current_tick):
-        self.import_object(self.powerplant_dispatch_plan_classname, ppdp.plant.name)
-        self.import_object_parameter_values(self.powerplant_dispatch_plan_classname, ppdp.plant.name,
-                                            [('Market', ppdp.bidding_market.name),
+        self.stage_object(self.powerplant_dispatch_plan_classname, ppdp.plant.name)
+        self.stage_object_parameter_values(self.powerplant_dispatch_plan_classname, ppdp.plant.name,
+                                           [('Market', ppdp.bidding_market.name),
                                              ('Price', ppdp.price),
                                              ('Capacity', ppdp.amount),
                                              ('EnergyProducer', ppdp.bidder.name),
@@ -116,11 +113,14 @@ class SpineDBReaderWriter:
 
     def stage_market_clearing_point(self, mcp, current_tick):
         object_name = 'ClearingPoint-' + str(datetime.now())
-        self.import_object(self.market_clearing_point_object_classname, object_name)
-        self.import_object_parameter_values(self.market_clearing_point_object_classname, object_name,
-                                            [('Market', mcp.market),
+        self.stage_object(self.market_clearing_point_object_classname, object_name)
+        self.stage_object_parameter_values(self.market_clearing_point_object_classname, object_name,
+                                           [('Market', mcp.market),
                                              ('Price', mcp.price),
                                              ('TotalCapacity', mcp.capacity)], str(current_tick))
 
     def stage_init_alternative(self, current_tick):
         self.db.import_alternatives([str(current_tick)])
+
+    def commit(self, commit_message):
+        self.db.commit(commit_message)
