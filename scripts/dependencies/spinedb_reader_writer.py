@@ -140,7 +140,7 @@ class SpineDBReaderWriter:
                                              ('Price', ppdp.price),
                                              ('Capacity', ppdp.amount),
                                              ('EnergyProducer', ppdp.bidder.name),
-                                             ('AcceptedAmount', ppdp.amount),
+                                             ('AcceptedAmount', ppdp.accepted_amount),
                                              ('Status', ppdp.status)], str(current_tick))
 
     def stage_market_clearing_point(self, mcp, current_tick):
