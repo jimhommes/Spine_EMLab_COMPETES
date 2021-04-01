@@ -29,7 +29,8 @@ def db_relationships_to_arr(db_data, to_arr, relationship_class_name):
 def import_market_clearing_points_to_reps(db_data, reps):
     for unit in [i for i in db_data['objects'] if i[0] == 'MarketClearingPoints']:
         mcp = MarketClearingPoint()
-        for parameterValue in [i for i in db_data['object_parameter_values'] if i[1] == unit[1]]:
+        for parameterValue in [i for i in db_data['object_parameter_values'] if
+                               i[0] == 'MarketClearingPoints' and i[1] == unit[1]]:
             mcp.tick = int(parameterValue[4])
             if parameterValue[2] == 'Price':
                 mcp.price = float(parameterValue[3])
@@ -44,7 +45,8 @@ def import_market_clearing_points_to_reps(db_data, reps):
 def import_power_plant_dispatch_plans_to_reps(db_data, reps):
     for unit in [i for i in db_data['objects'] if i[0] == 'PowerPlantDispatchPlans']:
         ppdp = PowerPlantDispatchPlan()
-        for parameterValue in [i for i in db_data['object_parameter_values'] if i[1] == unit[1]]:
+        for parameterValue in [i for i in db_data['object_parameter_values'] if
+                               i[0] == 'PowerPlantDispatchPlans' and i[1] == unit[1]]:
             ppdp.tick = int(parameterValue[4])
             ppdp.plant = reps.power_plants[parameterValue[1]]
             if parameterValue[2] == 'EnergyProducer':

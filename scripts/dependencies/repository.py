@@ -77,7 +77,10 @@ class Repository:
                       key=lambda i: i.price)
 
     def create_market_clearing_point(self, market, price, capacity):
-        mcp = MarketClearingPoint(market, price, capacity)
+        mcp = MarketClearingPoint()
+        mcp.market = market
+        mcp.price = price
+        mcp.capacity = capacity
         self.market_clearing_points.append(mcp)
         self.dbrw.stage_market_clearing_point(mcp, self.current_tick)
 
