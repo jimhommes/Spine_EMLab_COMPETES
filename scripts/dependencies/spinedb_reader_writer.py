@@ -89,6 +89,7 @@ class SpineDBReaderWriter:
                            PowerGeneratingTechnology)
         db_objects_to_dict(db_data, reps.load, 'ldcNLDE-hourly', HourlyLoad)
         db_objects_to_dict(db_data, reps.capacity_markets, 'CapacityMarkets', CapacityMarket)
+        db_objects_to_dict(db_data, reps.power_grid_nodes, 'PowerGridNodes', PowerGridNode)
 
         # Import all time-based values (changed with ticks)
         reps = import_market_clearing_points_to_reps(db_data, reps)

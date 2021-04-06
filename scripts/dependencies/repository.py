@@ -43,6 +43,7 @@ class Repository:
         self.power_generating_technologies = {}
         self.load = {}
         self.market_clearing_points = []
+        self.power_grid_nodes = {}
 
         self.temporary_fixed_fuel_prices = {'biomass': 10, 'fuelOil': 20, 'hardCoal': 30, 'ligniteCoal': 10,
                                             'naturalGas': 5,
@@ -99,8 +100,28 @@ class Repository:
 
         self.dbrw.stage_power_plant_dispatch_plan(ppdp, self.current_tick)
 
+    def get_electricity_spot_market_for_plant(self, plant_name):
+        plant = self.power_plants[plant_name]
+        node = plant.parameters['Location']
+        zone = self.power_grid_nodes[node].parameters['Zone']
+        res = [i for i in self.electricity_spot_markets.values() if i.parameters['zone'] == zone]
+        if len(res) == 0:
+            return None
+        else:
+            return res[0]
+
+    def get_capacity_market_for_plant(self, plant_name):
+        plant = self.power_plants[plant_name]
+        node = plant.parameters['Location']
+        zone = self.power_grid_nodes[node].parameters['Zone']
+        res = [i for i in self.capacity_markets.values() if i.parameters['zone'] == zone]
+        if len(res) == 0:
+            return None
+        else:
+            return res[0]
 
 # Objects that are imported. Pass because they inherit name and parameters from ImportObject
+
 
 class EnergyProducer(ImportObject):
     pass
@@ -131,6 +152,10 @@ class PowerGeneratingTechnology(ImportObject):
 
 
 class HourlyLoad(ImportObject):
+    pass
+
+
+class PowerGridNode(ImportObject):
     pass
 
 

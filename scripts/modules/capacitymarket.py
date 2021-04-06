@@ -16,10 +16,11 @@ class CapacityMarketSubmitBids(DefaultModule):
     def act(self):
         # For every energy producer we will submit bids to the Capacity Market
         for energy_producer in self.reps.energy_producers.values():
-            market = self.reps.capacity_markets[energy_producer.parameters['capacityMarket']]
 
             # For every plant owned by energyProducer
             for powerplant in self.reps.get_power_plants_by_owner(energy_producer.name):
+                market = self.reps.get_capacity_market_for_plant(powerplant.name)
+
                 # Calculate marginal cost mc
                 #   fuelConsumptionPerMWhElectricityProduced = 3600 / (pp.efficiency * ss.energydensity)
                 #   lastKnownFuelPrice
