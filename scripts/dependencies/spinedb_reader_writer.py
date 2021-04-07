@@ -110,9 +110,9 @@ class SpineDBReaderWriter:
         reps = import_power_plant_dispatch_plans_to_reps(db_data, reps)
 
         # Determine current tick
-        all_ticks = [int(i[4]) for i in db_data['object_parameter_values'] if i[4] != 'init']
-        reps.current_tick = max(all_ticks) + 1 if len(all_ticks) > 0 else 0
-        self.stage_init_alternative(reps.current_tick)
+        reps.current_tick = max(
+            [int(i[3]) for i in db_data['object_parameter_values'] if i[0] == i[1] == 'SystemClockTicks' and
+             i[2] == 'ticks'])
 
         return reps
 

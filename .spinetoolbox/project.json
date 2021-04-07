@@ -14,6 +14,11 @@
                     "type": "path",
                     "relative": true,
                     "path": ".spinetoolbox/specifications/Tool/competes.json"
+                },
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/specifications/Tool/clock.json"
                 }
             ],
             "Importer": [
@@ -57,16 +62,6 @@
             },
             {
                 "from": [
-                    "DB",
-                    "bottom"
-                ],
-                "to": [
-                    "COMPETES Dummy",
-                    "left"
-                ]
-            },
-            {
-                "from": [
                     "COMPETES Dummy",
                     "right"
                 ],
@@ -87,7 +82,57 @@
             },
             {
                 "from": [
+                    "DB",
+                    "bottom"
+                ],
+                "to": [
+                    "Clock Initialization",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "DB",
+                    "bottom"
+                ],
+                "to": [
+                    "COMPETES Dummy",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "Clock Initialization",
+                    "right"
+                ],
+                "to": [
+                    "COMPETES Dummy",
+                    "bottom"
+                ]
+            },
+            {
+                "from": [
                     "Capacity Market",
+                    "right"
+                ],
+                "to": [
+                    "Clock Increment",
+                    "bottom"
+                ]
+            },
+            {
+                "from": [
+                    "DB",
+                    "right"
+                ],
+                "to": [
+                    "Clock Increment",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "Clock Increment",
                     "right"
                 ],
                 "to": [
@@ -102,7 +147,7 @@
             "type": "Data Store",
             "description": "",
             "x": 99.12618781294339,
-            "y": 2.0371533371114765,
+            "y": 1.0268694293610956,
             "url": {
                 "dialect": "sqlite",
                 "username": "",
@@ -151,8 +196,8 @@
         "COMPETES Dummy": {
             "type": "Tool",
             "description": "",
-            "x": 126.5475604474241,
-            "y": 133.27379830492535,
+            "x": 199.2880018054515,
+            "y": 122.99222551741906,
             "specification": "COMPETES",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -162,11 +207,47 @@
                 }
             ]
         },
+        "Clock Initialization": {
+            "type": "Tool",
+            "description": "",
+            "x": 125.27520456104719,
+            "y": 238.42700222908965,
+            "specification": "Clock",
+            "execute_in_work": false,
+            "cmd_line_args": [
+                {
+                    "type": "resource",
+                    "arg": "db_url@DB"
+                },
+                {
+                    "type": "literal",
+                    "arg": "initialize_clock"
+                }
+            ]
+        },
+        "Clock Increment": {
+            "type": "Tool",
+            "description": "",
+            "x": 251.23996797976503,
+            "y": -125.27520456104716,
+            "specification": "Clock",
+            "execute_in_work": false,
+            "cmd_line_args": [
+                {
+                    "type": "resource",
+                    "arg": "db_url@DB"
+                },
+                {
+                    "type": "literal",
+                    "arg": "increment_clock"
+                }
+            ]
+        },
         "View 1": {
             "type": "View",
             "description": "",
-            "x": 251.35447177893522,
-            "y": -129.27379830492535
+            "x": 276.6115694726946,
+            "y": -292.9397913604869
         },
         "Import Init Data to DB": {
             "type": "Importer",
