@@ -56,7 +56,7 @@ def import_power_plant_dispatch_plans_to_reps(db_data, reps):
                 ppdp.bidder = reps.energy_producers[parameterValue[3]]
             if parameterValue[2] == 'Market':
                 ppdp.bidding_market = reps.capacity_markets[parameterValue[3]] if \
-                    reps.capacity_markets[parameterValue[3]] is not None \
+                    parameterValue[3] in reps.capacity_markets.keys() \
                     else reps.electricity_spot_markets[parameterValue[3]]
             if parameterValue[2] == 'Capacity':
                 ppdp.amount = parameterValue[3]
