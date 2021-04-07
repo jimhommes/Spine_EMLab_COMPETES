@@ -120,6 +120,18 @@ class Repository:
         else:
             return res[0]
 
+    def get_substances_in_fuel_mix_by_plant(self, plant_name):
+        technology = self.power_plants[plant_name].parameters['Technology']
+        if technology in self.power_plants_fuel_mix.keys():
+            return self.power_plants_fuel_mix[self.power_plants[plant_name].parameters['Technology']]
+        else:
+            return []
+
+    def find_last_known_price_for_substance(self, substance_name, tick):
+        print('TODO: Finding last known price for substance - taking fixed price now')
+        return self.temporary_fixed_fuel_prices[substance_name]
+
+
 # Objects that are imported. Pass because they inherit name and parameters from ImportObject
 
 
@@ -128,7 +140,15 @@ class EnergyProducer(ImportObject):
 
 
 class PowerPlant(ImportObject):
-    pass
+    def calculate_emission_intensity(self, reps):
+        emission = 0
+        for substance_in_fuel_mix in reps.get_substances_in_fuel_mix_by_plant(self.name):
+            fuel_amount = substance_in_fuel_mix.share
+            co2_density = float(substance_in_fuel_mix.substance.parameters['co2Density']) * (1 - float(
+                reps.power_generating_technologies[self.parameters['Technology']].parameters['co2CaptureEfficiency']))
+            emission_for_this_fuel = fuel_amount * co2_density
+            emission += emission_for_this_fuel
+        return emission
 
 
 class Substance(ImportObject):
@@ -137,8 +157,8 @@ class Substance(ImportObject):
 
 class SubstanceInFuelMix:
     def __init__(self, substance, share):
-        self.substance = None
-        self.share = 0
+        self.substance = substance
+        self.share = share
 
 
 class ElectricitySpotMarket(ImportObject):

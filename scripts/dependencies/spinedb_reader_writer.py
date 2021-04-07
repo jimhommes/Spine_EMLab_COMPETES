@@ -71,7 +71,7 @@ def import_power_plant_dispatch_plans_to_reps(db_data, reps):
 
 def db_load_fuel_mix(db_data, reps):
     for unit in [i for i in db_data['relationship_parameter_values'] if i[0] == 'PowerGeneratingTechnologyFuel']:
-        if unit[1][0] in  reps.power_plants_fuel_mix.keys():
+        if unit[1][0] in reps.power_plants_fuel_mix.keys():
             reps.power_plants_fuel_mix[unit[1][0]].append(SubstanceInFuelMix(
                 reps.substances[unit[1][1]], float(unit[3])))
         else:
