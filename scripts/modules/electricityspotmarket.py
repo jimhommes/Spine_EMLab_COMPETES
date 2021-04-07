@@ -5,11 +5,11 @@
 # Jim Hommes - 25-3-2021
 #
 import json
-from modules.defaultmodule import DefaultModule
+from modules.market import Market
 
 
 # Submit bids
-class ElectricitySpotMarketSubmitBids(DefaultModule):
+class ElectricitySpotMarketSubmitBids(Market):
 
     def __init__(self, reps):
         super().__init__('COMPETES Dummy: Electricity Spot Market: Submit Bids', reps)
@@ -22,20 +22,13 @@ class ElectricitySpotMarketSubmitBids(DefaultModule):
             # For every plant owned by energyProducer
             for powerplant in self.reps.get_power_plants_by_owner(energy_producer.name):
                 market = self.reps.get_electricity_spot_market_for_plant(powerplant.name)
-
-                # Calculate marginal cost mc
-                #   fuelConsumptionPerMWhElectricityProduced = 3600 / (pp.efficiency * ss.energydensity)
-                #   lastKnownFuelPrice
-                substances = self.reps.get_substances_by_power_plant(powerplant.name)
-                if len(substances) > 0:  # Only done for 1 substance atm
-                    mc = 3600 / (float(powerplant.parameters['Efficiency']) * float(
-                        substances[0].parameters['energyDensity']))
-                    capacity = int(powerplant.parameters['Capacity'])
-                    self.reps.create_power_plant_dispatch_plan(powerplant, energy_producer, market, capacity, mc)
+                mc = self.calculate_marginal_cost_excl_co2_market_cost(powerplant)
+                capacity = int(powerplant.parameters['Capacity'])
+                self.reps.create_power_plant_dispatch_plan(powerplant, energy_producer, market, capacity, mc)
 
 
 # Clear the market
-class ElectricitySpotMarketClearing(DefaultModule):
+class ElectricitySpotMarketClearing(Market):
 
     def __init__(self, reps):
         super().__init__('COMPETES Dummy: Electricity Spot Market: Clear Market', reps)

@@ -57,10 +57,6 @@ class Repository:
     def get_power_plants_by_owner(self, owner):
         return [i for i in self.power_plants.values() if i.parameters['Owner'] == owner]
 
-    def get_substances_by_power_plant(self, powerplant_name):
-        return [self.substances[i[1]] for i in self.power_plants_fuel_mix
-                if i[0] == self.power_plants[powerplant_name].parameters['Technology']]
-
     def create_power_plant_dispatch_plan(self, plant, bidder, bidding_market, amount, price):
         ppdp = PowerPlantDispatchPlan()
         ppdp.plant = plant

@@ -4,35 +4,11 @@
 # Jim Hommes - 25-3-2021
 #
 import json
-from modules.defaultmodule import DefaultModule
-
-
-def calculate_marginal_fuel_cost(reps, plant):
-    fc = 0
-    for substance_in_fuel_mix in reps.get_substances_in_fuel_mix_by_plant(plant.name):
-        amount = substance_in_fuel_mix.share
-        fuel_price = reps.find_last_known_price_for_substance(substance_in_fuel_mix.substance.name, reps.current_tick)
-        fc += amount * fuel_price
-    return fc
-
-
-def calculate_co2_tax_marginal_cost(reps, plant):
-    co2_intensity = plant.calculate_emission_intensity(reps)
-    print('TODO: Implement government CO2 tax')
-#     co2_tax = government.get_co2_tax(tick)
-    co2_tax = 1
-    return co2_intensity * co2_tax
-
-
-def calculate_marginal_cost_excl_co2_market_cost(reps, plant):
-    mc = 0
-    mc += calculate_marginal_fuel_cost(reps, plant)
-    mc += calculate_co2_tax_marginal_cost(reps, plant)
-    return mc
+from modules.market import Market
 
 
 # Submit bids to the market
-class CapacityMarketSubmitBids(DefaultModule):
+class CapacityMarketSubmitBids(Market):
 
     def __init__(self, reps):
         super().__init__('EM-Lab Capacity Market: Submit Bids', reps)
@@ -44,8 +20,12 @@ class CapacityMarketSubmitBids(DefaultModule):
             # For every plant owned by energyProducer
             for powerplant in self.reps.get_power_plants_by_owner(energy_producer.name):
                 market = self.reps.get_capacity_market_for_plant(powerplant.name)
-                mc = calculate_marginal_cost_excl_co2_market_cost(self.reps, powerplant)
+                mc = self.calculate_marginal_cost_excl_co2_market_cost(powerplant)
                 capacity = self.reps.get_available_power_plant_capacity(powerplant.name)
+
+                print('TODO: Plant load factor')
+                print('TODO: Expected Electricity Revenues')
+                print('TODO: Fixed Operating Cost')
                 if capacity == 0:
                     price_to_bid = 0
                 else:
@@ -55,7 +35,7 @@ class CapacityMarketSubmitBids(DefaultModule):
 
 
 # Clear the market
-class CapacityMarketClearing(DefaultModule):
+class CapacityMarketClearing(Market):
 
     def __init__(self, reps):
         super().__init__('EM-Lab Capacity Market: Clear Market', reps)

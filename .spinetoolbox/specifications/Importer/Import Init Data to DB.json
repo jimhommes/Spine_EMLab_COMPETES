@@ -817,7 +817,8 @@
                             },
                             {
                                 "map_type": "Alternative",
-                                "position": "hidden"
+                                "position": "hidden",
+                                "value": "init"
                             },
                             {
                                 "map_type": "ParameterValueMetadata",
@@ -1220,7 +1221,8 @@
                 "14": "float",
                 "15": "string",
                 "16": "string",
-                "17": "string"
+                "17": "string",
+                "18": "string"
             },
             "PowerGeneratingTechnologyFuel": {
                 "0": "string",
