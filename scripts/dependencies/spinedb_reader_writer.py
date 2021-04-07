@@ -23,7 +23,10 @@ def db_objects_to_dict(db_data, to_dict, object_class_name, class_to_create):
 # Function used to translate SpineDB relationships to an array of tuples
 def db_relationships_to_arr(db_data, to_arr, relationship_class_name):
     for unit in [i for i in db_data['relationships'] if i[0] == relationship_class_name]:
-        to_arr.append((unit[1][0], unit[1][1]))
+        if len(unit[1]) == 2:
+            to_arr.append((unit[1][0], unit[1][1]))
+        else:
+            to_arr.append((unit[1][0], unit[1][1], unit[1][2]))
 
 
 def import_market_clearing_points_to_reps(db_data, reps):
@@ -66,6 +69,16 @@ def import_power_plant_dispatch_plans_to_reps(db_data, reps):
     return reps
 
 
+def db_load_fuel_mix(db_data, reps):
+    for unit in [i for i in db_data['relationship_parameter_values'] if i[0] == 'PowerGeneratingTechnologyFuel']:
+        if unit[1][0] in  reps.power_plants_fuel_mix.keys():
+            reps.power_plants_fuel_mix[unit[1][0]].append(SubstanceInFuelMix(
+                reps.substances[unit[1][1]], float(unit[3])))
+        else:
+            reps.power_plants_fuel_mix[unit[1][0]] = [SubstanceInFuelMix(
+                reps.substances[unit[1][1]], float(unit[3]))]
+
+
 class SpineDBReaderWriter:
 
     def __init__(self, db_url):
@@ -83,13 +96,14 @@ class SpineDBReaderWriter:
         db_objects_to_dict(db_data, reps.energy_producers, 'EnergyProducers', EnergyProducer)
         db_objects_to_dict(db_data, reps.power_plants, 'PowerPlants', PowerPlant)
         db_objects_to_dict(db_data, reps.substances, 'Substances', Substance)
-        db_relationships_to_arr(db_data, reps.power_plants_fuel_mix, 'PowerGeneratingTechnologyFuel')
         db_objects_to_dict(db_data, reps.electricity_spot_markets, 'ElectricitySpotMarkets', ElectricitySpotMarket)
         db_objects_to_dict(db_data, reps.power_generating_technologies, 'PowerGeneratingTechnologies',
                            PowerGeneratingTechnology)
         db_objects_to_dict(db_data, reps.load, 'ldcNLDE-hourly', HourlyLoad)
         db_objects_to_dict(db_data, reps.capacity_markets, 'CapacityMarkets', CapacityMarket)
         db_objects_to_dict(db_data, reps.power_grid_nodes, 'PowerGridNodes', PowerGridNode)
+
+        db_load_fuel_mix(db_data, reps)
 
         # Import all time-based values (changed with ticks)
         reps = import_market_clearing_points_to_reps(db_data, reps)

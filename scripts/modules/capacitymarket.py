@@ -7,6 +7,22 @@ import json
 from modules.defaultmodule import DefaultModule
 
 
+def calculate_marginal_fuel_cost(plant, tick):
+    fc = 0
+
+
+
+def calculate_co2_tax_marginal_cost(plant, tick):
+    pass
+
+
+def calculate_marginal_cost_excl_co2_market_cost(plant, tick):
+    mc = 0
+    mc += calculate_marginal_fuel_cost(plant, tick)
+    mc += calculate_co2_tax_marginal_cost(plant, tick)
+    return mc
+
+
 # Submit bids to the market
 class CapacityMarketSubmitBids(DefaultModule):
 

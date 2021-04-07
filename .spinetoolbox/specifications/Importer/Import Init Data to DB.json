@@ -809,6 +809,23 @@
                             {
                                 "map_type": "RelationshipMetadata",
                                 "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterDefinition",
+                                "position": "header",
+                                "value": 2
+                            },
+                            {
+                                "map_type": "Alternative",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterValueMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterValue",
+                                "position": 2
                             }
                         ]
                     }
@@ -1207,7 +1224,8 @@
             },
             "PowerGeneratingTechnologyFuel": {
                 "0": "string",
-                "1": "string"
+                "1": "string",
+                "2": "float"
             },
             "PowerGeneratingTechnologyTarget": {
                 "0": "string",

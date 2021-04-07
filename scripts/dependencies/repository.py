@@ -36,7 +36,7 @@ class Repository:
         self.energy_producers = {}
         self.power_plants = {}
         self.substances = {}
-        self.power_plants_fuel_mix = []
+        self.power_plants_fuel_mix = {}
         self.electricity_spot_markets = {}
         self.capacity_markets = {}
         self.power_plant_dispatch_plans = []
@@ -133,6 +133,12 @@ class PowerPlant(ImportObject):
 
 class Substance(ImportObject):
     pass
+
+
+class SubstanceInFuelMix:
+    def __init__(self, substance, share):
+        self.substance = None
+        self.share = 0
 
 
 class ElectricitySpotMarket(ImportObject):
