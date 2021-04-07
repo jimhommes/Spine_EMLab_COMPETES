@@ -45,21 +45,13 @@ class CapacityMarketSubmitBids(DefaultModule):
             for powerplant in self.reps.get_power_plants_by_owner(energy_producer.name):
                 market = self.reps.get_capacity_market_for_plant(powerplant.name)
                 mc = calculate_marginal_cost_excl_co2_market_cost(self.reps, powerplant)
-
-                # Calculate marginal cost mc
-                #   fuelConsumptionPerMWhElectricityProduced = 3600 / (pp.efficiency * ss.energydensity)
-                #   lastKnownFuelPrice
-                substances = self.reps.get_substances_by_power_plant(powerplant.name)
-                if len(substances) > 0:  # Only done for 1 substance atm
-                    mc = 3600 / (float(powerplant.parameters['Efficiency']) * float(
-                        substances[0].parameters['energyDensity']))
-                    capacity = self.reps.get_available_power_plant_capacity(powerplant.name)
-                    if capacity == 0:
-                        price_to_bid = 0
-                    else:
-                        price_to_bid = mc
-                    self.reps.create_power_plant_dispatch_plan(powerplant, energy_producer, market, capacity,
-                                                               price_to_bid)
+                capacity = self.reps.get_available_power_plant_capacity(powerplant.name)
+                if capacity == 0:
+                    price_to_bid = 0
+                else:
+                    price_to_bid = mc
+                self.reps.create_power_plant_dispatch_plan(powerplant, energy_producer, market, capacity,
+                                                           price_to_bid)
 
 
 # Clear the market
