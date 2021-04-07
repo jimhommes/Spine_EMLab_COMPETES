@@ -1,17 +1,25 @@
-#
-# This is the Python class responsible for all reads and writes of the SpineDB.
-# This is a separate file so that all import definitions are centralized.
-#
-# Jim Hommes - 25-3-2021
-#
+"""
+This is the Python class responsible for all reads and writes of the SpineDB.
+This is a separate file so that all import definitions are centralized.
+
+Jim Hommes - 25-3-2021
+"""
 from dependencies.repository import *
 from dependencies.spinedb import SpineDB
+from datetime import datetime
 
 
-# Common function to read a SpineDB entry to a Python dict with {object_class_name: class_to_create}
-# class_to_create should inherit ImportObject
-# All parameters are then added to ImportObject.parameters
 def db_objects_to_dict(db_data, to_dict, object_class_name, class_to_create):
+    """
+    Common function to read a SpineDB entry to a Python dict with {object_class_name: class_to_create}
+    class_to_create should inherit ImportObject
+    All parameters are then added to ImportObject.parameters
+
+    :param db_data: The exported data from SpineDB
+    :param to_dict: The dictionary in which this data should be exported
+    :param object_class_name: The SpineDB class name of the object class
+    :param class_to_create: The Python class to insert into the dictionary
+    """
     for unit in [i for i in db_data['objects'] if i[0] == object_class_name]:
         to_dict[unit[1]] = class_to_create(unit)
 
@@ -20,8 +28,14 @@ def db_objects_to_dict(db_data, to_dict, object_class_name, class_to_create):
             unit.add_parameter_value(parameterValue)
 
 
-# Function used to translate SpineDB relationships to an array of tuples
 def db_relationships_to_arr(db_data, to_arr, relationship_class_name):
+    """
+    Function used to translate SpineDB relationships to an array of tuples
+
+    :param db_data: The exported data from SpineDB
+    :param to_arr: The array in which this data should be exported
+    :param relationship_class_name: The SpineDB class name of the relationship
+    """
     for unit in [i for i in db_data['relationships'] if i[0] == relationship_class_name]:
         if len(unit[1]) == 2:
             to_arr.append((unit[1][0], unit[1][1]))
@@ -69,7 +83,7 @@ def import_power_plant_dispatch_plans_to_reps(db_data, reps):
     return reps
 
 
-def db_load_fuel_mix(db_data, reps):
+def import_fuel_mix(db_data, reps):
     for unit in [i for i in db_data['relationship_parameter_values'] if i[0] == 'PowerGeneratingTechnologyFuel']:
         if unit[1][0] in reps.power_plants_fuel_mix.keys():
             reps.power_plants_fuel_mix[unit[1][0]].append(SubstanceInFuelMix(
@@ -80,6 +94,9 @@ def db_load_fuel_mix(db_data, reps):
 
 
 class SpineDBReaderWriter:
+    """
+    The class that handles all writing and reading to the SpineDB.
+    """
 
     def __init__(self, db_url):
         self.db_url = db_url
@@ -103,7 +120,7 @@ class SpineDBReaderWriter:
         db_objects_to_dict(db_data, reps.capacity_markets, 'CapacityMarkets', CapacityMarket)
         db_objects_to_dict(db_data, reps.power_grid_nodes, 'PowerGridNodes', PowerGridNode)
 
-        db_load_fuel_mix(db_data, reps)
+        import_fuel_mix(db_data, reps)
 
         # Import all time-based values (changed with ticks)
         reps = import_market_clearing_points_to_reps(db_data, reps)

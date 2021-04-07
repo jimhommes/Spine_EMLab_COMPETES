@@ -1,9 +1,9 @@
-#
-# The main EM-Lab file for in SpineToolbox.
-# Commandline arguments provide which modules are run and which aren't.
-#
-# Jim Hommes - 25-3-2021
-#
+"""
+The main EM-Lab file for in SpineToolbox.
+Commandline arguments provide which modules are run and which aren't.
+
+Jim Hommes - 25-3-2021
+"""
 
 import sys
 from dependencies.spinedb_reader_writer import *
@@ -13,18 +13,15 @@ from modules.capacitymarket import *
 run_capacity_market = False
 run_electricity_spot_market = False
 
-# Loop over provided arguments and select modules
-for arg in sys.argv[2:]:
+for arg in sys.argv[2:]:    # Loop over provided arguments and select modules
     if arg == 'run_capacity_market':
         run_electricity_spot_market = True
         run_capacity_market = True
     if arg == 'run_electricity_spot_market':
         run_electricity_spot_market = True
 
-# Read input database from Spine
-db_url = sys.argv[1]
+db_url = sys.argv[1]    # The database URL from SpineToolbox
 
-# Create Objects from the DB in the Repository
 spinedb_reader_writer = SpineDBReaderWriter(db_url)
 reps = spinedb_reader_writer.read_db_and_create_repository()
 

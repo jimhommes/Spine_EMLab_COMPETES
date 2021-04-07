@@ -1,9 +1,9 @@
-#
-# Dummy file to simulate a COMPETES output.
-# Just generates random numbers and adds this to the SpineDB.
-#
-# Jim Hommes - 17-3-2021
-#
+"""
+Dummy file to simulate a COMPETES output.
+It executes a simple type of Electricity Spot Market.
+
+Jim Hommes - 17-3-2021
+"""
 
 import sys
 from dependencies.spinedb_reader_writer import *

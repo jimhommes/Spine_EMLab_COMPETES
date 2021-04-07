@@ -1,7 +1,12 @@
+"""
+This file contains all interactions with the system clock.
+A tick is one year.
+
+Jim Hommes - 7-4-2021
+"""
 import sys
 from dependencies.spinedb import SpineDB
 
-# Read input database from Spine
 db_url = sys.argv[1]
 db = SpineDB(db_url)
 
@@ -18,6 +23,7 @@ if len(sys.argv) >= 2:
         db.import_object_parameter_values([(object_name, object_name, object_parameter_value_name, 0, '0')])
         db.commit('Clock intialization')
         print('Done initializing clock (tick 0)')
+
     if sys.argv[2] == 'increment_clock':
         print('Incrementing Clock (tick +1)')
         db_data = db.export_data()

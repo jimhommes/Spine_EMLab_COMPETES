@@ -1,16 +1,17 @@
-#
-# The Repository: home of all objects that play a part in the model.
-# All objects are read through the SpineDBReader and stored in the Repository.
-#
-# Jim Hommes - 25-3-2021
-#
-from datetime import datetime
+"""
+The Repository: home of all objects that play a part in the model.
+All objects are read through the SpineDBReader and stored in the Repository.
+
+Jim Hommes - 25-3-2021
+"""
 
 
-# Parent Class for all objects imported from Spine
-# Will probably become redundant in the future as it's neater to translate parameters to Python parameters
-#   instead of a dict like this
 class ImportObject:
+    """
+    Parent Class for all objects imported from Spine
+    Will probably become redundant in the future as it's neater to translate parameters to Python parameters
+    instead of a dict like this
+    """
     def __init__(self, import_obj):
         self.name = import_obj[1]
         self.parameters = {}
@@ -25,9 +26,11 @@ class ImportObject:
         pass
 
 
-# The Repository class reads DB data at initialization and loads all objects and relationships
-# Also provides all functions that require e.g. sorting
 class Repository:
+    """
+    The Repository class reads DB data at initialization and loads all objects and relationships
+    Also provides all functions that require e.g. sorting
+    """
     def __init__(self):
         self.dbrw = None
 
@@ -128,7 +131,9 @@ class Repository:
         return self.temporary_fixed_fuel_prices[substance_name]
 
 
-# Objects that are imported. Pass because they inherit name and parameters from ImportObject
+"""
+From here on defitions of Objects that are imported. Pass because they inherit name and parameters from ImportObject
+"""
 
 
 class EnergyProducer(ImportObject):

@@ -1,10 +1,11 @@
-#
-# The parent module class.
-# This class makes sure there is structure in the commits to the SpineDB.
-# At the end of every module, there is a commit.
-#
-# Jim Hommes - 25-3-2021
-#
+"""
+The parent module class.
+This class makes sure there is structure in the commits to the SpineDB.
+Inside of every module the staging is done.
+At the end of every module, there is a commit.
+
+Jim Hommes - 25-3-2021
+"""
 
 from datetime import datetime
 

@@ -1,15 +1,17 @@
-#
-# All operations for the Electricity Spot Market
-# Based on the role ClearIterativeCO2AndElectricitySpotMarketTwoCountryRole
-#
-# Jim Hommes - 25-3-2021
-#
+"""
+All operations for the Electricity Spot Market
+Based on the role ClearIterativeCO2AndElectricitySpotMarketTwoCountryRole
+
+Jim Hommes - 25-3-2021
+"""
 import json
 from modules.market import Market
 
 
-# Submit bids
 class ElectricitySpotMarketSubmitBids(Market):
+    """
+    The class that submits all bids to the Electricity Spot Market.
+    """
 
     def __init__(self, reps):
         super().__init__('COMPETES Dummy: Electricity Spot Market: Submit Bids', reps)
@@ -27,8 +29,10 @@ class ElectricitySpotMarketSubmitBids(Market):
                 self.reps.create_power_plant_dispatch_plan(powerplant, energy_producer, market, capacity, mc)
 
 
-# Clear the market
 class ElectricitySpotMarketClearing(Market):
+    """
+    The class that clears the Electricity Spot Market.
+    """
 
     def __init__(self, reps):
         super().__init__('COMPETES Dummy: Electricity Spot Market: Clear Market', reps)
