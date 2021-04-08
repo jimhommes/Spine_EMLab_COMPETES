@@ -102,10 +102,8 @@ class Repository:
 
         self.dbrw.stage_power_plant_dispatch_plan(ppdp, self.current_tick)
 
-    def get_electricity_spot_market_for_plant(self, plant_name):
-        plant = self.power_plants[plant_name]
-        node = plant.parameters['Location']
-        zone = self.power_grid_nodes[node].parameters['Zone']
+    def get_electricity_spot_market_for_plant(self, plant):
+        zone = plant.location.parameters['Zone']
         res = [i for i in self.electricity_spot_markets.values() if i.parameters['zone'] == zone]
         if len(res) == 0:
             return None
@@ -232,8 +230,9 @@ class PowerPlantDispatchPlan(ImportObject):
 
     def add_parameter_value(self, reps, import_obj):
         self.tick = int(import_obj[4])
-        self.plant = reps.power_plants[import_obj[1]]
-        if import_obj[2] == 'EnergyProducer':
+        if import_obj[2] == 'Plant':
+            self.plant = reps.power_plants[import_obj[3]]
+        elif import_obj[2] == 'EnergyProducer':
             self.bidder = reps.energy_producers[import_obj[3]]
         if import_obj[2] == 'Market':
             self.bidding_market = reps.capacity_markets[import_obj[3]] if \

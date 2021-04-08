@@ -22,10 +22,10 @@ class ElectricitySpotMarketSubmitBids(Market):
         for energy_producer in self.reps.energy_producers.values():
 
             # For every plant owned by energyProducer
-            for powerplant in self.reps.get_power_plants_by_owner(energy_producer.name):
-                market = self.reps.get_electricity_spot_market_for_plant(powerplant.name)
+            for powerplant in self.reps.get_power_plants_by_owner(energy_producer):
+                market = self.reps.get_electricity_spot_market_for_plant(powerplant)
                 mc = self.calculate_marginal_cost_excl_co2_market_cost(powerplant)
-                capacity = int(powerplant.parameters['Capacity'])
+                capacity = powerplant.capacity
                 self.reps.create_power_plant_dispatch_plan(powerplant, energy_producer, market, capacity, mc)
 
 

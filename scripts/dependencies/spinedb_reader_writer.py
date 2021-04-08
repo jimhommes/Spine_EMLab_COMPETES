@@ -125,17 +125,19 @@ class SpineDBReaderWriter:
     def stage_init_power_plant_dispatch_plan_structure(self):
         self.stage_object_class(self.powerplant_dispatch_plan_classname)
         self.stage_object_parameters(self.powerplant_dispatch_plan_classname,
-                                     ['Market', 'Price', 'Capacity', 'EnergyProducer', 'AcceptedAmount', 'Status'])
+                                     ['Plant', 'Market', 'Price', 'Capacity', 'EnergyProducer', 'AcceptedAmount',
+                                      'Status'])
 
     def stage_power_plant_dispatch_plan(self, ppdp, current_tick):
         self.stage_object(self.powerplant_dispatch_plan_classname, ppdp.name)
         self.stage_object_parameter_values(self.powerplant_dispatch_plan_classname, ppdp.name,
-                                           [('Market', ppdp.bidding_market.name),
-                                             ('Price', ppdp.price),
-                                             ('Capacity', ppdp.amount),
-                                             ('EnergyProducer', ppdp.bidder.name),
-                                             ('AcceptedAmount', ppdp.accepted_amount),
-                                             ('Status', ppdp.status)], str(current_tick))
+                                           [('Plant', ppdp.plant.name),
+                                            ('Market', ppdp.bidding_market.name),
+                                            ('Price', ppdp.price),
+                                            ('Capacity', ppdp.amount),
+                                            ('EnergyProducer', ppdp.bidder.name),
+                                            ('AcceptedAmount', ppdp.accepted_amount),
+                                            ('Status', ppdp.status)], str(current_tick))
 
     def stage_market_clearing_point(self, mcp, current_tick):
         object_name = mcp.name
