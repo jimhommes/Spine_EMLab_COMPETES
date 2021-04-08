@@ -37,6 +37,8 @@ class CapacityMarketSubmitBids(Market):
                                                      powerplant_load_factor * 8760
 
                 capacity = self.reps.get_available_power_plant_capacity(powerplant.name)
+                print('TODO: Discuss - in emlab full capacity is bid')
+
                 net_revenues = expected_electricity_revenues - fixed_on_m_cost
                 price_to_bid = 0
                 if self.reps.current_tick > 0:
