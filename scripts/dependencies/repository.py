@@ -4,6 +4,7 @@ All objects are read through the SpineDBReader and stored in the Repository.
 
 Jim Hommes - 25-3-2021
 """
+from datetime import datetime
 
 
 class ImportObject:
@@ -12,11 +13,11 @@ class ImportObject:
     Will probably become redundant in the future as it's neater to translate parameters to Python parameters
     instead of a dict like this
     """
-    def __init__(self, import_obj):
-        self.name = import_obj[1]
+    def __init__(self, name):
+        self.name = name
         self.parameters = {}
 
-    def add_parameter_value(self, import_obj):
+    def add_parameter_value(self, reps, import_obj):
         if import_obj[4] == 'init':
             self.parameters[import_obj[2]] = import_obj[3]
         else:
@@ -42,10 +43,10 @@ class Repository:
         self.power_plants_fuel_mix = {}
         self.electricity_spot_markets = {}
         self.capacity_markets = {}
-        self.power_plant_dispatch_plans = []
+        self.power_plant_dispatch_plans = {}
         self.power_generating_technologies = {}
         self.load = {}
-        self.market_clearing_points = []
+        self.market_clearing_points = {}
         self.power_grid_nodes = {}
 
         self.temporary_fixed_fuel_prices = {'biomass': 10, 'fuelOil': 20, 'hardCoal': 30, 'ligniteCoal': 10,
@@ -58,10 +59,11 @@ class Repository:
         self.power_plant_dispatch_plan_status_awaiting = 'Awaiting'
 
     def get_power_plants_by_owner(self, owner):
-        return [i for i in self.power_plants.values() if i.parameters['Owner'] == owner]
+        return [i for i in self.power_plants.values() if i.owner == owner]
 
     def create_power_plant_dispatch_plan(self, plant, bidder, bidding_market, amount, price):
-        ppdp = PowerPlantDispatchPlan()
+        name = 'PowerPlantDispatchPlan ' + str(datetime.now())
+        ppdp = PowerPlantDispatchPlan(name)
         ppdp.plant = plant
         ppdp.bidder = bidder
         ppdp.bidding_market = bidding_market
@@ -69,19 +71,20 @@ class Repository:
         ppdp.price = price
         ppdp.status = self.power_plant_dispatch_plan_status_awaiting
         ppdp.accepted_amount = 0
-        self.power_plant_dispatch_plans.append(ppdp)
+        self.power_plant_dispatch_plans[name] = ppdp
         self.dbrw.stage_power_plant_dispatch_plan(ppdp, self.current_tick)
 
     def get_sorted_dispatch_plans_by_market(self, market_name):
-        return sorted([i for i in self.power_plant_dispatch_plans if i.bidding_market.name == market_name],
+        return sorted([i for i in self.power_plant_dispatch_plans.values() if i.bidding_market.name == market_name],
                       key=lambda i: i.price)
 
     def create_market_clearing_point(self, market, price, capacity):
-        mcp = MarketClearingPoint()
+        name = 'MarketClearingPoint ' + str(datetime.now())
+        mcp = MarketClearingPoint(name)
         mcp.market = market
         mcp.price = price
         mcp.capacity = capacity
-        self.market_clearing_points.append(mcp)
+        self.market_clearing_points[name] = mcp
         self.dbrw.stage_market_clearing_point(mcp, self.current_tick)
 
     def get_available_power_plant_capacity(self, plant_name):
@@ -91,7 +94,7 @@ class Repository:
         return float(plant.parameters['Capacity']) - ppdps_sum_accepted_amount
 
     def get_power_plant_dispatch_plans_by_plant(self, plant_name):
-        return [i for i in self.power_plant_dispatch_plans if i.plant.name == plant_name]
+        return [i for i in self.power_plant_dispatch_plans.values() if i.plant.name == plant_name]
 
     def set_power_plant_dispatch_plan_production(self, ppdp, status, accepted_amount):
         ppdp.status = status
@@ -141,6 +144,31 @@ class EnergyProducer(ImportObject):
 
 
 class PowerPlant(ImportObject):
+    def __init__(self, name):
+        super().__init__(name)
+        self.technology = None
+        self.location = ''
+        self.age = 0
+        self.owner = None
+        self.capacity = 0
+        self.efficiency = 0
+        self.construction_start_time = 0
+
+    def add_parameter_value(self, reps, import_obj):
+        if import_obj[2] == 'Technology':
+            self.technology = reps.power_generating_technologies[import_obj[3]]
+        elif import_obj[2] == 'Location':
+            self.location = import_obj[3]
+        elif import_obj[2] == 'Age':
+            self.age = int(import_obj[3])
+            self.construction_start_time = -1 * int(import_obj[3])
+        elif import_obj[2] == 'Owner':
+            self.owner = reps.energy_producers[import_obj[3]]
+        elif import_obj[2] == 'Capacity':
+            self.capacity = int(import_obj[3])
+        elif import_obj[2] == 'Efficiency':
+            self.efficiency = float(import_obj[3])
+
     def calculate_emission_intensity(self, reps):
         emission = 0
         for substance_in_fuel_mix in reps.get_substances_in_fuel_mix_by_plant(self.name):
@@ -150,6 +178,13 @@ class PowerPlant(ImportObject):
             emission_for_this_fuel = fuel_amount * co2_density
             emission += emission_for_this_fuel
         return emission
+
+    # def get_actual_fixed_operating_cost(self):
+#       this.getTechnology().getFixedOperatingCost(timeOfPermitorBuildingStart + getActualLeadtime() + getActualPermittime())
+#       * getActualNominalCapacity
+
+    # def get_actual_nominal_capacity(self):
+#         this.getTechnology().getCapacity() * location.getCapacityMultiplicationFactor()
 
 
 class Substance(ImportObject):
@@ -186,8 +221,9 @@ class PowerGridNode(ImportObject):
     pass
 
 
-class PowerPlantDispatchPlan:
-    def __init__(self):
+class PowerPlantDispatchPlan(ImportObject):
+    def __init__(self, name):
+        super().__init__(name)
         self.plant = None
         self.bidder = None
         self.bidding_market = None
@@ -197,13 +233,41 @@ class PowerPlantDispatchPlan:
         self.accepted_amount = 0
         self.tick = -1
 
+    def add_parameter_value(self, reps, import_obj):
+        self.tick = int(import_obj[4])
+        self.plant = reps.power_plants[import_obj[1]]
+        if import_obj[2] == 'EnergyProducer':
+            self.bidder = reps.energy_producers[import_obj[3]]
+        if import_obj[2] == 'Market':
+            self.bidding_market = reps.capacity_markets[import_obj[3]] if \
+                import_obj[3] in reps.capacity_markets.keys() \
+                else reps.electricity_spot_markets[import_obj[3]]
+        if import_obj[2] == 'Capacity':
+            self.amount = import_obj[3]
+        if import_obj[2] == 'AcceptedAmount':
+            self.accepted_amount = float(import_obj[3])
+        if import_obj[2] == 'Price':
+            self.price = float(import_obj[3])
+        if import_obj[2] == 'Status':
+            self.status = import_obj[3]
 
-class MarketClearingPoint:
-    def __init__(self):
+
+class MarketClearingPoint(ImportObject):
+    def __init__(self, name):
+        super().__init__(name)
         self.market = None
         self.price = 0
         self.capacity = 0
         self.tick = -1
+
+    def add_parameter_value(self, reps, import_obj):
+        self.tick = int(import_obj[4])
+        if import_obj[2] == 'Price':
+            self.price = float(import_obj[3])
+        if import_obj[2] == 'Market':
+            self.market = import_obj[3]
+        if import_obj[2] == 'TotalCapacity':
+            self.capacity = float(import_obj[3])
 
 
 class SlopingDemandCurve:

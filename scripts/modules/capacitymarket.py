@@ -21,11 +21,12 @@ class CapacityMarketSubmitBids(Market):
             for powerplant in self.reps.get_power_plants_by_owner(energy_producer.name):
                 market = self.reps.get_capacity_market_for_plant(powerplant.name)
                 mc = self.calculate_marginal_cost_excl_co2_market_cost(powerplant)
+                fixed_on_m_cost = powerplant.get_actual_fixed_operating_cost()
+
                 capacity = self.reps.get_available_power_plant_capacity(powerplant.name)
 
                 print('TODO: Plant load factor')
                 print('TODO: Expected Electricity Revenues')
-                print('TODO: Fixed Operating Cost')
                 if capacity == 0:
                     price_to_bid = 0
                 else:

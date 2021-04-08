@@ -9,23 +9,25 @@ from dependencies.spinedb import SpineDB
 from datetime import datetime
 
 
-def db_objects_to_dict(db_data, to_dict, object_class_name, class_to_create):
+def db_objects_to_dict(reps, db_data, to_dict, object_class_name, class_to_create):
     """
     Common function to read a SpineDB entry to a Python dict with {object_class_name: class_to_create}
     class_to_create should inherit ImportObject
     All parameters are then added to ImportObject.parameters
 
+    :param reps: The repository, so that functions with custom add_parameter_value can add extract objects.
     :param db_data: The exported data from SpineDB
     :param to_dict: The dictionary in which this data should be exported
     :param object_class_name: The SpineDB class name of the object class
     :param class_to_create: The Python class to insert into the dictionary
     """
     for unit in [i for i in db_data['objects'] if i[0] == object_class_name]:
-        to_dict[unit[1]] = class_to_create(unit)
+        to_dict[unit[1]] = class_to_create(unit[1])
 
     for unit in to_dict.values():
-        for parameterValue in [i for i in db_data['object_parameter_values'] if i[1] == unit.name]:
-            unit.add_parameter_value(parameterValue)
+        for parameterValue in [i for i in db_data['object_parameter_values']
+                               if i[0] == object_class_name and i[1] == unit.name]:
+            unit.add_parameter_value(reps, parameterValue)
 
 
 def db_relationships_to_arr(db_data, to_arr, relationship_class_name):
@@ -41,46 +43,6 @@ def db_relationships_to_arr(db_data, to_arr, relationship_class_name):
             to_arr.append((unit[1][0], unit[1][1]))
         else:
             to_arr.append((unit[1][0], unit[1][1], unit[1][2]))
-
-
-def import_market_clearing_points_to_reps(db_data, reps):
-    for unit in [i for i in db_data['objects'] if i[0] == 'MarketClearingPoints']:
-        mcp = MarketClearingPoint()
-        for parameterValue in [i for i in db_data['object_parameter_values'] if
-                               i[0] == 'MarketClearingPoints' and i[1] == unit[1]]:
-            mcp.tick = int(parameterValue[4])
-            if parameterValue[2] == 'Price':
-                mcp.price = float(parameterValue[3])
-            if parameterValue[2] == 'Market':
-                mcp.market = parameterValue[3]
-            if parameterValue[2] == 'TotalCapacity':
-                mcp.capacity = float(parameterValue[3])
-        reps.market_clearing_points.append(mcp)
-    return reps
-
-
-def import_power_plant_dispatch_plans_to_reps(db_data, reps):
-    for unit in [i for i in db_data['objects'] if i[0] == 'PowerPlantDispatchPlans']:
-        ppdp = PowerPlantDispatchPlan()
-        for parameterValue in [i for i in db_data['object_parameter_values'] if
-                               i[0] == 'PowerPlantDispatchPlans' and i[1] == unit[1]]:
-            ppdp.tick = int(parameterValue[4])
-            ppdp.plant = reps.power_plants[parameterValue[1]]
-            if parameterValue[2] == 'EnergyProducer':
-                ppdp.bidder = reps.energy_producers[parameterValue[3]]
-            if parameterValue[2] == 'Market':
-                ppdp.bidding_market = reps.capacity_markets[parameterValue[3]] if \
-                    parameterValue[3] in reps.capacity_markets.keys() \
-                    else reps.electricity_spot_markets[parameterValue[3]]
-            if parameterValue[2] == 'Capacity':
-                ppdp.amount = parameterValue[3]
-            if parameterValue[2] == 'AcceptedAmount':
-                ppdp.accepted_amount = float(parameterValue[3])
-            if parameterValue[2] == 'Price':
-                ppdp.price = float(parameterValue[3])
-            if parameterValue[2] == 'Status':
-                ppdp.status = parameterValue[3]
-    return reps
 
 
 def import_fuel_mix(db_data, reps):
@@ -110,21 +72,21 @@ class SpineDBReaderWriter:
         db_data = self.db.export_data()
 
         # Import all initialized variables
-        db_objects_to_dict(db_data, reps.energy_producers, 'EnergyProducers', EnergyProducer)
-        db_objects_to_dict(db_data, reps.power_plants, 'PowerPlants', PowerPlant)
-        db_objects_to_dict(db_data, reps.substances, 'Substances', Substance)
-        db_objects_to_dict(db_data, reps.electricity_spot_markets, 'ElectricitySpotMarkets', ElectricitySpotMarket)
-        db_objects_to_dict(db_data, reps.power_generating_technologies, 'PowerGeneratingTechnologies',
+        db_objects_to_dict(reps, db_data, reps.energy_producers, 'EnergyProducers', EnergyProducer)
+        db_objects_to_dict(reps, db_data, reps.substances, 'Substances', Substance)
+        db_objects_to_dict(reps, db_data, reps.electricity_spot_markets, 'ElectricitySpotMarkets',
+                           ElectricitySpotMarket)
+        db_objects_to_dict(reps, db_data, reps.power_generating_technologies, 'PowerGeneratingTechnologies',
                            PowerGeneratingTechnology)
-        db_objects_to_dict(db_data, reps.load, 'ldcNLDE-hourly', HourlyLoad)
-        db_objects_to_dict(db_data, reps.capacity_markets, 'CapacityMarkets', CapacityMarket)
-        db_objects_to_dict(db_data, reps.power_grid_nodes, 'PowerGridNodes', PowerGridNode)
+        db_objects_to_dict(reps, db_data, reps.load, 'ldcNLDE-hourly', HourlyLoad)
+        db_objects_to_dict(reps, db_data, reps.capacity_markets, 'CapacityMarkets', CapacityMarket)
+        db_objects_to_dict(reps, db_data, reps.power_grid_nodes, 'PowerGridNodes', PowerGridNode)
+        db_objects_to_dict(reps, db_data, reps.power_plants, 'PowerPlants', PowerPlant)
+        db_objects_to_dict(reps, db_data, reps.power_plant_dispatch_plans, 'PowerPlantDispatchPlans',
+                           PowerPlantDispatchPlan)
+        db_objects_to_dict(reps, db_data, reps.market_clearing_points, 'MarketClearingPoints', MarketClearingPoint)
 
-        import_fuel_mix(db_data, reps)
-
-        # Import all time-based values (changed with ticks)
-        reps = import_market_clearing_points_to_reps(db_data, reps)
-        reps = import_power_plant_dispatch_plans_to_reps(db_data, reps)
+        import_fuel_mix(db_data, reps)  # Stand-alone a.t.m. because it's the only relationship_parameter_values
 
         # Determine current tick
         reps.current_tick = max(
@@ -166,8 +128,8 @@ class SpineDBReaderWriter:
                                      ['Market', 'Price', 'Capacity', 'EnergyProducer', 'AcceptedAmount', 'Status'])
 
     def stage_power_plant_dispatch_plan(self, ppdp, current_tick):
-        self.stage_object(self.powerplant_dispatch_plan_classname, ppdp.plant.name)
-        self.stage_object_parameter_values(self.powerplant_dispatch_plan_classname, ppdp.plant.name,
+        self.stage_object(self.powerplant_dispatch_plan_classname, ppdp.name)
+        self.stage_object_parameter_values(self.powerplant_dispatch_plan_classname, ppdp.name,
                                            [('Market', ppdp.bidding_market.name),
                                              ('Price', ppdp.price),
                                              ('Capacity', ppdp.amount),
@@ -176,7 +138,7 @@ class SpineDBReaderWriter:
                                              ('Status', ppdp.status)], str(current_tick))
 
     def stage_market_clearing_point(self, mcp, current_tick):
-        object_name = 'ClearingPoint-' + str(datetime.now())
+        object_name = mcp.name
         self.stage_object(self.market_clearing_point_object_classname, object_name)
         self.stage_object_parameter_values(self.market_clearing_point_object_classname, object_name,
                                            [('Market', mcp.market),
