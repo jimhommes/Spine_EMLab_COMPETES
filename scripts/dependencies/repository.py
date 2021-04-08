@@ -13,6 +13,7 @@ class ImportObject:
     Will probably become redundant in the future as it's neater to translate parameters to Python parameters
     instead of a dict like this
     """
+
     def __init__(self, name):
         self.name = name
         self.parameters = {}
@@ -32,6 +33,7 @@ class Repository:
     The Repository class reads DB data at initialization and loads all objects and relationships
     Also provides all functions that require e.g. sorting
     """
+
     def __init__(self):
         self.dbrw = None
 
@@ -142,7 +144,7 @@ class PowerPlant(ImportObject):
     def __init__(self, name):
         super().__init__(name)
         self.technology = None
-        self.location = ''
+        self.location = None
         self.age = 0
         self.owner = None
         self.capacity = 0
@@ -174,12 +176,14 @@ class PowerPlant(ImportObject):
             emission += emission_for_this_fuel
         return emission
 
-    # def get_actual_fixed_operating_cost(self):
-#       this.getTechnology().getFixedOperatingCost(timeOfPermitorBuildingStart + getActualLeadtime() + getActualPermittime())
-#       * getActualNominalCapacity
+    def get_actual_fixed_operating_cost(self):
+        return self.technology.get_fixed_operating_cost(self.construction_start_time +
+                                                        int(self.technology.parameters['expectedLeadtime']) +
+                                                        int(self.technology.parameters['expectedPermittime'])) \
+               * self.get_actual_nominal_capacity()
 
-    # def get_actual_nominal_capacity(self):
-#         this.getTechnology().getCapacity() * location.getCapacityMultiplicationFactor()
+    def get_actual_nominal_capacity(self):
+        return self.technology.capacity * float(self.location.parameters['CapacityMultiplicationFactor'])
 
 
 class Substance(ImportObject):
@@ -205,7 +209,67 @@ class CapacityMarket(ImportObject):
 
 
 class PowerGeneratingTechnology(ImportObject):
-    pass
+    def __init__(self, name):
+        super().__init__(name)
+        self.capacity = 0
+        self.intermittent = False
+        self.applicable_for_long_term_contract = False
+        self.peak_segment_dependent_availability = 0
+        self.base_segment_dependent_availability = 0
+        self.maximum_installed_capacity_fraction_per_agent = 0
+        self.maximum_installed_capacity_fraction_in_country = 0
+        self.minimum_fuel_quality = 0
+        self.expected_permittime = 0
+        self.expected_leadtime = 0
+        self.expected_lifetime = 0
+        self.fixed_operating_cost_modifier_after_lifetime = 0
+        self.minimum_running_hours = 0
+        self.depreciation_time = 0
+        self.efficiency_time_series = None
+        self.fixed_operating_cost_time_series = None
+        self.investment_cost_time_series = None
+        self.co2_capture_efficiency = 0
+
+    def add_parameter_value(self, reps, import_obj):
+        if import_obj[2] == 'capacity':
+            self.capacity = int(import_obj[3])
+        elif import_obj[2] == 'intermittent':
+            self.intermittent = 'TRUE' == import_obj[3]
+        elif import_obj[2] == 'applicableForLongTermContract':
+            self.applicable_for_long_term_contract = 'TRUE' == import_obj[3]
+        elif import_obj[2] == 'peakSegmentDependentAvailability':
+            self.peak_segment_dependent_availability = float(import_obj[3])
+        elif import_obj[2] == 'baseSegmentDependentAvailability':
+            self.base_segment_dependent_availability = float(import_obj[3])
+        elif import_obj[2] == 'maximumInstalledCapacityFractionPerAgent':
+            self.maximum_installed_capacity_fraction_per_agent = float(import_obj[3])
+        elif import_obj[2] == 'maximumInstalledCapacityFractionInCountry':
+            self.maximum_installed_capacity_fraction_in_country = float(import_obj[3])
+        elif import_obj[2] == 'minimumFuelQuality':
+            self.minimum_fuel_quality = float(import_obj[3])
+        elif import_obj[2] == 'expectedPermittime':
+            self.expected_permittime = int(import_obj[3])
+        elif import_obj[2] == 'expectedLeadtime':
+            self.expected_leadtime = int(import_obj[3])
+        elif import_obj[2] == 'expectedLifetime':
+            self.expected_lifetime = int(import_obj[3])
+        elif import_obj[2] == 'fixedOperatingCostModifierAfterLifetime':
+            self.fixed_operating_cost_modifier_after_lifetime = float(import_obj[3])
+        elif import_obj[2] == 'minimumRunningHours':
+            self.minimum_running_hours = int(import_obj[3])
+        elif import_obj[2] == 'depreciationTime':
+            self.depreciation_time = int(import_obj[3])
+        elif import_obj[2] == 'efficiencyTimeSeries':
+            self.efficiency_time_series = reps.geometric_trends[import_obj[3]]
+        elif import_obj[2] == 'fixedOperatingCostTimeSeries':
+            self.fixed_operating_cost_time_series = reps.geometric_trends[import_obj[3]]
+        elif import_obj[2] == 'investmentCostTimeSeries':
+            self.investment_cost_time_series = reps.geometric_trends[import_obj[3]]
+        elif import_obj[2] == 'co2CaptureEfficiency':
+            self.co2_capture_efficiency = float(import_obj[3])
+
+    def get_fixed_operating_cost(self, time):
+        self.fixed_operating_cost_time_series.get_value(time)
 
 
 class HourlyLoad(ImportObject):
@@ -284,3 +348,19 @@ class SlopingDemandCurve:
             return self.price_cap - m * (volume - self.lm_volume)
         elif self.um_volume < volume:
             return 0
+
+
+class GeometricTrend(ImportObject):
+    def __init__(self, name):
+        super().__init__(name)
+        self.start = 0
+        self.growth_rate = 0
+
+    def add_parameter_value(self, reps, import_obj):
+        if import_obj[2] == 'start':
+            self.start = int(import_obj[3])
+        elif import_obj[2] == 'growthRate':
+            self.growth_rate = float(import_obj[3])
+
+    def get_value(self, time):
+        return pow(1 + self.growth_rate, time) * self.start
