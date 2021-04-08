@@ -20,17 +20,30 @@ class CapacityMarketSubmitBids(Market):
             # For every plant owned by energyProducer
             for powerplant in self.reps.get_power_plants_by_owner(energy_producer):
                 market = self.reps.get_capacity_market_for_plant(powerplant)
+                emarket = self.reps.get_electricity_spot_market_for_plant(powerplant)
                 mc = self.calculate_marginal_cost_excl_co2_market_cost(powerplant)
                 fixed_on_m_cost = powerplant.get_actual_fixed_operating_cost()
 
-                capacity = self.reps.get_available_power_plant_capacity(powerplant.name)
+                clearing_point_price = self.reps.get_market_clearing_point_price_for_market_and_time(
+                    self.reps.current_tick - 1, emarket)
 
-                print('TODO: Plant load factor')
-                print('TODO: Expected Electricity Revenues')
-                if capacity == 0:
-                    price_to_bid = 0
-                else:
-                    price_to_bid = mc
+                powerplant_load_factor = 1
+                print('TODO: Plant load factor, necessary?? Upscales with segment part...')
+
+                expected_electricity_revenues = 0
+                if clearing_point_price >= mc:
+                    expected_electricity_revenues += (clearing_point_price - mc) * \
+                                                     powerplant.get_actual_nominal_capacity() * \
+                                                     powerplant_load_factor * 8760
+
+                capacity = self.reps.get_available_power_plant_capacity(powerplant.name)
+                net_revenues = expected_electricity_revenues - fixed_on_m_cost
+                price_to_bid = 0
+                if self.reps.current_tick > 0:
+                    if net_revenues <= 0:
+                        price_to_bid = -1 * net_revenues / (powerplant.get_actual_nominal_capacity() *
+                                                            powerplant.technology.peak_segment_dependent_availability)
+
                 self.reps.create_power_plant_dispatch_plan(powerplant, energy_producer, market, capacity,
                                                            price_to_bid)
 

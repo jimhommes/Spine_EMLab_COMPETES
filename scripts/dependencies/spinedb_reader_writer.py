@@ -72,6 +72,7 @@ class SpineDBReaderWriter:
         db_data = self.db.export_data()
 
         # Import all initialized variables
+        db_objects_to_dict(reps, db_data, reps.geometric_trends, 'GeometricTrends', GeometricTrend)
         db_objects_to_dict(reps, db_data, reps.energy_producers, 'EnergyProducers', EnergyProducer)
         db_objects_to_dict(reps, db_data, reps.substances, 'Substances', Substance)
         db_objects_to_dict(reps, db_data, reps.electricity_spot_markets, 'ElectricitySpotMarkets',

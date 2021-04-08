@@ -50,6 +50,7 @@ class Repository:
         self.load = {}
         self.market_clearing_points = {}
         self.power_grid_nodes = {}
+        self.geometric_trends = {}
 
         self.temporary_fixed_fuel_prices = {'biomass': 10, 'fuelOil': 20, 'hardCoal': 30, 'ligniteCoal': 10,
                                             'naturalGas': 5,
@@ -130,6 +131,20 @@ class Repository:
         print('TODO: Finding last known price for substance - taking fixed price now')
         return self.temporary_fixed_fuel_prices[substance_name]
 
+    def get_market_clearing_point_for_market_and_time(self, tick, market):
+        res = [i for i in self.market_clearing_points.values() if i.market == market and i.tick == tick]
+        if len(res) > 0:
+            return res[0]
+        else:
+            return None
+
+    def get_market_clearing_point_price_for_market_and_time(self, tick, market):
+        if tick >= 0:
+            mcp = self.get_market_clearing_point_for_market_and_time(tick, market)
+            return mcp.price
+        else:
+            return 0
+
 
 """
 From here on defitions of Objects that are imported. Pass because they inherit name and parameters from ImportObject
@@ -171,15 +186,15 @@ class PowerPlant(ImportObject):
         for substance_in_fuel_mix in reps.get_substances_in_fuel_mix_by_plant(self):
             fuel_amount = substance_in_fuel_mix.share
             co2_density = float(substance_in_fuel_mix.substance.parameters['co2Density']) * (1 - float(
-                self.technology.parameters['co2CaptureEfficiency']))
+                self.technology.co2_capture_efficiency))
             emission_for_this_fuel = fuel_amount * co2_density
             emission += emission_for_this_fuel
         return emission
 
     def get_actual_fixed_operating_cost(self):
         return self.technology.get_fixed_operating_cost(self.construction_start_time +
-                                                        int(self.technology.parameters['expectedLeadtime']) +
-                                                        int(self.technology.parameters['expectedPermittime'])) \
+                                                        int(self.technology.expected_leadtime) +
+                                                        int(self.technology.expected_permittime)) \
                * self.get_actual_nominal_capacity()
 
     def get_actual_nominal_capacity(self):
@@ -269,7 +284,7 @@ class PowerGeneratingTechnology(ImportObject):
             self.co2_capture_efficiency = float(import_obj[3])
 
     def get_fixed_operating_cost(self, time):
-        self.fixed_operating_cost_time_series.get_value(time)
+        return self.fixed_operating_cost_time_series.get_value(time)
 
 
 class HourlyLoad(ImportObject):
@@ -325,7 +340,10 @@ class MarketClearingPoint(ImportObject):
         if import_obj[2] == 'Price':
             self.price = float(import_obj[3])
         if import_obj[2] == 'Market':
-            self.market = import_obj[3]
+            if import_obj[3] in reps.capacity_markets.keys():
+                self.market = reps.capacity_markets[import_obj[3]]
+            else:
+                self.market = reps.electricity_spot_markets[import_obj[3]]
         if import_obj[2] == 'TotalCapacity':
             self.capacity = float(import_obj[3])
 
