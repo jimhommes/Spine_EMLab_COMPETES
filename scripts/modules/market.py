@@ -10,7 +10,7 @@ from modules.defaultmodule import DefaultModule
 class Market(DefaultModule):
     def calculate_marginal_fuel_cost(self, plant):
         fc = 0
-        for substance_in_fuel_mix in self.reps.get_substances_in_fuel_mix_by_plant(plant.name):
+        for substance_in_fuel_mix in self.reps.get_substances_in_fuel_mix_by_plant(plant):
             amount = substance_in_fuel_mix.share
             fuel_price = self.reps.find_last_known_price_for_substance(substance_in_fuel_mix.substance.name,
                                                                        self.reps.current_tick)

@@ -18,10 +18,10 @@ class CapacityMarketSubmitBids(Market):
         for energy_producer in self.reps.energy_producers.values():
 
             # For every plant owned by energyProducer
-            for powerplant in self.reps.get_power_plants_by_owner(energy_producer.name):
-                market = self.reps.get_capacity_market_for_plant(powerplant.name)
+            for powerplant in self.reps.get_power_plants_by_owner(energy_producer):
+                market = self.reps.get_capacity_market_for_plant(powerplant)
                 mc = self.calculate_marginal_cost_excl_co2_market_cost(powerplant)
-                fixed_on_m_cost = powerplant.get_actual_fixed_operating_cost()
+                # fixed_on_m_cost = powerplant.get_actual_fixed_operating_cost()
 
                 capacity = self.reps.get_available_power_plant_capacity(powerplant.name)
 

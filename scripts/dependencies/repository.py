@@ -91,7 +91,7 @@ class Repository:
         plant = self.power_plants[plant_name]
         ppdps_sum_accepted_amount = sum([float(i.accepted_amount) for i in
                                          self.get_power_plant_dispatch_plans_by_plant(plant_name)])
-        return float(plant.parameters['Capacity']) - ppdps_sum_accepted_amount
+        return plant.capacity - ppdps_sum_accepted_amount
 
     def get_power_plant_dispatch_plans_by_plant(self, plant_name):
         return [i for i in self.power_plant_dispatch_plans.values() if i.plant.name == plant_name]
@@ -112,20 +112,17 @@ class Repository:
         else:
             return res[0]
 
-    def get_capacity_market_for_plant(self, plant_name):
-        plant = self.power_plants[plant_name]
-        node = plant.parameters['Location']
-        zone = self.power_grid_nodes[node].parameters['Zone']
+    def get_capacity_market_for_plant(self, plant):
+        zone = plant.location.parameters['Zone']
         res = [i for i in self.capacity_markets.values() if i.parameters['zone'] == zone]
         if len(res) == 0:
             return None
         else:
             return res[0]
 
-    def get_substances_in_fuel_mix_by_plant(self, plant_name):
-        technology = self.power_plants[plant_name].parameters['Technology']
-        if technology in self.power_plants_fuel_mix.keys():
-            return self.power_plants_fuel_mix[self.power_plants[plant_name].parameters['Technology']]
+    def get_substances_in_fuel_mix_by_plant(self, plant):
+        if plant.technology.name in self.power_plants_fuel_mix.keys():
+            return self.power_plants_fuel_mix[plant.technology.name]
         else:
             return []
 
@@ -158,7 +155,7 @@ class PowerPlant(ImportObject):
         if import_obj[2] == 'Technology':
             self.technology = reps.power_generating_technologies[import_obj[3]]
         elif import_obj[2] == 'Location':
-            self.location = import_obj[3]
+            self.location = reps.power_grid_nodes[import_obj[3]]
         elif import_obj[2] == 'Age':
             self.age = int(import_obj[3])
             self.construction_start_time = -1 * int(import_obj[3])
@@ -171,10 +168,10 @@ class PowerPlant(ImportObject):
 
     def calculate_emission_intensity(self, reps):
         emission = 0
-        for substance_in_fuel_mix in reps.get_substances_in_fuel_mix_by_plant(self.name):
+        for substance_in_fuel_mix in reps.get_substances_in_fuel_mix_by_plant(self):
             fuel_amount = substance_in_fuel_mix.share
             co2_density = float(substance_in_fuel_mix.substance.parameters['co2Density']) * (1 - float(
-                reps.power_generating_technologies[self.parameters['Technology']].parameters['co2CaptureEfficiency']))
+                self.technology.parameters['co2CaptureEfficiency']))
             emission_for_this_fuel = fuel_amount * co2_density
             emission += emission_for_this_fuel
         return emission
