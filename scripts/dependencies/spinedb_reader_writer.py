@@ -27,7 +27,7 @@ def db_objects_to_dict(reps, db_data, to_dict, object_class_name, class_to_creat
     for unit in to_dict.values():
         for parameterValue in [i for i in db_data['object_parameter_values']
                                if i[0] == object_class_name and i[1] == unit.name]:
-            unit.add_parameter_value(reps, parameterValue)
+            unit.add_parameter_value(reps, parameterValue[2], parameterValue[3], parameterValue[4])
 
 
 def db_relationships_to_arr(db_data, to_arr, relationship_class_name):

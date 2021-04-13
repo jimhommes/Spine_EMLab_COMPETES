@@ -18,13 +18,13 @@ class ImportObject:
         self.name = name
         self.parameters = {}
 
-    def add_parameter_value(self, reps, import_obj):
-        if import_obj[4] == 'init':
-            self.parameters[import_obj[2]] = import_obj[3]
+    def add_parameter_value(self, reps, parameter_name, parameter_value, alternative):
+        if alternative == 'init':
+            self.parameters[parameter_name] = parameter_value
         else:
-            self.add_parameter_value_for_tick(import_obj)
+            self.add_parameter_value_for_tick(reps, parameter_name, parameter_value, alternative)
 
-    def add_parameter_value_for_tick(self, import_obj):
+    def add_parameter_value_for_tick(self, reps, parameter_name, parameter_value, alternative):
         pass
 
 
@@ -166,20 +166,20 @@ class PowerPlant(ImportObject):
         self.efficiency = 0
         self.construction_start_time = 0
 
-    def add_parameter_value(self, reps, import_obj):
-        if import_obj[2] == 'Technology':
-            self.technology = reps.power_generating_technologies[import_obj[3]]
-        elif import_obj[2] == 'Location':
-            self.location = reps.power_grid_nodes[import_obj[3]]
-        elif import_obj[2] == 'Age':
-            self.age = int(import_obj[3])
-            self.construction_start_time = -1 * int(import_obj[3])
-        elif import_obj[2] == 'Owner':
-            self.owner = reps.energy_producers[import_obj[3]]
-        elif import_obj[2] == 'Capacity':
-            self.capacity = int(import_obj[3])
-        elif import_obj[2] == 'Efficiency':
-            self.efficiency = float(import_obj[3])
+    def add_parameter_value(self, reps, parameter_name, parameter_value, alternative):
+        if parameter_name == 'Technology':
+            self.technology = reps.power_generating_technologies[parameter_value]
+        elif parameter_name == 'Location':
+            self.location = reps.power_grid_nodes[parameter_value]
+        elif parameter_name == 'Age':
+            self.age = int(parameter_value)
+            self.construction_start_time = -1 * int(parameter_value)
+        elif parameter_name == 'Owner':
+            self.owner = reps.energy_producers[parameter_value]
+        elif parameter_name == 'Capacity':
+            self.capacity = int(parameter_value)
+        elif parameter_name == 'Efficiency':
+            self.efficiency = float(parameter_value)
 
     def calculate_emission_intensity(self, reps):
         emission = 0
@@ -245,43 +245,43 @@ class PowerGeneratingTechnology(ImportObject):
         self.investment_cost_time_series = None
         self.co2_capture_efficiency = 0
 
-    def add_parameter_value(self, reps, import_obj):
-        if import_obj[2] == 'capacity':
-            self.capacity = int(import_obj[3])
-        elif import_obj[2] == 'intermittent':
-            self.intermittent = 'TRUE' == import_obj[3]
-        elif import_obj[2] == 'applicableForLongTermContract':
-            self.applicable_for_long_term_contract = 'TRUE' == import_obj[3]
-        elif import_obj[2] == 'peakSegmentDependentAvailability':
-            self.peak_segment_dependent_availability = float(import_obj[3])
-        elif import_obj[2] == 'baseSegmentDependentAvailability':
-            self.base_segment_dependent_availability = float(import_obj[3])
-        elif import_obj[2] == 'maximumInstalledCapacityFractionPerAgent':
-            self.maximum_installed_capacity_fraction_per_agent = float(import_obj[3])
-        elif import_obj[2] == 'maximumInstalledCapacityFractionInCountry':
-            self.maximum_installed_capacity_fraction_in_country = float(import_obj[3])
-        elif import_obj[2] == 'minimumFuelQuality':
-            self.minimum_fuel_quality = float(import_obj[3])
-        elif import_obj[2] == 'expectedPermittime':
-            self.expected_permittime = int(import_obj[3])
-        elif import_obj[2] == 'expectedLeadtime':
-            self.expected_leadtime = int(import_obj[3])
-        elif import_obj[2] == 'expectedLifetime':
-            self.expected_lifetime = int(import_obj[3])
-        elif import_obj[2] == 'fixedOperatingCostModifierAfterLifetime':
-            self.fixed_operating_cost_modifier_after_lifetime = float(import_obj[3])
-        elif import_obj[2] == 'minimumRunningHours':
-            self.minimum_running_hours = int(import_obj[3])
-        elif import_obj[2] == 'depreciationTime':
-            self.depreciation_time = int(import_obj[3])
-        elif import_obj[2] == 'efficiencyTimeSeries':
-            self.efficiency_time_series = reps.geometric_trends[import_obj[3]]
-        elif import_obj[2] == 'fixedOperatingCostTimeSeries':
-            self.fixed_operating_cost_time_series = reps.geometric_trends[import_obj[3]]
-        elif import_obj[2] == 'investmentCostTimeSeries':
-            self.investment_cost_time_series = reps.geometric_trends[import_obj[3]]
-        elif import_obj[2] == 'co2CaptureEfficiency':
-            self.co2_capture_efficiency = float(import_obj[3])
+    def add_parameter_value(self, reps, parameter_name, parameter_value, alternative):
+        if parameter_name == 'capacity':
+            self.capacity = int(parameter_value)
+        elif parameter_name == 'intermittent':
+            self.intermittent = 'TRUE' == parameter_value
+        elif parameter_name == 'applicableForLongTermContract':
+            self.applicable_for_long_term_contract = 'TRUE' == parameter_value
+        elif parameter_name == 'peakSegmentDependentAvailability':
+            self.peak_segment_dependent_availability = float(parameter_value)
+        elif parameter_name == 'baseSegmentDependentAvailability':
+            self.base_segment_dependent_availability = float(parameter_value)
+        elif parameter_name == 'maximumInstalledCapacityFractionPerAgent':
+            self.maximum_installed_capacity_fraction_per_agent = float(parameter_value)
+        elif parameter_name == 'maximumInstalledCapacityFractionInCountry':
+            self.maximum_installed_capacity_fraction_in_country = float(parameter_value)
+        elif parameter_name == 'minimumFuelQuality':
+            self.minimum_fuel_quality = float(parameter_value)
+        elif parameter_name == 'expectedPermittime':
+            self.expected_permittime = int(parameter_value)
+        elif parameter_name == 'expectedLeadtime':
+            self.expected_leadtime = int(parameter_value)
+        elif parameter_name == 'expectedLifetime':
+            self.expected_lifetime = int(parameter_value)
+        elif parameter_name == 'fixedOperatingCostModifierAfterLifetime':
+            self.fixed_operating_cost_modifier_after_lifetime = float(parameter_value)
+        elif parameter_name == 'minimumRunningHours':
+            self.minimum_running_hours = int(parameter_value)
+        elif parameter_name == 'depreciationTime':
+            self.depreciation_time = int(parameter_value)
+        elif parameter_name == 'efficiencyTimeSeries':
+            self.efficiency_time_series = reps.geometric_trends[parameter_value]
+        elif parameter_name == 'fixedOperatingCostTimeSeries':
+            self.fixed_operating_cost_time_series = reps.geometric_trends[parameter_value]
+        elif parameter_name == 'investmentCostTimeSeries':
+            self.investment_cost_time_series = reps.geometric_trends[parameter_value]
+        elif parameter_name == 'co2CaptureEfficiency':
+            self.co2_capture_efficiency = float(parameter_value)
 
     def get_fixed_operating_cost(self, time):
         return self.fixed_operating_cost_time_series.get_value(time)
@@ -307,24 +307,24 @@ class PowerPlantDispatchPlan(ImportObject):
         self.accepted_amount = 0
         self.tick = -1
 
-    def add_parameter_value(self, reps, import_obj):
-        self.tick = int(import_obj[4])
-        if import_obj[2] == 'Plant':
-            self.plant = reps.power_plants[import_obj[3]]
-        elif import_obj[2] == 'EnergyProducer':
-            self.bidder = reps.energy_producers[import_obj[3]]
-        if import_obj[2] == 'Market':
-            self.bidding_market = reps.capacity_markets[import_obj[3]] if \
-                import_obj[3] in reps.capacity_markets.keys() \
-                else reps.electricity_spot_markets[import_obj[3]]
-        if import_obj[2] == 'Capacity':
-            self.amount = import_obj[3]
-        if import_obj[2] == 'AcceptedAmount':
-            self.accepted_amount = float(import_obj[3])
-        if import_obj[2] == 'Price':
-            self.price = float(import_obj[3])
-        if import_obj[2] == 'Status':
-            self.status = import_obj[3]
+    def add_parameter_value(self, reps, parameter_name, parameter_value, alternative):
+        self.tick = int(alternative)
+        if parameter_name == 'Plant':
+            self.plant = reps.power_plants[parameter_value]
+        elif parameter_name == 'EnergyProducer':
+            self.bidder = reps.energy_producers[parameter_value]
+        if parameter_name == 'Market':
+            self.bidding_market = reps.capacity_markets[parameter_value] if \
+                parameter_value in reps.capacity_markets.keys() \
+                else reps.electricity_spot_markets[parameter_value]
+        if parameter_name == 'Capacity':
+            self.amount = parameter_value
+        if parameter_name == 'AcceptedAmount':
+            self.accepted_amount = float(parameter_value)
+        if parameter_name == 'Price':
+            self.price = float(parameter_value)
+        if parameter_name == 'Status':
+            self.status = parameter_value
 
 
 class MarketClearingPoint(ImportObject):
@@ -335,17 +335,17 @@ class MarketClearingPoint(ImportObject):
         self.capacity = 0
         self.tick = -1
 
-    def add_parameter_value(self, reps, import_obj):
-        self.tick = int(import_obj[4])
-        if import_obj[2] == 'Price':
-            self.price = float(import_obj[3])
-        if import_obj[2] == 'Market':
-            if import_obj[3] in reps.capacity_markets.keys():
-                self.market = reps.capacity_markets[import_obj[3]]
+    def add_parameter_value(self, reps, parameter_name, parameter_value, alternative):
+        self.tick = int(alternative)
+        if parameter_name == 'Price':
+            self.price = float(parameter_value)
+        if parameter_name == 'Market':
+            if parameter_value in reps.capacity_markets.keys():
+                self.market = reps.capacity_markets[parameter_value]
             else:
-                self.market = reps.electricity_spot_markets[import_obj[3]]
-        if import_obj[2] == 'TotalCapacity':
-            self.capacity = float(import_obj[3])
+                self.market = reps.electricity_spot_markets[parameter_value]
+        if parameter_name == 'TotalCapacity':
+            self.capacity = float(parameter_value)
 
 
 class SlopingDemandCurve:
@@ -374,11 +374,11 @@ class GeometricTrend(ImportObject):
         self.start = 0
         self.growth_rate = 0
 
-    def add_parameter_value(self, reps, import_obj):
-        if import_obj[2] == 'start':
-            self.start = int(import_obj[3])
-        elif import_obj[2] == 'growthRate':
-            self.growth_rate = float(import_obj[3])
+    def add_parameter_value(self, reps, parameter_name, parameter_value, alternative):
+        if parameter_name == 'start':
+            self.start = int(parameter_value)
+        elif parameter_name == 'growthRate':
+            self.growth_rate = float(parameter_value)
 
     def get_value(self, time):
         return pow(1 + self.growth_rate, time) * self.start
