@@ -19,8 +19,6 @@ class Market(DefaultModule):
 
     def calculate_co2_tax_marginal_cost(self, plant):
         co2_intensity = plant.calculate_emission_intensity(self.reps)
-        print('TODO: Implement government CO2 tax')
-        #     co2_tax = government.get_co2_tax(tick)
         co2_tax = 1
         return co2_intensity * co2_tax
 
