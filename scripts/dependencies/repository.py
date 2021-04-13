@@ -5,7 +5,7 @@ All objects are read through the SpineDBReader and stored in the Repository.
 Jim Hommes - 25-3-2021
 """
 from datetime import datetime
-
+from numpy import random
 
 class ImportObject:
     """
@@ -51,6 +51,7 @@ class Repository:
         self.market_clearing_points = {}
         self.power_grid_nodes = {}
         self.geometric_trends = {}
+        self.triangular_trends = {}
 
         self.temporary_fixed_fuel_prices = {'biomass': 10, 'fuelOil': 20, 'hardCoal': 30, 'ligniteCoal': 10,
                                             'naturalGas': 5,
@@ -128,8 +129,7 @@ class Repository:
             return []
 
     def find_last_known_price_for_substance(self, substance_name, tick):
-        print('TODO: Finding last known price for substance - taking fixed price now')
-        return self.temporary_fixed_fuel_prices[substance_name]
+        return self.substances[substance_name].get_price_for_tick(tick)
 
     def get_market_clearing_point_for_market_and_time(self, tick, market):
         res = [i for i in self.market_clearing_points.values() if i.market == market and i.tick == tick]
@@ -185,7 +185,7 @@ class PowerPlant(ImportObject):
         emission = 0
         for substance_in_fuel_mix in reps.get_substances_in_fuel_mix_by_plant(self):
             fuel_amount = substance_in_fuel_mix.share
-            co2_density = float(substance_in_fuel_mix.substance.parameters['co2Density']) * (1 - float(
+            co2_density = substance_in_fuel_mix.substance.co2_density * (1 - float(
                 self.technology.co2_capture_efficiency))
             emission_for_this_fuel = fuel_amount * co2_density
             emission += emission_for_this_fuel
@@ -202,7 +202,25 @@ class PowerPlant(ImportObject):
 
 
 class Substance(ImportObject):
-    pass
+    def __init__(self, name):
+        super().__init__(name)
+        self.co2_density = 0
+        self.energy_density = 0
+        self.quality = 0
+        self.trend = None
+
+    def add_parameter_value(self, reps, parameter_name, parameter_value, alternative):
+        if parameter_name == 'co2_density':
+            self.co2_density = float(parameter_value)
+        elif parameter_name == 'energy_density':
+            self.energy_density = float(parameter_value)
+        elif parameter_name == 'quality':
+            self.quality = float(parameter_value)
+        elif parameter_name == 'trend':
+            self.trend = reps.triangular_trends[parameter_value]
+
+    def get_price_for_tick(self, tick):
+        return self.trend.get_value(tick)
 
 
 class SubstanceInFuelMix:
@@ -382,3 +400,29 @@ class GeometricTrend(ImportObject):
 
     def get_value(self, time):
         return pow(1 + self.growth_rate, time) * self.start
+
+
+class TriangularTrend(ImportObject):
+    def __init__(self, name):
+        super().__init__(name)
+        self.top = 0
+        self.max = 0
+        self.min = 0
+        self.values = []
+
+    def add_parameter_value(self, reps, parameter_name, parameter_value, alternative):
+        if parameter_name == 'Top':
+            self.top = float(parameter_value)
+        elif parameter_name == 'Max':
+            self.max = float(parameter_value)
+        elif parameter_name == 'Min':
+            self.min = float(parameter_value)
+        elif parameter_name == 'Start':
+            self.values.append(float(parameter_value))
+
+    def get_value(self, time):
+        while len(self.values) <= time:
+            last_value = self.values[-1]
+            self.values.append(last_value + random.default_rng().triangular(self.min, self.top, self.max))
+        return self.values[time]
+
