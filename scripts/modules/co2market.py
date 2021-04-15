@@ -24,5 +24,5 @@ class CO2MarketDetermineCO2Price(MarketModule):
                 co2price = national_government.trend.get_value(self.reps.current_tick)
             else:
                 co2_cap = self.reps.get_government().co2_cap_trend.get_value(self.reps.current_tick)
-
+                profits_per_plant = self.reps.get_power_plant_profits_by_tick(self.reps.current_tick)
 

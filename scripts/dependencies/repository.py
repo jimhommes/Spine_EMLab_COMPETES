@@ -8,6 +8,7 @@ from datetime import datetime
 from numpy import random
 import math
 
+
 class ImportObject:
     """
     Parent Class for all objects imported from Spine
@@ -104,6 +105,9 @@ class Repository:
     def get_power_plant_dispatch_plans_by_plant(self, plant_name):
         return [i for i in self.power_plant_dispatch_plans.values() if i.plant.name == plant_name]
 
+    def get_power_plant_dispatch_plans_by_plant_and_tick(self, plant_name, time):
+        return [i for i in self.power_plant_dispatch_plans.values() if i.plant.name == plant_name and i.tick == time]
+
     def set_power_plant_dispatch_plan_production(self, ppdp, status, accepted_amount):
         ppdp.status = status
         ppdp.accepted_amount = accepted_amount
@@ -154,6 +158,17 @@ class Repository:
 
     def get_government(self):
         return next(list(self.governments.values()))
+
+    def get_power_plant_revenues_by_tick(self, power_plant, time):
+        return sum([float(i.accepted_amount * i.price) for i in
+                    self.get_power_plant_dispatch_plans_by_plant_and_tick(power_plant.name, time)])
+
+    def get_power_plant_profits_by_tick(self, time):
+        res = {}
+        for power_plant in self.power_plants:
+            revenues = self.get_power_plant_revenues_by_tick(power_plant, time)
+            mc = self.calculate_marginal_cost_excl_co2_market_cost()
+        return res
 
 
 """
@@ -209,6 +224,26 @@ class PowerPlant(ImportObject):
 
     def get_actual_nominal_capacity(self):
         return self.technology.capacity * float(self.location.parameters['CapacityMultiplicationFactor'])
+
+    def calculate_marginal_fuel_cost(self, reps):
+        fc = 0
+        for substance_in_fuel_mix in reps.get_substances_in_fuel_mix_by_plant(self):
+            amount = substance_in_fuel_mix.share
+            fuel_price = reps.find_last_known_price_for_substance(substance_in_fuel_mix.substance.name,
+                                                                  reps.current_tick)
+            fc += amount * fuel_price
+        return fc
+
+    def calculate_co2_tax_marginal_cost(self, reps):
+        co2_intensity = self.calculate_emission_intensity(reps)
+        co2_tax = 1
+        return co2_intensity * co2_tax
+
+    def calculate_marginal_cost_excl_co2_market_cost(self, reps):
+        mc = 0
+        mc += self.calculate_marginal_fuel_cost(reps)
+        mc += self.calculate_co2_tax_marginal_cost(reps)
+        return mc
 
 
 class Substance(ImportObject):

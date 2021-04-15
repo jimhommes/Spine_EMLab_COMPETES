@@ -21,7 +21,7 @@ class CapacityMarketSubmitBids(MarketModule):
             for powerplant in self.reps.get_power_plants_by_owner(energy_producer):
                 market = self.reps.get_capacity_market_for_plant(powerplant)
                 emarket = self.reps.get_electricity_spot_market_for_plant(powerplant)
-                mc = self.calculate_marginal_cost_excl_co2_market_cost(powerplant)
+                mc = powerplant.calculate_marginal_cost_excl_co2_market_cost(self.reps)
                 fixed_on_m_cost = powerplant.get_actual_fixed_operating_cost()
 
                 clearing_point_price = self.reps.get_market_clearing_point_price_for_market_and_time(
