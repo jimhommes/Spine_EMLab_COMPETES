@@ -6,6 +6,7 @@ Jim Hommes - 25-3-2021
 """
 from datetime import datetime
 from numpy import random
+import math
 
 class ImportObject:
     """
@@ -50,8 +51,9 @@ class Repository:
         self.load = {}
         self.market_clearing_points = {}
         self.power_grid_nodes = {}
-        self.geometric_trends = {}
-        self.triangular_trends = {}
+        self.trends = {}
+        self.zones = {}
+        self.national_governments = {}
 
         self.temporary_fixed_fuel_prices = {'biomass': 10, 'fuelOil': 20, 'hardCoal': 30, 'ligniteCoal': 10,
                                             'naturalGas': 5,
@@ -217,7 +219,7 @@ class Substance(ImportObject):
         elif parameter_name == 'quality':
             self.quality = float(parameter_value)
         elif parameter_name == 'trend':
-            self.trend = reps.triangular_trends[parameter_value]
+            self.trend = reps.trends[parameter_value]
 
     def get_price_for_tick(self, tick):
         return self.trend.get_value(tick)
@@ -293,11 +295,11 @@ class PowerGeneratingTechnology(ImportObject):
         elif parameter_name == 'depreciationTime':
             self.depreciation_time = int(parameter_value)
         elif parameter_name == 'efficiencyTimeSeries':
-            self.efficiency_time_series = reps.geometric_trends[parameter_value]
+            self.efficiency_time_series = reps.trends[parameter_value]
         elif parameter_name == 'fixedOperatingCostTimeSeries':
-            self.fixed_operating_cost_time_series = reps.geometric_trends[parameter_value]
+            self.fixed_operating_cost_time_series = reps.trends[parameter_value]
         elif parameter_name == 'investmentCostTimeSeries':
-            self.investment_cost_time_series = reps.geometric_trends[parameter_value]
+            self.investment_cost_time_series = reps.trends[parameter_value]
         elif parameter_name == 'co2CaptureEfficiency':
             self.co2_capture_efficiency = float(parameter_value)
 
@@ -386,7 +388,15 @@ class SlopingDemandCurve:
             return 0
 
 
-class GeometricTrend(ImportObject):
+class Trend(ImportObject):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def get_value(self, time):
+        pass
+
+
+class GeometricTrend(Trend):
     def __init__(self, name):
         super().__init__(name)
         self.start = 0
@@ -402,7 +412,7 @@ class GeometricTrend(ImportObject):
         return pow(1 + self.growth_rate, time) * self.start
 
 
-class TriangularTrend(ImportObject):
+class TriangularTrend(Trend):
     def __init__(self, name):
         super().__init__(name)
         self.top = 0
@@ -426,3 +436,31 @@ class TriangularTrend(ImportObject):
             self.values.append(last_value + random.default_rng().triangular(self.min, self.top, self.max))
         return self.values[time]
 
+
+class StepTrend(Trend):
+    def __init__(self, name):
+        super().__init__(name)
+        self.duration = 0
+        self.start = 0
+        self.min_value = 0
+        self.increment = 0
+
+    def get_value(self, time):
+        return max(self.min_value, self.start + math.floor(time / self.duration) * self.increment)
+
+
+class NationalGovernment(ImportObject):
+    def __init__(self, name):
+        super().__init__(name)
+        self.governed_zone = None
+        self.min_national_co2_price_trend = None
+
+    def add_parameter_value(self, reps, parameter_name, parameter_value, alternative):
+        if parameter_name == 'governedZone':
+            self.governed_zone = reps.zones[parameter_value]
+        elif parameter_name == 'minNationalCo2PriceTrend':
+            self.min_national_co2_price_trend = reps.trends[parameter_value]
+
+
+class Zone(ImportObject):
+    pass

@@ -72,8 +72,10 @@ class SpineDBReaderWriter:
         db_data = self.db.export_data()
 
         # Import all initialized variables
-        db_objects_to_dict(reps, db_data, reps.geometric_trends, 'GeometricTrends', GeometricTrend)
-        db_objects_to_dict(reps, db_data, reps.triangular_trends, 'TriangularTrends', TriangularTrend)
+        db_objects_to_dict(reps, db_data, reps.trends, 'GeometricTrends', GeometricTrend)
+        db_objects_to_dict(reps, db_data, reps.trends, 'TriangularTrends', TriangularTrend)
+        db_objects_to_dict(reps, db_data, reps.trends, 'StepTrends', StepTrend)
+        db_objects_to_dict(reps, db_data, reps.zones, 'Zones', Zone)
         db_objects_to_dict(reps, db_data, reps.energy_producers, 'EnergyProducers', EnergyProducer)
         db_objects_to_dict(reps, db_data, reps.substances, 'Substances', Substance)
         db_objects_to_dict(reps, db_data, reps.electricity_spot_markets, 'ElectricitySpotMarkets',
@@ -87,6 +89,7 @@ class SpineDBReaderWriter:
         db_objects_to_dict(reps, db_data, reps.power_plant_dispatch_plans, 'PowerPlantDispatchPlans',
                            PowerPlantDispatchPlan)
         db_objects_to_dict(reps, db_data, reps.market_clearing_points, 'MarketClearingPoints', MarketClearingPoint)
+        db_objects_to_dict(reps, db_data, reps.national_governments, 'NationalGovernments', NationalGovernment)
 
         import_fuel_mix(db_data, reps)  # Stand-alone a.t.m. because it's the only relationship_parameter_values
 

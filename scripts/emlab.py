@@ -43,7 +43,7 @@ if run_capacity_market:
 # Clear Capacity Market
 if run_capacity_market:
     capacity_market_clear.act_and_commit(reps.current_tick)
-    
+
 # Run CO2 Market
 if run_co2_market:
     co2_market_determine_co2_price.act_and_commit(reps.current_tick)
