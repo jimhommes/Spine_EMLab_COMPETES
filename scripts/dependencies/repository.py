@@ -163,11 +163,22 @@ class Repository:
         return sum([float(i.accepted_amount * i.price) for i in
                     self.get_power_plant_dispatch_plans_by_plant_and_tick(power_plant.name, time)])
 
+    def get_total_accepted_amounts_by_power_plant_and_tick(self, power_plant, time):
+        return sum([i.accepted_amount for i in self.power_plant_dispatch_plans if i.tick == time and
+                    i.plant == power_plant])
+
+    def get_power_plant_costs_by_tick(self, power_plant, time):
+        mc = power_plant.calculate_marginal_cost_excl_co2_market_cost()
+        foc = power_plant.get_actual_fixed_operating_cost()
+        total_capacity = self.get_total_accepted_amounts_by_power_plant_and_tick(power_plant, time)
+        return foc + mc * total_capacity
+
     def get_power_plant_profits_by_tick(self, time):
         res = {}
         for power_plant in self.power_plants:
             revenues = self.get_power_plant_revenues_by_tick(power_plant, time)
-            mc = self.calculate_marginal_cost_excl_co2_market_cost()
+            costs = self.get_power_plant_costs_by_tick(power_plant, time)
+            res[power_plant.name] = revenues - costs
         return res
 
 
