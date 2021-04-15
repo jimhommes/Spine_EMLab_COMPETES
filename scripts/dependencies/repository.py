@@ -55,6 +55,7 @@ class Repository:
         self.trends = {}
         self.zones = {}
         self.national_governments = {}
+        self.governments = {}
 
         self.temporary_fixed_fuel_prices = {'biomass': 10, 'fuelOil': 20, 'hardCoal': 30, 'ligniteCoal': 10,
                                             'naturalGas': 5,
@@ -468,6 +469,22 @@ class NationalGovernment(ImportObject):
             self.governed_zone = reps.zones[parameter_value]
         elif parameter_name == 'minNationalCo2PriceTrend':
             self.min_national_co2_price_trend = reps.trends[parameter_value]
+
+
+class Government(ImportObject):
+    def __init__(self, name):
+        super().__init__(name)
+        self.co2_penalty = 0
+        self.co2_cap_trend = None
+        self.co2_min_price_trend = None
+
+    def add_parameter_value(self, reps, parameter_name, parameter_value, alternative):
+        if parameter_name == 'co2Penalty':
+            self.co2_penalty = int(parameter_value)
+        elif parameter_name == 'co2CapTrend':
+            self.co2_cap_trend = reps.trends[parameter_value]
+        elif parameter_name == 'minCo2PriceTrend':
+            self.co2_min_price_trend = reps.trends[parameter_value]
 
 
 class Zone(ImportObject):

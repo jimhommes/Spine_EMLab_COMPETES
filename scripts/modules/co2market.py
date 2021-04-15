@@ -12,7 +12,6 @@ class CO2MarketDetermineCO2Price(MarketModule):
         super().__init__('CO2 Market: Determine CO2 Price', reps)
 
     def act(self):
-        # TODO: Branch first tick (how to determine first price, without COMPETES run)
         # TODO: Read cap through trend
         # TODO: Get emissions from year 0
         # TODO: Get emissions from year 3
