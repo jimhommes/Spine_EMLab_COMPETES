@@ -164,18 +164,18 @@ class Repository:
                     self.get_power_plant_dispatch_plans_by_plant_and_tick(power_plant.name, time)])
 
     def get_total_accepted_amounts_by_power_plant_and_tick(self, power_plant, time):
-        return sum([i.accepted_amount for i in self.power_plant_dispatch_plans if i.tick == time and
+        return sum([i.accepted_amount for i in self.power_plant_dispatch_plans.values() if i.tick == time and
                     i.plant == power_plant])
 
     def get_power_plant_costs_by_tick(self, power_plant, time):
-        mc = power_plant.calculate_marginal_cost_excl_co2_market_cost()
+        mc = power_plant.calculate_marginal_cost_excl_co2_market_cost(self)
         foc = power_plant.get_actual_fixed_operating_cost()
         total_capacity = self.get_total_accepted_amounts_by_power_plant_and_tick(power_plant, time)
         return foc + mc * total_capacity
 
     def get_power_plant_profits_by_tick(self, time):
         res = {}
-        for power_plant in self.power_plants:
+        for power_plant in self.power_plants.values():
             revenues = self.get_power_plant_revenues_by_tick(power_plant, time)
             costs = self.get_power_plant_costs_by_tick(power_plant, time)
             res[power_plant.name] = revenues - costs
@@ -183,7 +183,7 @@ class Repository:
 
     def get_power_plant_emissions_by_tick(self, time):
         res = {}
-        for power_plant in self.power_plants:
+        for power_plant in self.power_plants.values():
             res[power_plant.name] = power_plant.get_load_factor_for_production(
                 self.get_total_accepted_amounts_by_power_plant_and_tick(power_plant, time)) \
                                     * power_plant.calculate_emission_intensity(self)
@@ -277,9 +277,9 @@ class Substance(ImportObject):
         self.trend = None
 
     def add_parameter_value(self, reps, parameter_name, parameter_value, alternative):
-        if parameter_name == 'co2_density':
+        if parameter_name == 'co2Density':
             self.co2_density = float(parameter_value)
-        elif parameter_name == 'energy_density':
+        elif parameter_name == 'energyDensity':
             self.energy_density = float(parameter_value)
         elif parameter_name == 'quality':
             self.quality = float(parameter_value)

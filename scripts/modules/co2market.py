@@ -26,8 +26,9 @@ class CO2MarketDetermineCO2Price(MarketModule):
                 co2_cap = self.reps.get_government().co2_cap_trend.get_value(self.reps.current_tick)
                 profits_per_plant = self.reps.get_power_plant_profits_by_tick(self.reps.current_tick)
                 emissions_per_plant = self.reps.get_power_plant_emissions_by_tick(self.reps.current_tick)
-                willingness_to_pay_per_plant = {key: value / emissions_per_plant[key] for (key, value) in
-                                                profits_per_plant.items()}
+                willingness_to_pay_per_plant = {
+                    key: value / emissions_per_plant[key] if emissions_per_plant[key] != 0 else value for (key, value)
+                    in profits_per_plant.items()}
 
                 co2price = max(willingness_to_pay_per_plant.values())
                 total_emissions = 0
