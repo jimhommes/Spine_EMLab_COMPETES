@@ -27,3 +27,13 @@ class CO2MarketDetermineCO2Price(MarketModule):
                 emissions_per_plant = self.reps.get_power_plant_emissions_by_tick(self.reps.current_tick)
                 willingness_to_pay_per_plant = {key: value / emissions_per_plant[key] for (key, value) in
                                                 profits_per_plant.items()}
+
+                co2price = max(willingness_to_pay_per_plant.values())
+                total_emissions = 0
+                for (power_plant_name, wtp) in sorted(willingness_to_pay_per_plant.items(), key=lambda item: item[1]):
+                    plant = self.reps.power_plants[power_plant_name]
+                    if co2_cap >= total_emissions + emissions_per_plant[power_plant_name]:
+                        total_emissions += emissions_per_plant[power_plant_name]
+                        co2price = willingness_to_pay_per_plant[power_plant_name]
+
+                print(co2price)
