@@ -21,13 +21,7 @@ class ImportObject:
         self.parameters = {}
 
     def add_parameter_value(self, reps, parameter_name, parameter_value, alternative):
-        if alternative == 'init':
-            self.parameters[parameter_name] = parameter_value
-        else:
-            self.add_parameter_value_for_tick(reps, parameter_name, parameter_value, alternative)
-
-    def add_parameter_value_for_tick(self, reps, parameter_name, parameter_value, alternative):
-        pass
+        self.parameters[parameter_name] = parameter_value
 
 
 class Repository:
@@ -178,6 +172,8 @@ class Repository:
         for power_plant in self.power_plants.values():
             revenues = self.get_power_plant_revenues_by_tick(power_plant, time)
             costs = self.get_power_plant_costs_by_tick(power_plant, time)
+            print("Revenues " + str(revenues))
+            print("Costs " + str(costs))
             res[power_plant.name] = revenues - costs
         return res
 
