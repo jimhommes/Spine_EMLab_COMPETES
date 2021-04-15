@@ -181,6 +181,14 @@ class Repository:
             res[power_plant.name] = revenues - costs
         return res
 
+    def get_power_plant_emissions_by_tick(self, time):
+        res = {}
+        for power_plant in self.power_plants:
+            res[power_plant.name] = power_plant.get_load_factor_for_production(
+                self.get_total_accepted_amounts_by_power_plant_and_tick(power_plant, time)) \
+                                    * power_plant.calculate_emission_intensity(self)
+        return res
+
 
 """
 From here on defitions of Objects that are imported. Pass because they inherit name and parameters from ImportObject
@@ -255,6 +263,9 @@ class PowerPlant(ImportObject):
         mc += self.calculate_marginal_fuel_cost(reps)
         mc += self.calculate_co2_tax_marginal_cost(reps)
         return mc
+
+    def get_load_factor_for_production(self, production):
+        return production / self.capacity
 
 
 class Substance(ImportObject):
