@@ -157,7 +157,7 @@ class Repository:
         return next(i for i in self.national_governments if i.zone == zone)
 
     def get_government(self):
-        return next(list(self.governments.values()))
+        return next(i for i in self.governments.values())
 
     def get_power_plant_revenues_by_tick(self, power_plant, time):
         return sum([float(i.accepted_amount * i.price) for i in
@@ -516,6 +516,16 @@ class StepTrend(Trend):
 
     def get_value(self, time):
         return max(self.min_value, self.start + math.floor(time / self.duration) * self.increment)
+
+    def add_parameter_value(self, reps, parameter_name, parameter_value, alternative):
+        if parameter_name == 'duration':
+            self.duration = int(parameter_value)
+        elif parameter_name == 'start':
+            self.start = int(parameter_value)
+        elif parameter_name == 'minValue':
+            self.min_value = int(parameter_value)
+        elif parameter_name == 'increment':
+            self.increment = int(parameter_value)
 
 
 class NationalGovernment(ImportObject):

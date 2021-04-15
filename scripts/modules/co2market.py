@@ -16,6 +16,7 @@ class CO2MarketDetermineCO2Price(MarketModule):
         # TODO: Get emissions from year 3
         # TODO: Create merit order on WTP and determine CO2 Price
         for market in self.reps.co2_markets.values():
+            print('yes')
             co2price = 0
             if self.reps.current_tick == 0:     # If first tick, COMPETES has not run yet. Set to minprice
                 zone = self.reps.zones[market.parameters['zone']]
