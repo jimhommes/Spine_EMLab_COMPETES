@@ -12,7 +12,6 @@ class CO2MarketDetermineCO2Price(MarketModule):
         super().__init__('CO2 Market: Determine CO2 Price', reps)
 
     def act(self):
-        # TODO: Read cap through trend
         # TODO: Get emissions from year 0
         # TODO: Get emissions from year 3
         # TODO: Calculate powerplant profits
@@ -24,5 +23,6 @@ class CO2MarketDetermineCO2Price(MarketModule):
                 national_government = self.reps.get_national_government_by_zone(zone)
                 co2price = national_government.trend.get_value(self.reps.current_tick)
             else:
-                pass
+                co2_cap = self.reps.get_government().co2_cap_trend.get_value(self.reps.current_tick)
+
 
