@@ -80,6 +80,7 @@ class SpineDBReaderWriter:
         db_objects_to_dict(reps, db_data, reps.substances, 'Substances', Substance)
         db_objects_to_dict(reps, db_data, reps.electricity_spot_markets, 'ElectricitySpotMarkets',
                            ElectricitySpotMarket)
+        db_objects_to_dict(reps, db_data, reps.co2_markets, 'CO2Auction', CO2Market)
         db_objects_to_dict(reps, db_data, reps.power_generating_technologies, 'PowerGeneratingTechnologies',
                            PowerGeneratingTechnology)
         db_objects_to_dict(reps, db_data, reps.load, 'ldcNLDE-hourly', HourlyLoad)

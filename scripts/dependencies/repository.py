@@ -46,6 +46,7 @@ class Repository:
         self.power_plants_fuel_mix = {}
         self.electricity_spot_markets = {}
         self.capacity_markets = {}
+        self.co2_markets = {}
         self.power_plant_dispatch_plans = {}
         self.power_generating_technologies = {}
         self.load = {}
@@ -241,6 +242,10 @@ class CapacityMarket(ImportObject):
         return SlopingDemandCurve(float(self.parameters['InstalledReserveMargin']),
                                   float(self.parameters['LowerMargin']),
                                   float(self.parameters['UpperMargin']), d_peak, float(self.parameters['PriceCap']))
+
+
+class CO2Market(ImportObject):
+    pass
 
 
 class PowerGeneratingTechnology(ImportObject):

@@ -7,7 +7,7 @@ Jim Hommes - 7-4-2021
 from modules.defaultmodule import DefaultModule
 
 
-class Market(DefaultModule):
+class MarketModule(DefaultModule):
     def calculate_marginal_fuel_cost(self, plant):
         fc = 0
         for substance_in_fuel_mix in self.reps.get_substances_in_fuel_mix_by_plant(plant):

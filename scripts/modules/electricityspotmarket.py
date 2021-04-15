@@ -5,10 +5,10 @@ Based on the role ClearIterativeCO2AndElectricitySpotMarketTwoCountryRole
 Jim Hommes - 25-3-2021
 """
 import json
-from modules.market import Market
+from modules.marketmodule import MarketModule
 
 
-class ElectricitySpotMarketSubmitBids(Market):
+class ElectricitySpotMarketSubmitBids(MarketModule):
     """
     The class that submits all bids to the Electricity Spot Market.
     """
@@ -29,7 +29,7 @@ class ElectricitySpotMarketSubmitBids(Market):
                 self.reps.create_power_plant_dispatch_plan(powerplant, energy_producer, market, capacity, mc)
 
 
-class ElectricitySpotMarketClearing(Market):
+class ElectricitySpotMarketClearing(MarketModule):
     """
     The class that clears the Electricity Spot Market.
     """

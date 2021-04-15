@@ -4,10 +4,10 @@ The file responsible for all capacity market operations.
 Jim Hommes - 25-3-2021
 """
 import json
-from modules.market import Market
+from modules.marketmodule import MarketModule
 
 
-class CapacityMarketSubmitBids(Market):
+class CapacityMarketSubmitBids(MarketModule):
     """The class that submits all bids to the Capacity Market"""
 
     def __init__(self, reps):
@@ -50,7 +50,7 @@ class CapacityMarketSubmitBids(Market):
                                                            price_to_bid)
 
 
-class CapacityMarketClearing(Market):
+class CapacityMarketClearing(MarketModule):
     """The class that clears the Capacity Market based on the Sloping Demand curve"""
 
     def __init__(self, reps):
