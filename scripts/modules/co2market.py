@@ -22,6 +22,8 @@ class CO2MarketDetermineCO2Price(MarketModule):
             co2price = 0
             if self.reps.current_tick == 0:     # If first tick, COMPETES has not run yet. Set to minprice
                 zone = self.reps.zones[market.parameters['zone']]
+                national_government = self.reps.get_national_government_by_zone(zone)
+                co2price = national_government.trend.get_value(self.reps.current_tick)
             else:
                 pass
 

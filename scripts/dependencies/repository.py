@@ -148,6 +148,9 @@ class Repository:
         else:
             return 0
 
+    def get_national_government_by_zone(self, zone):
+        return next(i for i in self.national_governments if i.zone == zone)
+
 
 """
 From here on defitions of Objects that are imported. Pass because they inherit name and parameters from ImportObject
