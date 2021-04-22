@@ -172,8 +172,6 @@ class Repository:
         for power_plant in self.power_plants.values():
             revenues = self.get_power_plant_revenues_by_tick(power_plant, time)
             costs = self.get_power_plant_costs_by_tick(power_plant, time)
-            print("Revenues " + str(revenues))
-            print("Costs " + str(costs))
             res[power_plant.name] = revenues - costs
         return res
 
@@ -261,7 +259,10 @@ class PowerPlant(ImportObject):
         return mc
 
     def get_load_factor_for_production(self, production):
-        return production / self.capacity
+        if self.capacity != 0:
+            return production / self.capacity
+        else:
+            return 0
 
 
 class Substance(ImportObject):
@@ -336,7 +337,7 @@ class PowerGeneratingTechnology(ImportObject):
         elif parameter_name == 'intermittent':
             self.intermittent = 'TRUE' == parameter_value
         elif parameter_name == 'applicableForLongTermContract':
-            self.applicable_for_long_term_contract = 'TRUE' == parameter_value
+            self.applicable_for_long_term_contract = bool(parameter_value)
         elif parameter_name == 'peakSegmentDependentAvailability':
             self.peak_segment_dependent_availability = float(parameter_value)
         elif parameter_name == 'baseSegmentDependentAvailability':

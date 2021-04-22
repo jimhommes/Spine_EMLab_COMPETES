@@ -4,9 +4,8 @@ This is a separate file so that all import definitions are centralized.
 
 Jim Hommes - 25-3-2021
 """
-from dependencies.repository import *
-from dependencies.spinedb import SpineDB
-from datetime import datetime
+from util.repository import *
+from util.spinedb import SpineDB
 
 
 def db_objects_to_dict(reps, db_data, to_dict, object_class_name, class_to_create):

@@ -14,7 +14,6 @@ class CO2MarketDetermineCO2Price(MarketModule):
     def act(self):
         # TODO: Get emissions from year 0
         # TODO: Get emissions from year 3
-        # TODO: Create merit order on WTP and determine CO2 Price
         for market in self.reps.co2_markets.values():
             print('yes')
             co2price = 0

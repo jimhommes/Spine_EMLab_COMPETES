@@ -1,0 +1,103 @@
+{
+    "project": {
+        "version": 6,
+        "name": "Spine_EMLab_COMPETES_testDB",
+        "description": "",
+        "specifications": {
+            "Tool": [
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/specifications/Tool/capacity_market.json"
+                },
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/specifications/Tool/competes.json"
+                },
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/specifications/Tool/clock.json"
+                }
+            ],
+            "Importer": [
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/specifications/Importer/Import Init Data to DB.json"
+                }
+            ]
+        },
+        "connections": [
+            {
+                "from": [
+                    "Import Init Data to DB",
+                    "right"
+                ],
+                "to": [
+                    "DB",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "Load Init File",
+                    "right"
+                ],
+                "to": [
+                    "Import Init Data to DB",
+                    "left"
+                ]
+            }
+        ]
+    },
+    "items": {
+        "DB": {
+            "type": "Data Store",
+            "description": "",
+            "x": 86.49763896606373,
+            "y": 30.283263995059695,
+            "url": {
+                "dialect": "sqlite",
+                "username": "",
+                "password": "",
+                "host": "",
+                "port": "",
+                "database": {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/items/db/testDB.sqlite"
+                }
+            },
+            "cancel_on_error": true
+        },
+        "Load Init File": {
+            "type": "Data Connection",
+            "description": "Loads all initialization values",
+            "x": -271.483020625815,
+            "y": 31.293547902810076,
+            "references": [
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": "test_data.xlsx"
+                }
+            ]
+        },
+        "Import Init Data to DB": {
+            "type": "Importer",
+            "description": "",
+            "x": -94.483020625815,
+            "y": 30.031973443791884,
+            "specification": "Import Init Data to DB",
+            "cancel_on_error": true,
+            "file_selection": [
+                [
+                    "test_data.xlsx",
+                    true
+                ]
+            ]
+        }
+    }
+}

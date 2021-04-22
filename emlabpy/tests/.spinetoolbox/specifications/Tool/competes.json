@@ -1,0 +1,14 @@
+{
+    "name": "COMPETES",
+    "tooltype": "python",
+    "includes": [
+        "competesdummy.py"
+    ],
+    "description": "",
+    "inputfiles": [],
+    "inputfiles_opt": [],
+    "outputfiles": [],
+    "cmdline_args": [],
+    "execute_in_work": false,
+    "includes_main_path": "../../../scripts"
+}

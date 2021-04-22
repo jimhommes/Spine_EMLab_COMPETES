@@ -6,7 +6,7 @@ Jim Hommes - 25-3-2021
 """
 
 import sys
-from dependencies.spinedb_reader_writer import *
+from util.spinedb_reader_writer import *
 from modules.capacitymarket import *
 from modules.co2market import *
 

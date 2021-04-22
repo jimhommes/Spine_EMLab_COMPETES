@@ -5,7 +5,7 @@ A tick is one year.
 Jim Hommes - 7-4-2021
 """
 import sys
-from dependencies.spinedb import SpineDB
+from util.spinedb import SpineDB
 
 db_url = sys.argv[1]
 db = SpineDB(db_url)
