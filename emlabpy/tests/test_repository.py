@@ -5,7 +5,8 @@ import pytest
 
 class TestRepository:
 
-    def test_get_power_plants_by_owner(self, reps):
+    def test_get_power_plants_by_owner(self, dbrw):
+        reps = dbrw.read_db_and_create_repository()
         assert reps.get_power_plants_by_owner(reps.energy_producers['Energy Producer NL A']) == \
                [reps.power_plants['Power Plant 1']]
 

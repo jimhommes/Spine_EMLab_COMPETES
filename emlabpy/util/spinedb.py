@@ -240,3 +240,6 @@ class SpineDB(object):
             self._db_map.commit_session(message)
         except SpineDBAPIError as e:
             logging.warning(e)
+
+    def close_connection(self):
+        self._db_map.connection.close()
