@@ -98,6 +98,7 @@ class SpineDBReaderWriter:
         reps.current_tick = max(
             [int(i[3]) for i in db_data['object_parameter_values'] if i[0] == i[1] == 'SystemClockTicks' and
              i[2] == 'ticks'])
+        self.stage_init_alternative(reps.current_tick)
 
         return reps
 
@@ -120,8 +121,9 @@ class SpineDBReaderWriter:
     def stage_objects(self, arr_of_tuples: list):
         self.db.import_objects(arr_of_tuples)
 
-    def stage_object_parameter_values(self, object_class_name: str, object_name: str, arr_of_tuples: list, current_tick: int):
-        import_arr = [(object_class_name, object_name, i[0], i[1], current_tick) for i in arr_of_tuples]
+    def stage_object_parameter_values(self,
+                                      object_class_name: str, object_name: str, arr_of_tuples: list, current_tick: int):
+        import_arr = [(object_class_name, object_name, i[0], i[1], str(current_tick)) for i in arr_of_tuples]
         self.db.import_object_parameter_values(import_arr)
 
     def stage_init_market_clearing_point_structure(self):
@@ -150,8 +152,8 @@ class SpineDBReaderWriter:
         self.stage_object(self.market_clearing_point_object_classname, object_name)
         self.stage_object_parameter_values(self.market_clearing_point_object_classname, object_name,
                                            [('Market', mcp.market),
-                                             ('Price', mcp.price),
-                                             ('TotalCapacity', mcp.capacity)], current_tick)
+                                            ('Price', mcp.price),
+                                            ('TotalCapacity', mcp.capacity)], current_tick)
 
     def stage_init_alternative(self, current_tick: int):
         self.db.import_alternatives([str(current_tick)])

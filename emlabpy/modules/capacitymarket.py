@@ -61,7 +61,7 @@ class CapacityMarketClearing(MarketModule):
         peak_load = max(json.loads(self.reps.load['NL'].parameters['ldc'].to_database())['data'].values())
         for market in self.reps.capacity_markets.values():
             sdc = market.get_sloping_demand_curve(peak_load)
-            sorted_ppdp = self.reps.get_sorted_dispatch_plans_by_market(market.name)
+            sorted_ppdp = self.reps.get_sorted_dispatch_plans_by_market(market)
             clearing_price = 0
             total_supply = 0
             for ppdp in sorted_ppdp:
@@ -79,4 +79,4 @@ class CapacityMarketClearing(MarketModule):
                     self.reps.set_power_plant_dispatch_plan_production(
                         ppdp, self.reps.power_plant_dispatch_plan_status_failed, 0)
 
-            self.reps.create_market_clearing_point(market.name, clearing_price, total_supply)
+            self.reps.create_market_clearing_point(market, clearing_price, total_supply)

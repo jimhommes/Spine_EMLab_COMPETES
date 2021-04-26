@@ -41,8 +41,7 @@ class TestRepository:
                                                       EnergyProducer("newbidder1"),
                                                       esm,
                                                       100, 60)
-        res = reps.get_sorted_dispatch_plans_by_market(esm.name)
-        assert res == [ppdp4, ppdp1, ppdp2, ppdp3, ppdp5]
+        assert reps.get_sorted_dispatch_plans_by_market(esm) == [ppdp4, ppdp1, ppdp2, ppdp3, ppdp5]
 
     def test_create_market_clearing_point(self, reps: Repository, mocker):
         spy = mocker.spy(reps.dbrw, 'stage_market_clearing_point')
@@ -67,8 +66,8 @@ class TestRepository:
             ppdp.status = reps.power_plant_dispatch_plan_status_accepted
             ppdp.accepted_amount = ppdp.amount
 
-        assert reps.get_available_power_plant_capacity_at_tick(plant.name, 0) == plant.capacity - 100 - 20
-        assert reps.get_available_power_plant_capacity_at_tick(plant.name, 1) == plant.capacity - 300
+        assert reps.get_available_power_plant_capacity_at_tick(plant, 0) == plant.capacity - 100 - 20
+        assert reps.get_available_power_plant_capacity_at_tick(plant, 1) == plant.capacity - 300
 
     def test_get_power_plant_dispatch_plans_by_plant(self, reps: Repository):
         plant = PowerPlant("new plant test 1")
@@ -78,7 +77,7 @@ class TestRepository:
         ppdp2.plant = plant
         reps.power_plant_dispatch_plans[ppdp1.name] = ppdp1
         reps.power_plant_dispatch_plans[ppdp2.name] = ppdp2
-        assert reps.get_power_plant_dispatch_plans_by_plant(plant.name) == [ppdp1, ppdp2]
+        assert reps.get_power_plant_dispatch_plans_by_plant(plant) == [ppdp1, ppdp2]
 
     def test_get_power_plant_dispatch_plans_by_plant_and_tick(self, reps: Repository):
         plant = PowerPlant("new plant test 1")
@@ -90,8 +89,8 @@ class TestRepository:
         reps.power_plant_dispatch_plans[ppdp2.name] = ppdp2
         ppdp1.tick = 20
         ppdp2.tick = 21
-        assert reps.get_power_plant_dispatch_plans_by_plant_and_tick(plant.name, 20) == [ppdp1]
-        assert reps.get_power_plant_dispatch_plans_by_plant_and_tick(plant.name, 21) == [ppdp2]
+        assert reps.get_power_plant_dispatch_plans_by_plant_and_tick(plant, 20) == [ppdp1]
+        assert reps.get_power_plant_dispatch_plans_by_plant_and_tick(plant, 21) == [ppdp2]
 
     def test_set_power_plant_dispatch_plan_production(self, reps: Repository, mocker):
         spy = mocker.spy(reps.dbrw, 'stage_power_plant_dispatch_plan')
@@ -129,7 +128,7 @@ class TestRepository:
         mcp3 = MarketClearingPoint("new3")
         reps.market_clearing_points[mcp1.name] = mcp1
         reps.market_clearing_points[mcp3.name] = mcp3
-        assert reps.get_market_clearing_point_for_market_and_time(tick, market) == mcp1
+        assert reps.get_market_clearing_point_for_market_and_time(market, tick) == mcp1
 
     def test_get_market_clearing_point_price_for_market_and_time(self, reps: Repository):
         market = ElectricitySpotMarket("testmarketforget")
@@ -141,7 +140,7 @@ class TestRepository:
         mcp3 = MarketClearingPoint("new3")
         reps.market_clearing_points[mcp1.name] = mcp1
         reps.market_clearing_points[mcp3.name] = mcp3
-        assert reps.get_market_clearing_point_price_for_market_and_time(tick, market) == 1234
+        assert reps.get_market_clearing_point_price_for_market_and_time(market, tick) == 1234
 
     def test_get_national_government_by_zone(self, reps: Repository):
         assert reps.get_national_government_by_zone(reps.zones['nl']) == reps.national_governments['DutchGov']

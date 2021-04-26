@@ -43,7 +43,7 @@ class ElectricitySpotMarketClearing(MarketModule):
         # Calculate and submit Market Clearing Price
         peak_load = max(json.loads(self.reps.load['NL'].parameters['ldc'].to_database())['data'].values())
         for market in self.reps.electricity_spot_markets.values():
-            sorted_ppdp = self.reps.get_sorted_dispatch_plans_by_market(market.name)
+            sorted_ppdp = self.reps.get_sorted_dispatch_plans_by_market(market)
             clearing_price = 0
             total_load = 0
             for ppdp in sorted_ppdp:
@@ -61,4 +61,4 @@ class ElectricitySpotMarketClearing(MarketModule):
                     self.reps.set_power_plant_dispatch_plan_production(
                         ppdp, self.reps.power_plant_dispatch_plan_status_failed, 0)
 
-            self.reps.create_market_clearing_point(market.name, clearing_price, total_load)
+            self.reps.create_market_clearing_point(market, clearing_price, total_load)

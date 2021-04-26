@@ -62,26 +62,6 @@
             },
             {
                 "from": [
-                    "COMPETES Dummy",
-                    "right"
-                ],
-                "to": [
-                    "Capacity Market",
-                    "bottom"
-                ]
-            },
-            {
-                "from": [
-                    "DB",
-                    "right"
-                ],
-                "to": [
-                    "View 1",
-                    "left"
-                ]
-            },
-            {
-                "from": [
                     "DB",
                     "bottom"
                 ],
@@ -112,16 +92,6 @@
             },
             {
                 "from": [
-                    "Capacity Market",
-                    "right"
-                ],
-                "to": [
-                    "Clock Increment",
-                    "bottom"
-                ]
-            },
-            {
-                "from": [
                     "DB",
                     "right"
                 ],
@@ -132,12 +102,202 @@
             },
             {
                 "from": [
+                    "DB",
+                    "right"
+                ],
+                "to": [
+                    "COMPETES Dummy 1",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "DB",
+                    "right"
+                ],
+                "to": [
+                    "Capacity Market 1",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "DB",
+                    "right"
+                ],
+                "to": [
+                    "Clock Increment 1",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "COMPETES Dummy 1",
+                    "right"
+                ],
+                "to": [
+                    "Capacity Market 1",
+                    "right"
+                ]
+            },
+            {
+                "from": [
+                    "Capacity Market 1",
+                    "right"
+                ],
+                "to": [
+                    "Clock Increment 1",
+                    "right"
+                ]
+            },
+            {
+                "from": [
                     "Clock Increment",
                     "right"
                 ],
                 "to": [
-                    "View 1",
+                    "COMPETES Dummy 1",
                     "bottom"
+                ]
+            },
+            {
+                "from": [
+                    "Capacity Market",
+                    "right"
+                ],
+                "to": [
+                    "Clock Increment",
+                    "right"
+                ]
+            },
+            {
+                "from": [
+                    "COMPETES Dummy",
+                    "right"
+                ],
+                "to": [
+                    "Capacity Market",
+                    "right"
+                ]
+            },
+            {
+                "from": [
+                    "Clock Increment 1",
+                    "right"
+                ],
+                "to": [
+                    "COMPETES Dummy 1 1",
+                    "bottom"
+                ]
+            },
+            {
+                "from": [
+                    "COMPETES Dummy 1 1",
+                    "right"
+                ],
+                "to": [
+                    "Capacity Market 1 1",
+                    "right"
+                ]
+            },
+            {
+                "from": [
+                    "DB",
+                    "right"
+                ],
+                "to": [
+                    "COMPETES Dummy 1 1",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "DB",
+                    "right"
+                ],
+                "to": [
+                    "Capacity Market 1 1",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "COMPETES Dummy 1 1 1",
+                    "right"
+                ],
+                "to": [
+                    "Capacity Market 1 1 1",
+                    "right"
+                ]
+            },
+            {
+                "from": [
+                    "DB",
+                    "right"
+                ],
+                "to": [
+                    "COMPETES Dummy 1 1 1",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "DB",
+                    "right"
+                ],
+                "to": [
+                    "Capacity Market 1 1 1",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "Capacity Market 1 1",
+                    "right"
+                ],
+                "to": [
+                    "Clock Increment 1 1",
+                    "right"
+                ]
+            },
+            {
+                "from": [
+                    "DB",
+                    "right"
+                ],
+                "to": [
+                    "Clock Increment 1 1",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "Clock Increment 1 1",
+                    "right"
+                ],
+                "to": [
+                    "COMPETES Dummy 1 1 1",
+                    "bottom"
+                ]
+            },
+            {
+                "from": [
+                    "DB",
+                    "right"
+                ],
+                "to": [
+                    "Clock Increment 1 2",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "Capacity Market 1 1 1",
+                    "right"
+                ],
+                "to": [
+                    "Clock Increment 1 2",
+                    "right"
                 ]
             }
         ]
@@ -146,8 +306,8 @@
         "DB": {
             "type": "Data Store",
             "description": "",
-            "x": 99.12618781294339,
-            "y": 1.0268694293610956,
+            "x": -125.72719826009808,
+            "y": 142.99316444032473,
             "url": {
                 "dialect": "sqlite",
                 "username": "",
@@ -165,8 +325,8 @@
         "Load Init File": {
             "type": "Data Connection",
             "description": "Loads all initialization values",
-            "x": -258.85447177893536,
-            "y": 2.0371533371114765,
+            "x": -481.66501405027975,
+            "y": 148.08913595146925,
             "references": [
                 {
                     "type": "path",
@@ -178,8 +338,8 @@
         "Capacity Market": {
             "type": "Tool",
             "description": "",
-            "x": 225.66879584883384,
-            "y": 3.319466946074286,
+            "x": 22.790020647544196,
+            "y": 203.1005607927534,
             "specification": "Capacity Market",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -196,8 +356,8 @@
         "COMPETES Dummy": {
             "type": "Tool",
             "description": "",
-            "x": 199.2880018054515,
-            "y": 122.99222551741906,
+            "x": 23.273782220322488,
+            "y": 270.7774052683033,
             "specification": "COMPETES",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -210,8 +370,8 @@
         "Clock Initialization": {
             "type": "Tool",
             "description": "",
-            "x": 125.27520456104719,
-            "y": 238.42700222908965,
+            "x": -97.5353377102972,
+            "y": 384.4789848434474,
             "specification": "Clock",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -228,8 +388,8 @@
         "Clock Increment": {
             "type": "Tool",
             "description": "",
-            "x": 251.23996797976503,
-            "y": -125.27520456104716,
+            "x": 22.363235730577884,
+            "y": 133.43459192753284,
             "specification": "Clock",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -243,17 +403,161 @@
                 }
             ]
         },
-        "View 1": {
-            "type": "View",
+        "COMPETES Dummy 1": {
+            "type": "Tool",
             "description": "",
-            "x": 276.6115694726946,
-            "y": -292.9397913604869
+            "x": 131.350991505867,
+            "y": 109.07340019763448,
+            "specification": "COMPETES",
+            "execute_in_work": false,
+            "cmd_line_args": [
+                {
+                    "type": "resource",
+                    "arg": "db_url@DB"
+                }
+            ]
+        },
+        "Capacity Market 1": {
+            "type": "Tool",
+            "description": "",
+            "x": 128.9240111111228,
+            "y": 38.79210838463629,
+            "specification": "Capacity Market",
+            "execute_in_work": false,
+            "cmd_line_args": [
+                {
+                    "type": "resource",
+                    "arg": "db_url@DB"
+                },
+                {
+                    "type": "literal",
+                    "arg": "run_capacity_market"
+                }
+            ]
+        },
+        "Clock Increment 1": {
+            "type": "Tool",
+            "description": "",
+            "x": 128.957504512274,
+            "y": -30.6348079908027,
+            "specification": "Clock",
+            "execute_in_work": false,
+            "cmd_line_args": [
+                {
+                    "type": "resource",
+                    "arg": "db_url@DB"
+                },
+                {
+                    "type": "literal",
+                    "arg": "increment_clock"
+                }
+            ]
+        },
+        "COMPETES Dummy 1 1": {
+            "type": "Tool",
+            "description": "",
+            "x": 295.911570441272,
+            "y": -53.92432989920067,
+            "specification": "COMPETES",
+            "execute_in_work": false,
+            "cmd_line_args": [
+                {
+                    "type": "resource",
+                    "arg": "db_url@DB"
+                }
+            ]
+        },
+        "Capacity Market 1 1": {
+            "type": "Tool",
+            "description": "",
+            "x": 294.17837330474555,
+            "y": -131.0516024746297,
+            "specification": "Capacity Market",
+            "execute_in_work": false,
+            "cmd_line_args": [
+                {
+                    "type": "resource",
+                    "arg": "db_url@DB"
+                },
+                {
+                    "type": "literal",
+                    "arg": "run_capacity_market"
+                }
+            ]
+        },
+        "COMPETES Dummy 1 1 1": {
+            "type": "Tool",
+            "description": "",
+            "x": 446.16501405027964,
+            "y": -222.0442682456736,
+            "specification": "COMPETES",
+            "execute_in_work": false,
+            "cmd_line_args": [
+                {
+                    "type": "resource",
+                    "arg": "db_url@DB"
+                }
+            ]
+        },
+        "Capacity Market 1 1 1": {
+            "type": "Tool",
+            "description": "",
+            "x": 449.9721713465375,
+            "y": -307.7887548788118,
+            "specification": "Capacity Market",
+            "execute_in_work": false,
+            "cmd_line_args": [
+                {
+                    "type": "resource",
+                    "arg": "db_url@DB"
+                },
+                {
+                    "type": "literal",
+                    "arg": "run_capacity_market"
+                }
+            ]
+        },
+        "Clock Increment 1 1": {
+            "type": "Tool",
+            "description": "",
+            "x": 289.3961460981675,
+            "y": -209.98045949448425,
+            "specification": "Clock",
+            "execute_in_work": false,
+            "cmd_line_args": [
+                {
+                    "type": "resource",
+                    "arg": "db_url@DB"
+                },
+                {
+                    "type": "literal",
+                    "arg": "increment_clock"
+                }
+            ]
+        },
+        "Clock Increment 1 2": {
+            "type": "Tool",
+            "description": "",
+            "x": 446.8814907190306,
+            "y": -389.0022614993972,
+            "specification": "Clock",
+            "execute_in_work": false,
+            "cmd_line_args": [
+                {
+                    "type": "resource",
+                    "arg": "db_url@DB"
+                },
+                {
+                    "type": "literal",
+                    "arg": "increment_clock"
+                }
+            ]
         },
         "Import Init Data to DB": {
             "type": "Importer",
             "description": "",
-            "x": -81.85447177893535,
-            "y": 0.7755788780932846,
+            "x": -304.66501405027975,
+            "y": 146.82756149245105,
             "specification": "Import Init Data to DB",
             "cancel_on_error": true,
             "file_selection": [

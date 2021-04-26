@@ -74,7 +74,7 @@ class Repository:
     def create_market_clearing_point(self, market: Market, price: float, capacity: float) -> MarketClearingPoint:
         name = 'MarketClearingPoint ' + str(datetime.now())
         mcp = MarketClearingPoint(name)
-        mcp.market = market
+        mcp.market = market.name
         mcp.price = price
         mcp.capacity = capacity
         self.market_clearing_points[name] = mcp
@@ -138,7 +138,7 @@ class Repository:
 
     def get_power_plant_revenues_by_tick(self, power_plant: PowerPlant, time: int) -> float:
         return sum([float(i.accepted_amount * i.price) for i in
-                    self.get_power_plant_dispatch_plans_by_plant_and_tick(power_plant.name, time)])
+                    self.get_power_plant_dispatch_plans_by_plant_and_tick(power_plant, time)])
 
     def get_total_accepted_amounts_by_power_plant_and_tick(self, power_plant: PowerPlant, time: int) -> float:
         return sum([i.accepted_amount for i in self.power_plant_dispatch_plans.values() if i.tick == time and

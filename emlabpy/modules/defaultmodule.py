@@ -14,8 +14,8 @@ from util.repository import Repository
 class DefaultModule:
 
     def __init__(self, name: str, reps: Repository):
-        self.name = name
-        self.reps = reps
+        self.name: str = name
+        self.reps: Repository = reps
 
     def act(self):
         pass
