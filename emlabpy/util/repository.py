@@ -239,20 +239,23 @@ class PowerPlant(ImportObject):
                * self.get_actual_nominal_capacity()
 
     def get_actual_nominal_capacity(self):
-        return self.technology.capacity * float(self.location.parameters['CapacityMultiplicationFactor'])
+        if self.capacity == 0:
+            return self.technology.capacity * float(self.location.parameters['CapacityMultiplicationFactor'])
+        else:
+            return self.capacity
 
     def calculate_marginal_fuel_cost(self, reps):
         fc = 0
         for substance_in_fuel_mix in reps.get_substances_in_fuel_mix_by_plant(self):
-            amount = substance_in_fuel_mix.share
+            amount_per_mw = substance_in_fuel_mix.share / (self.efficiency * substance_in_fuel_mix.substance.energy_density)
             fuel_price = reps.get_last_known_price_for_substance(substance_in_fuel_mix.substance.name,
                                                                  reps.current_tick)
-            fc += amount * fuel_price
+            fc += amount_per_mw * fuel_price
         return fc
 
     def calculate_co2_tax_marginal_cost(self, reps):
         co2_intensity = self.calculate_emission_intensity(reps)
-        co2_tax = 1
+        co2_tax = 0
         return co2_intensity * co2_tax
 
     def calculate_marginal_cost_excl_co2_market_cost(self, reps):

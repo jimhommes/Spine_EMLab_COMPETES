@@ -22,25 +22,25 @@ class TestRepository:
     def test_get_sorted_dispatch_plans_by_market(self, reps: Repository):
         esm = reps.electricity_spot_markets['DutchElectricitySpotMarket']
         ppdp1 = reps.create_power_plant_dispatch_plan(PowerPlant("newpp1"),
-                                              EnergyProducer("newbidder1"),
-                                              esm,
-                                              100, 10)
+                                                      EnergyProducer("newbidder1"),
+                                                      esm,
+                                                      100, 10)
         ppdp2 = reps.create_power_plant_dispatch_plan(PowerPlant("newpp2"),
-                                              EnergyProducer("newbidder1"),
-                                              esm,
-                                              100, 20)
+                                                      EnergyProducer("newbidder1"),
+                                                      esm,
+                                                      100, 20)
         ppdp3 = reps.create_power_plant_dispatch_plan(PowerPlant("newpp3"),
-                                              EnergyProducer("newbidder1"),
-                                              esm,
-                                              100, 30)
+                                                      EnergyProducer("newbidder1"),
+                                                      esm,
+                                                      100, 30)
         ppdp4 = reps.create_power_plant_dispatch_plan(PowerPlant("newpp4"),
-                                              EnergyProducer("newbidder1"),
-                                              esm,
-                                              100, 5)
+                                                      EnergyProducer("newbidder1"),
+                                                      esm,
+                                                      100, 5)
         ppdp5 = reps.create_power_plant_dispatch_plan(PowerPlant("newpp5"),
-                                              EnergyProducer("newbidder1"),
-                                              esm,
-                                              100, 60)
+                                                      EnergyProducer("newbidder1"),
+                                                      esm,
+                                                      100, 60)
         res = reps.get_sorted_dispatch_plans_by_market(esm.name)
         assert res == [ppdp4, ppdp1, ppdp2, ppdp3, ppdp5]
 
@@ -190,11 +190,61 @@ class TestRepository:
         reps.power_plant_dispatch_plans[ppdp2.name] = ppdp2
         assert reps.get_total_accepted_amounts_by_power_plant_and_tick(plant, 123) == 100 + 200
 
-    def test_get_power_plant_costs_by_tick(self):
-        pass
+    def test_get_power_plant_costs_by_tick(self, reps: Repository):
+        fuel_cost = 5000000 / (0.33 * 3800000000)
+        fixed_operating_cost = pow(1 + 0.05, -37 + 2 + 5) * 71870 * 485
+        accepted_capacity = reps.get_total_accepted_amounts_by_power_plant_and_tick(reps.power_plants['Power Plant 1'],
+                                                                                    0)
+        assert round(reps.get_power_plant_costs_by_tick(reps.power_plants['Power Plant 1'], 0), 3) == \
+               round(fixed_operating_cost + fuel_cost * accepted_capacity, 3)
 
-    def test_get_power_plant_profits_by_tick(self):
-        pass
+    def test_get_power_plant_profits_by_tick(self, reps: Repository):
+        plant1 = reps.power_plants['Power Plant 1']
+        plant2 = reps.power_plants['Power Plant 2']
+        plant3 = reps.power_plants['Power Plant 3']
+        plant4 = reps.power_plants['Power Plant 4']
+        plant5 = reps.power_plants['Power Plant 5']
 
-    def test_get_power_plant_emissions_by_tick(self):
-        pass
+        profit_plant1 = reps.get_power_plant_revenues_by_tick(plant1, 0) - reps.get_power_plant_costs_by_tick(plant1, 0)
+        profit_plant2 = reps.get_power_plant_revenues_by_tick(plant2, 0) - reps.get_power_plant_costs_by_tick(plant2, 0)
+        profit_plant3 = reps.get_power_plant_revenues_by_tick(plant3, 0) - reps.get_power_plant_costs_by_tick(plant3, 0)
+        profit_plant4 = reps.get_power_plant_revenues_by_tick(plant4, 0) - reps.get_power_plant_costs_by_tick(plant4, 0)
+        profit_plant5 = reps.get_power_plant_revenues_by_tick(plant5, 0) - reps.get_power_plant_costs_by_tick(plant5, 0)
+
+        assert reps.get_power_plant_profits_by_tick(0) == \
+               {plant1.name: profit_plant1,
+                plant2.name: profit_plant2,
+                plant3.name: profit_plant3,
+                plant4.name: profit_plant4,
+                plant5.name: profit_plant5}
+
+    def test_get_power_plant_emissions_by_tick(self, reps: Repository):
+        plant1 = reps.power_plants['Power Plant 1']
+        plant2 = reps.power_plants['Power Plant 2']
+        plant3 = reps.power_plants['Power Plant 3']
+        plant4 = reps.power_plants['Power Plant 4']
+        plant5 = reps.power_plants['Power Plant 5']
+
+        emission1 = plant1.get_load_factor_for_production(
+            reps.get_total_accepted_amounts_by_power_plant_and_tick(plant1, 0)
+        ) * plant1.calculate_emission_intensity(reps)
+        emission2 = plant2.get_load_factor_for_production(
+            reps.get_total_accepted_amounts_by_power_plant_and_tick(plant2, 0)
+        ) * plant2.calculate_emission_intensity(reps)
+        emission3 = plant3.get_load_factor_for_production(
+            reps.get_total_accepted_amounts_by_power_plant_and_tick(plant3, 0)
+        ) * plant3.calculate_emission_intensity(reps)
+        emission4 = plant4.get_load_factor_for_production(
+            reps.get_total_accepted_amounts_by_power_plant_and_tick(plant4, 0)
+        ) * plant4.calculate_emission_intensity(reps)
+        emission5 = plant5.get_load_factor_for_production(
+            reps.get_total_accepted_amounts_by_power_plant_and_tick(plant5, 0)
+        ) * plant5.calculate_emission_intensity(reps)
+
+        assert reps.get_power_plant_emissions_by_tick(0) == {
+            plant1.name: emission1,
+            plant2.name: emission2,
+            plant3.name: emission3,
+            plant4.name: emission4,
+            plant5.name: emission5
+        }
