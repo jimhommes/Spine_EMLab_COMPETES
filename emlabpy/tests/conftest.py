@@ -29,3 +29,8 @@ def dbrw():
     dbrw = SpineDBReaderWriter('sqlite:///' + path_to_current_spinedb)
     yield dbrw
     dbrw.db.close_connection()
+
+
+@pytest.fixture(scope="class")
+def reps(dbrw):
+    return dbrw.read_db_and_create_repository()

@@ -74,8 +74,10 @@ class Repository:
         ppdp.price = price
         ppdp.status = self.power_plant_dispatch_plan_status_awaiting
         ppdp.accepted_amount = 0
+        ppdp.tick = self.current_tick
         self.power_plant_dispatch_plans[name] = ppdp
         self.dbrw.stage_power_plant_dispatch_plan(ppdp, self.current_tick)
+        return ppdp
 
     def get_sorted_dispatch_plans_by_market(self, market_name):
         return sorted([i for i in self.power_plant_dispatch_plans.values() if i.bidding_market.name == market_name],
@@ -90,10 +92,11 @@ class Repository:
         self.market_clearing_points[name] = mcp
         self.dbrw.stage_market_clearing_point(mcp, self.current_tick)
 
-    def get_available_power_plant_capacity(self, plant_name):
+    def get_available_power_plant_capacity_at_tick(self, plant_name, current_tick):
         plant = self.power_plants[plant_name]
         ppdps_sum_accepted_amount = sum([float(i.accepted_amount) for i in
-                                         self.get_power_plant_dispatch_plans_by_plant(plant_name)])
+                                         self.get_power_plant_dispatch_plans_by_plant(plant_name)
+                                         if i.tick == current_tick])
         return plant.capacity - ppdps_sum_accepted_amount
 
     def get_power_plant_dispatch_plans_by_plant(self, plant_name):
@@ -130,7 +133,7 @@ class Repository:
         else:
             return []
 
-    def find_last_known_price_for_substance(self, substance_name, tick):
+    def get_last_known_price_for_substance(self, substance_name, tick):
         return self.substances[substance_name].get_price_for_tick(tick)
 
     def get_market_clearing_point_for_market_and_time(self, tick, market):
@@ -148,7 +151,7 @@ class Repository:
             return 0
 
     def get_national_government_by_zone(self, zone):
-        return next(i for i in self.national_governments if i.zone == zone)
+        return next(i for i in self.national_governments.values() if i.governed_zone == zone)
 
     def get_government(self):
         return next(i for i in self.governments.values())
@@ -242,8 +245,8 @@ class PowerPlant(ImportObject):
         fc = 0
         for substance_in_fuel_mix in reps.get_substances_in_fuel_mix_by_plant(self):
             amount = substance_in_fuel_mix.share
-            fuel_price = reps.find_last_known_price_for_substance(substance_in_fuel_mix.substance.name,
-                                                                  reps.current_tick)
+            fuel_price = reps.get_last_known_price_for_substance(substance_in_fuel_mix.substance.name,
+                                                                 reps.current_tick)
             fc += amount * fuel_price
         return fc
 

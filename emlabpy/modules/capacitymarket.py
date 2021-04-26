@@ -36,7 +36,7 @@ class CapacityMarketSubmitBids(MarketModule):
                                                      powerplant.get_actual_nominal_capacity() * \
                                                      powerplant_load_factor * 8760
 
-                capacity = self.reps.get_available_power_plant_capacity(powerplant.name)
+                capacity = self.reps.get_available_power_plant_capacity_at_tick(powerplant.name, self.reps.current_tick)
                 print('TODO: Discuss - in emlab full capacity is bid')
 
                 net_revenues = expected_electricity_revenues - fixed_on_m_cost
