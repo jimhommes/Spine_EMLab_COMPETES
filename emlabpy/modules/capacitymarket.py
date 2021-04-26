@@ -5,12 +5,13 @@ Jim Hommes - 25-3-2021
 """
 import json
 from modules.marketmodule import MarketModule
+from util.repository import Repository
 
 
 class CapacityMarketSubmitBids(MarketModule):
     """The class that submits all bids to the Capacity Market"""
 
-    def __init__(self, reps):
+    def __init__(self, reps: Repository):
         super().__init__('EM-Lab Capacity Market: Submit Bids', reps)
 
     def act(self):
@@ -25,7 +26,7 @@ class CapacityMarketSubmitBids(MarketModule):
                 fixed_on_m_cost = powerplant.get_actual_fixed_operating_cost()
 
                 clearing_point_price = self.reps.get_market_clearing_point_price_for_market_and_time(
-                    self.reps.current_tick - 1, emarket)
+                    emarket, self.reps.current_tick - 1)
 
                 powerplant_load_factor = 1
                 print('TODO: Plant load factor, necessary?? Upscales with segment part...')
@@ -36,7 +37,7 @@ class CapacityMarketSubmitBids(MarketModule):
                                                      powerplant.get_actual_nominal_capacity() * \
                                                      powerplant_load_factor * 8760
 
-                capacity = self.reps.get_available_power_plant_capacity_at_tick(powerplant.name, self.reps.current_tick)
+                capacity = self.reps.get_available_power_plant_capacity_at_tick(powerplant, self.reps.current_tick)
                 print('TODO: Discuss - in emlab full capacity is bid')
 
                 net_revenues = expected_electricity_revenues - fixed_on_m_cost
@@ -53,7 +54,7 @@ class CapacityMarketSubmitBids(MarketModule):
 class CapacityMarketClearing(MarketModule):
     """The class that clears the Capacity Market based on the Sloping Demand curve"""
 
-    def __init__(self, reps):
+    def __init__(self, reps: Repository):
         super().__init__('EM-Lab Capacity Market: Clear Market', reps)
 
     def act(self):

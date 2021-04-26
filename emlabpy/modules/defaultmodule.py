@@ -8,17 +8,18 @@ Jim Hommes - 25-3-2021
 """
 
 from datetime import datetime
+from util.repository import Repository
 
 
 class DefaultModule:
 
-    def __init__(self, name, reps):
+    def __init__(self, name: str, reps: Repository):
         self.name = name
         self.reps = reps
 
     def act(self):
         pass
 
-    def act_and_commit(self, current_tick):
+    def act_and_commit(self, current_tick: int):
         self.act()
         self.reps.dbrw.commit('Commit: ' + self.name + ' at ' + str(datetime.now()))

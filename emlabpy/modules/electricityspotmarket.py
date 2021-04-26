@@ -6,6 +6,7 @@ Jim Hommes - 25-3-2021
 """
 import json
 from modules.marketmodule import MarketModule
+from util.repository import Repository
 
 
 class ElectricitySpotMarketSubmitBids(MarketModule):
@@ -13,7 +14,7 @@ class ElectricitySpotMarketSubmitBids(MarketModule):
     The class that submits all bids to the Electricity Spot Market.
     """
 
-    def __init__(self, reps):
+    def __init__(self, reps: Repository):
         super().__init__('COMPETES Dummy: Electricity Spot Market: Submit Bids', reps)
         reps.dbrw.stage_init_power_plant_dispatch_plan_structure()
 
@@ -34,7 +35,7 @@ class ElectricitySpotMarketClearing(MarketModule):
     The class that clears the Electricity Spot Market.
     """
 
-    def __init__(self, reps):
+    def __init__(self, reps: Repository):
         super().__init__('COMPETES Dummy: Electricity Spot Market: Clear Market', reps)
         reps.dbrw.stage_init_market_clearing_point_structure()
 

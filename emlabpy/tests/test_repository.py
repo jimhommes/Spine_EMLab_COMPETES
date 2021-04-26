@@ -1,5 +1,5 @@
 from conftest import *
-
+from domain.actors import *
 
 class TestRepository:
 
@@ -118,15 +118,6 @@ class TestRepository:
     def test_get_substances_in_fuel_mix_by_plant(self, reps: Repository):
         assert reps.get_substances_in_fuel_mix_by_plant(reps.power_plants['Power Plant 1']) == \
                reps.power_plants_fuel_mix['Nuclear PGT']
-
-    def test_find_last_known_price_for_substance(self, reps: Repository):
-        start_price = reps.get_last_known_price_for_substance('biomass', 0)
-        assert start_price == 112.5
-        previous_price = start_price
-        for i in range(1, 1000):
-            new_price = reps.get_last_known_price_for_substance('biomass', i)
-            assert 0.97 <= (new_price - previous_price) <= 1.05
-            previous_price = new_price
 
     def test_get_market_clearing_point_for_market_and_time(self, reps: Repository):
         market = ElectricitySpotMarket("testmarketforget")

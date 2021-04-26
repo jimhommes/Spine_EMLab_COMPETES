@@ -8,7 +8,7 @@ from util.repository import *
 from util.spinedb import SpineDB
 
 
-def db_objects_to_dict(reps, db_data, to_dict, object_class_name, class_to_create):
+def db_objects_to_dict(reps: Repository, db_data: dict, to_dict: dict, object_class_name: str, class_to_create):
     """
     Common function to read a SpineDB entry to a Python dict with {object_class_name: class_to_create}
     class_to_create should inherit ImportObject
@@ -29,7 +29,7 @@ def db_objects_to_dict(reps, db_data, to_dict, object_class_name, class_to_creat
             unit.add_parameter_value(reps, parameterValue[2], parameterValue[3], parameterValue[4])
 
 
-def db_relationships_to_arr(db_data, to_arr, relationship_class_name):
+def db_relationships_to_arr(db_data: dict, to_arr: list, relationship_class_name: str):
     """
     Function used to translate SpineDB relationships to an array of tuples
 
@@ -44,7 +44,7 @@ def db_relationships_to_arr(db_data, to_arr, relationship_class_name):
             to_arr.append((unit[1][0], unit[1][1], unit[1][2]))
 
 
-def import_fuel_mix(db_data, reps):
+def import_fuel_mix(db_data: dict, reps: Repository):
     for unit in [i for i in db_data['relationship_parameter_values'] if i[0] == 'PowerGeneratingTechnologyFuel']:
         if unit[1][0] in reps.power_plants_fuel_mix.keys():
             reps.power_plants_fuel_mix[unit[1][0]].append(SubstanceInFuelMix(
@@ -59,13 +59,13 @@ class SpineDBReaderWriter:
     The class that handles all writing and reading to the SpineDB.
     """
 
-    def __init__(self, db_url):
+    def __init__(self, db_url: str):
         self.db_url = db_url
         self.db = SpineDB(db_url)
         self.powerplant_dispatch_plan_classname = 'PowerPlantDispatchPlans'
         self.market_clearing_point_object_classname = 'MarketClearingPoints'
 
-    def read_db_and_create_repository(self):
+    def read_db_and_create_repository(self) -> Repository:
         reps = Repository()
         reps.dbrw = self
         db_data = self.db.export_data()
@@ -101,26 +101,26 @@ class SpineDBReaderWriter:
 
         return reps
 
-    def stage_object_class(self, object_class_name):
+    def stage_object_class(self, object_class_name: str):
         self.stage_object_classes([object_class_name])
 
-    def stage_object_classes(self, arr):
+    def stage_object_classes(self, arr: list):
         self.db.import_object_classes(arr)
 
-    def stage_object_parameter(self, object_class, object_parameter):
+    def stage_object_parameter(self, object_class: str, object_parameter: str):
         self.db.import_data({'object_parameters': [[object_class, object_parameter]]})
 
-    def stage_object_parameters(self, object_class, object_parameter_arr):
+    def stage_object_parameters(self, object_class: str, object_parameter_arr: list):
         for object_parameter in object_parameter_arr:
             self.stage_object_parameter(object_class, object_parameter)
 
-    def stage_object(self, object_class, object_name):
+    def stage_object(self, object_class: str, object_name: str):
         self.stage_objects([(object_class, object_name)])
 
-    def stage_objects(self, arr_of_tuples):
+    def stage_objects(self, arr_of_tuples: list):
         self.db.import_objects(arr_of_tuples)
 
-    def stage_object_parameter_values(self, object_class_name, object_name, arr_of_tuples, current_tick):
+    def stage_object_parameter_values(self, object_class_name: str, object_name: str, arr_of_tuples: list, current_tick: int):
         import_arr = [(object_class_name, object_name, i[0], i[1], current_tick) for i in arr_of_tuples]
         self.db.import_object_parameter_values(import_arr)
 
@@ -134,7 +134,7 @@ class SpineDBReaderWriter:
                                      ['Plant', 'Market', 'Price', 'Capacity', 'EnergyProducer', 'AcceptedAmount',
                                       'Status'])
 
-    def stage_power_plant_dispatch_plan(self, ppdp, current_tick):
+    def stage_power_plant_dispatch_plan(self, ppdp: PowerPlantDispatchPlan, current_tick: int):
         self.stage_object(self.powerplant_dispatch_plan_classname, ppdp.name)
         self.stage_object_parameter_values(self.powerplant_dispatch_plan_classname, ppdp.name,
                                            [('Plant', ppdp.plant.name),
@@ -143,18 +143,18 @@ class SpineDBReaderWriter:
                                             ('Capacity', ppdp.amount),
                                             ('EnergyProducer', ppdp.bidder.name),
                                             ('AcceptedAmount', ppdp.accepted_amount),
-                                            ('Status', ppdp.status)], str(current_tick))
+                                            ('Status', ppdp.status)], current_tick)
 
-    def stage_market_clearing_point(self, mcp, current_tick):
+    def stage_market_clearing_point(self, mcp: MarketClearingPoint, current_tick: int):
         object_name = mcp.name
         self.stage_object(self.market_clearing_point_object_classname, object_name)
         self.stage_object_parameter_values(self.market_clearing_point_object_classname, object_name,
                                            [('Market', mcp.market),
                                              ('Price', mcp.price),
-                                             ('TotalCapacity', mcp.capacity)], str(current_tick))
+                                             ('TotalCapacity', mcp.capacity)], current_tick)
 
-    def stage_init_alternative(self, current_tick):
+    def stage_init_alternative(self, current_tick: int):
         self.db.import_alternatives([str(current_tick)])
 
-    def commit(self, commit_message):
+    def commit(self, commit_message: str):
         self.db.commit(commit_message)
