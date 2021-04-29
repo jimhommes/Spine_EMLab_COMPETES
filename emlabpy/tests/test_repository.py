@@ -46,7 +46,7 @@ class TestRepository:
     def test_create_market_clearing_point(self, reps: Repository, mocker):
         spy = mocker.spy(reps.dbrw, 'stage_market_clearing_point')
         previous_size = len(reps.market_clearing_points)
-        reps.create_market_clearing_point("newmarket",
+        reps.create_market_clearing_point(ElectricitySpotMarket("newmarket"),
                                           10, 20)
         assert len(reps.market_clearing_points) == previous_size + 1
         assert reps.market_clearing_points[sorted(reps.market_clearing_points.keys())[0]].market == 'newmarket'

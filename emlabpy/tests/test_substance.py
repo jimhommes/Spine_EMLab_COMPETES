@@ -1,22 +1,13 @@
-def get_shell_repo():
-    repo = Repository()
-
-    ep1 = EnergyProducer("EnergyProducer 1")
-    ep2 = EnergyProducer("EnergyProducer 2")
-
-    pp1 = PowerPlant("Powerplant 1")
-    pp2 = PowerPlant("Powerplant 2")
-    pp1.owner = ep1
-    pp2.owner = ep2
-
-    repo.power_plants[pp1.name] = pp1
-    repo.power_plants[pp2.name] = pp2
-
-    return repo
 
 
 class TestSubstance:
 
-    def test_get_price_for_tick(self):
-        pass
+    def test_get_price_for_tick(self, reps):
+        subst = reps.substances['uranium']
+        assert subst.get_price_for_tick(0) == 5000000
+        prev_price = 5000000
+        for i in range(1, 1000):
+            new_price = subst.get_price_for_tick(i)
+            assert 0.96 <= new_price - prev_price <= 1.04
+            prev_price = new_price
 

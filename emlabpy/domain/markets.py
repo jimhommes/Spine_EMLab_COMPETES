@@ -11,6 +11,10 @@ class ElectricitySpotMarket(Market):
 
 class CapacityMarket(Market):
 
+    def __init__(self, name: str):
+        super().__init__(name)
+        self.sloping_demand_curve = None
+
     def get_sloping_demand_curve(self, d_peak):
         return SlopingDemandCurve(float(self.parameters['InstalledReserveMargin']),
                                   float(self.parameters['LowerMargin']),

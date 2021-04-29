@@ -30,10 +30,11 @@ class PowerPlant(ImportObject):
     def calculate_emission_intensity(self, reps):
         emission = 0
         for substance_in_fuel_mix in reps.get_substances_in_fuel_mix_by_plant(self):
-            fuel_amount = substance_in_fuel_mix.share
+            amount_per_mw = substance_in_fuel_mix.share / (self.efficiency *
+                                                           substance_in_fuel_mix.substance.energy_density)
             co2_density = substance_in_fuel_mix.substance.co2_density * (1 - float(
                 self.technology.co2_capture_efficiency))
-            emission_for_this_fuel = fuel_amount * co2_density
+            emission_for_this_fuel = amount_per_mw * co2_density
             emission += emission_for_this_fuel
         return emission
 
@@ -49,11 +50,12 @@ class PowerPlant(ImportObject):
         else:
             return self.capacity
 
-    def calculate_marginal_fuel_cost(self, reps):
+    def calculate_marginal_fuel_cost_by_tick(self, reps, time):
         fc = 0
         for substance_in_fuel_mix in reps.get_substances_in_fuel_mix_by_plant(self):
-            amount_per_mw = substance_in_fuel_mix.share / (self.efficiency * substance_in_fuel_mix.substance.energy_density)
-            fuel_price = substance_in_fuel_mix.substance.get_price_for_tick(reps.current_tick)
+            amount_per_mw = substance_in_fuel_mix.share / (self.efficiency *
+                                                           substance_in_fuel_mix.substance.energy_density)
+            fuel_price = substance_in_fuel_mix.substance.get_price_for_tick(time)
             fc += amount_per_mw * fuel_price
         return fc
 
@@ -62,9 +64,9 @@ class PowerPlant(ImportObject):
         co2_tax = 0
         return co2_intensity * co2_tax
 
-    def calculate_marginal_cost_excl_co2_market_cost(self, reps):
+    def calculate_marginal_cost_excl_co2_market_cost(self, reps, time):
         mc = 0
-        mc += self.calculate_marginal_fuel_cost(reps)
+        mc += self.calculate_marginal_fuel_cost_by_tick(reps, time)
         mc += self.calculate_co2_tax_marginal_cost(reps)
         return mc
 
