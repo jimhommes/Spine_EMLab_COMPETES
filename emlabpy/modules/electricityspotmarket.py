@@ -27,7 +27,7 @@ class ElectricitySpotMarketSubmitBids(MarketModule):
                 market = self.reps.get_electricity_spot_market_for_plant(powerplant)
                 capacity = powerplant.get_actual_nominal_capacity()
                 mc = powerplant.calculate_marginal_cost_excl_co2_market_cost(self.reps,
-                                                                             self.reps.current_tick) * capacity
+                                                                             self.reps.current_tick)
                 self.reps.create_or_update_power_plant_dispatch_plan(powerplant, energy_producer, market, capacity, mc,
                                                                      self.reps.current_tick)
 
