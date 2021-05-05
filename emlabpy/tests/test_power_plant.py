@@ -30,7 +30,7 @@ class TestPowerPlant:
 
     def test_calculate_marginal_fuel_cost(self, reps):
         pp1 = reps.power_plants['Power Plant 1']
-        assert pp1.calculate_marginal_fuel_cost_by_tick(reps, 0) == 1 / (0.33 * 3800000000) * 5000000
+        assert pp1.calculate_marginal_fuel_cost_per_mw_by_tick(reps, 0) == 1 / (0.33 * 3800000000) * 5000000
 
     def test_calculate_co2_tax_marginal_cost(self, reps):
         # 0 because tax has been set to 0
@@ -39,5 +39,5 @@ class TestPowerPlant:
     def test_calculate_marginal_cost_excl_co2_market_cost(self, reps):
         pp1 = reps.power_plants['Power Plant 1']
         assert pp1.calculate_marginal_cost_excl_co2_market_cost(reps, 0) == \
-               pp1.calculate_marginal_fuel_cost_by_tick(reps, 0)
+               pp1.calculate_marginal_fuel_cost_per_mw_by_tick(reps, 0)
 

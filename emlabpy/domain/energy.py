@@ -50,7 +50,7 @@ class PowerPlant(ImportObject):
         else:
             return self.capacity
 
-    def calculate_marginal_fuel_cost_by_tick(self, reps, time):
+    def calculate_marginal_fuel_cost_per_mw_by_tick(self, reps, time):
         fc = 0
         for substance_in_fuel_mix in reps.get_substances_in_fuel_mix_by_plant(self):
             amount_per_mw = substance_in_fuel_mix.share / (self.efficiency *
@@ -66,7 +66,7 @@ class PowerPlant(ImportObject):
 
     def calculate_marginal_cost_excl_co2_market_cost(self, reps, time):
         mc = 0
-        mc += self.calculate_marginal_fuel_cost_by_tick(reps, time)
+        mc += self.calculate_marginal_fuel_cost_per_mw_by_tick(reps, time)
         mc += self.calculate_co2_tax_marginal_cost(reps)
         return mc
 

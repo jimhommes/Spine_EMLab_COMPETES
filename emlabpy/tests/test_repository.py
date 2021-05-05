@@ -11,43 +11,43 @@ class TestRepository:
         spy = mocker.spy(reps.dbrw, 'stage_power_plant_dispatch_plan')
 
         previous_size = len(reps.power_plant_dispatch_plans.keys())
-        reps.create_power_plant_dispatch_plan(PowerPlant("newpp"),
-                                              EnergyProducer("newbidder"),
-                                              ElectricitySpotMarket("newesm"),
-                                              10, 20)
+        reps.create_or_update_power_plant_dispatch_plan(PowerPlant("newpp"),
+                                                        EnergyProducer("newbidder"),
+                                                        ElectricitySpotMarket("newesm"),
+                                                        10, 20)
         assert len(reps.power_plant_dispatch_plans.keys()) == previous_size + 1
         assert reps.power_plant_dispatch_plans[sorted(reps.power_plant_dispatch_plans.keys())[0]].plant.name == 'newpp'
         assert spy.call_count == 1
 
     def test_get_sorted_dispatch_plans_by_market(self, reps: Repository):
         esm = reps.electricity_spot_markets['DutchElectricitySpotMarket']
-        ppdp1 = reps.create_power_plant_dispatch_plan(PowerPlant("newpp1"),
-                                                      EnergyProducer("newbidder1"),
-                                                      esm,
-                                                      100, 10)
-        ppdp2 = reps.create_power_plant_dispatch_plan(PowerPlant("newpp2"),
-                                                      EnergyProducer("newbidder1"),
-                                                      esm,
-                                                      100, 20)
-        ppdp3 = reps.create_power_plant_dispatch_plan(PowerPlant("newpp3"),
-                                                      EnergyProducer("newbidder1"),
-                                                      esm,
-                                                      100, 30)
-        ppdp4 = reps.create_power_plant_dispatch_plan(PowerPlant("newpp4"),
-                                                      EnergyProducer("newbidder1"),
-                                                      esm,
-                                                      100, 5)
-        ppdp5 = reps.create_power_plant_dispatch_plan(PowerPlant("newpp5"),
-                                                      EnergyProducer("newbidder1"),
-                                                      esm,
-                                                      100, 60)
+        ppdp1 = reps.create_or_update_power_plant_dispatch_plan(PowerPlant("newpp1"),
+                                                                EnergyProducer("newbidder1"),
+                                                                esm,
+                                                                100, 10)
+        ppdp2 = reps.create_or_update_power_plant_dispatch_plan(PowerPlant("newpp2"),
+                                                                EnergyProducer("newbidder1"),
+                                                                esm,
+                                                                100, 20)
+        ppdp3 = reps.create_or_update_power_plant_dispatch_plan(PowerPlant("newpp3"),
+                                                                EnergyProducer("newbidder1"),
+                                                                esm,
+                                                                100, 30)
+        ppdp4 = reps.create_or_update_power_plant_dispatch_plan(PowerPlant("newpp4"),
+                                                                EnergyProducer("newbidder1"),
+                                                                esm,
+                                                                100, 5)
+        ppdp5 = reps.create_or_update_power_plant_dispatch_plan(PowerPlant("newpp5"),
+                                                                EnergyProducer("newbidder1"),
+                                                                esm,
+                                                                100, 60)
         assert reps.get_sorted_dispatch_plans_by_market(esm) == [ppdp4, ppdp1, ppdp2, ppdp3, ppdp5]
 
     def test_create_market_clearing_point(self, reps: Repository, mocker):
         spy = mocker.spy(reps.dbrw, 'stage_market_clearing_point')
         previous_size = len(reps.market_clearing_points)
-        reps.create_market_clearing_point(ElectricitySpotMarket("newmarket"),
-                                          10, 20)
+        reps.create_or_update_market_clearing_point(ElectricitySpotMarket("newmarket"),
+                                                    10, 20)
         assert len(reps.market_clearing_points) == previous_size + 1
         assert reps.market_clearing_points[sorted(reps.market_clearing_points.keys())[0]].market == 'newmarket'
         assert spy.call_count == 1
@@ -56,10 +56,10 @@ class TestRepository:
         reps.current_tick = 0
         plant = reps.power_plants['Power Plant 1']
         market = reps.electricity_spot_markets['DutchElectricitySpotMarket']
-        reps.create_power_plant_dispatch_plan(plant, plant.owner, market, 100, 1)
-        reps.create_power_plant_dispatch_plan(plant, plant.owner, market, 20, 1)
+        reps.create_or_update_power_plant_dispatch_plan(plant, plant.owner, market, 100, 1)
+        reps.create_or_update_power_plant_dispatch_plan(plant, plant.owner, market, 20, 1)
         reps.current_tick = 1
-        reps.create_power_plant_dispatch_plan(plant, plant.owner, market, 300, 1)
+        reps.create_or_update_power_plant_dispatch_plan(plant, plant.owner, market, 300, 1)
 
         # Accept all plans
         for ppdp in reps.power_plant_dispatch_plans.values():

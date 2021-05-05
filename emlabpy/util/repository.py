@@ -49,12 +49,19 @@ class Repository:
     def get_power_plants_by_owner(self, owner: EnergyProducer) -> list:
         return [i for i in self.power_plants.values() if i.owner == owner]
 
-    def create_power_plant_dispatch_plan(self, plant: PowerPlant,
-                                         bidder: EnergyProducer,
-                                         bidding_market: Market,
-                                         amount: float, price: float) -> PowerPlantDispatchPlan:
-        name = 'PowerPlantDispatchPlan ' + str(datetime.now())
-        ppdp = PowerPlantDispatchPlan(name)
+    def create_or_update_power_plant_dispatch_plan(self, plant: PowerPlant,
+                                                   bidder: EnergyProducer,
+                                                   bidding_market: Market,
+                                                   amount: float,
+                                                   price: float,
+                                                   time: int) -> PowerPlantDispatchPlan:
+        ppdp = next((ppdp for ppdp in self.power_plant_dispatch_plans.values() if ppdp.plant == plant and
+                     ppdp.bidding_market == bidding_market), None)
+        if ppdp is None:
+            # PowerPlantDispatchPlan not found, so create a new one
+            name = 'PowerPlantDispatchPlan ' + str(datetime.now())
+            ppdp = PowerPlantDispatchPlan(name)
+
         ppdp.plant = plant
         ppdp.bidder = bidder
         ppdp.bidding_market = bidding_market
@@ -63,7 +70,8 @@ class Repository:
         ppdp.status = self.power_plant_dispatch_plan_status_awaiting
         ppdp.accepted_amount = 0
         ppdp.tick = self.current_tick
-        self.power_plant_dispatch_plans[name] = ppdp
+
+        self.power_plant_dispatch_plans[ppdp.name] = ppdp
         self.dbrw.stage_power_plant_dispatch_plan(ppdp, self.current_tick)
         return ppdp
 
@@ -71,14 +79,24 @@ class Repository:
         return sorted([i for i in self.power_plant_dispatch_plans.values() if i.bidding_market == market],
                       key=lambda i: i.price)
 
-    def create_market_clearing_point(self, market: Market, price: float, capacity: float) -> MarketClearingPoint:
-        name = 'MarketClearingPoint ' + str(datetime.now())
-        mcp = MarketClearingPoint(name)
+    def create_or_update_market_clearing_point(self,
+                                               market: Market,
+                                               price: float,
+                                               capacity: float,
+                                               time: int) -> MarketClearingPoint:
+        mcp = next((mcp for mcp in self.market_clearing_points.values() if mcp.market == market and mcp.tick == time),
+                   None)
+        if mcp is None:
+            # MarketClearingPoint not found, so create a new one
+            name = 'MarketClearingPoint ' + str(datetime.now())
+            mcp = MarketClearingPoint(name)
+
         mcp.market = market.name
         mcp.price = price
         mcp.capacity = capacity
-        self.market_clearing_points[name] = mcp
-        self.dbrw.stage_market_clearing_point(mcp, self.current_tick)
+        mcp.tick = time
+        self.market_clearing_points[mcp.name] = mcp
+        self.dbrw.stage_market_clearing_point(mcp, time)
         return mcp
 
     def get_available_power_plant_capacity_at_tick(self, plant: PowerPlant, current_tick: int) -> float:
@@ -161,7 +179,6 @@ class Repository:
     def get_power_plant_emissions_by_tick(self, time: int) -> dict:
         res = {}
         for power_plant in self.power_plants.values():
-            res[power_plant.name] = power_plant.get_load_factor_for_production(
-                self.get_total_accepted_amounts_by_power_plant_and_tick(power_plant, time)) \
+            res[power_plant.name] = self.get_total_accepted_amounts_by_power_plant_and_tick(power_plant, time) \
                                     * power_plant.calculate_emission_intensity(self)
         return res
