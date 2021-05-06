@@ -162,7 +162,7 @@ class TestRepository:
         ppdp2.tick = 123
         reps.power_plant_dispatch_plans[ppdp1.name] = ppdp1
         reps.power_plant_dispatch_plans[ppdp2.name] = ppdp2
-        assert reps.get_power_plant_revenues_by_tick(plant, 123) == 100 * 10 + 200 * 5
+        assert reps.get_power_plant_electricity_spot_market_revenues_by_tick(plant, 123) == 100 * 10 + 200 * 5
 
     def test_get_total_accepted_amounts_by_power_plant_and_tick(self, reps: Repository):
         plant = PowerPlant("newplant")
@@ -195,13 +195,13 @@ class TestRepository:
         plant4 = reps.power_plants['Power Plant 4']
         plant5 = reps.power_plants['Power Plant 5']
 
-        profit_plant1 = reps.get_power_plant_revenues_by_tick(plant1, 0) - reps.get_power_plant_costs_by_tick(plant1, 0)
-        profit_plant2 = reps.get_power_plant_revenues_by_tick(plant2, 0) - reps.get_power_plant_costs_by_tick(plant2, 0)
-        profit_plant3 = reps.get_power_plant_revenues_by_tick(plant3, 0) - reps.get_power_plant_costs_by_tick(plant3, 0)
-        profit_plant4 = reps.get_power_plant_revenues_by_tick(plant4, 0) - reps.get_power_plant_costs_by_tick(plant4, 0)
-        profit_plant5 = reps.get_power_plant_revenues_by_tick(plant5, 0) - reps.get_power_plant_costs_by_tick(plant5, 0)
+        profit_plant1 = reps.get_power_plant_electricity_spot_market_revenues_by_tick(plant1, 0) - reps.get_power_plant_costs_by_tick(plant1, 0)
+        profit_plant2 = reps.get_power_plant_electricity_spot_market_revenues_by_tick(plant2, 0) - reps.get_power_plant_costs_by_tick(plant2, 0)
+        profit_plant3 = reps.get_power_plant_electricity_spot_market_revenues_by_tick(plant3, 0) - reps.get_power_plant_costs_by_tick(plant3, 0)
+        profit_plant4 = reps.get_power_plant_electricity_spot_market_revenues_by_tick(plant4, 0) - reps.get_power_plant_costs_by_tick(plant4, 0)
+        profit_plant5 = reps.get_power_plant_electricity_spot_market_revenues_by_tick(plant5, 0) - reps.get_power_plant_costs_by_tick(plant5, 0)
 
-        assert reps.get_power_plant_profits_by_tick(0) == \
+        assert reps.get_power_plant_electricity_spot_market_profits_by_tick(0) == \
                {plant1.name: profit_plant1,
                 plant2.name: profit_plant2,
                 plant3.name: profit_plant3,

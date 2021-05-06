@@ -70,7 +70,9 @@ class TriangularTrend(Trend):
     def get_value(self, time):
         while len(self.values) <= time:
             last_value = self.values[-1]
-            self.values.append(last_value + random.default_rng().triangular(self.min, self.top, self.max))
+            self.values.append(last_value + random.default_rng().triangular(self.min * self.values[0],
+                                                                            self.top * self.values[0],
+                                                                            self.max * self.values[0]))
         return self.values[time]
 
 

@@ -18,9 +18,11 @@ class CO2MarketDetermineCO2Price(MarketModule):
             if self.reps.current_tick == 0:
                 # If first tick, COMPETES has not run yet. Set to CO2 substance cost
                 co2price = self.reps.substances['co2'].get_price_for_tick(0)
+            #     TODO: What to do with the first CO2 price?
             else:
                 co2_cap = self.reps.get_government().co2_cap_trend.get_value(self.reps.current_tick - 1)
-                profits_per_plant = self.reps.get_power_plant_profits_by_tick(self.reps.current_tick - 1)
+                profits_per_plant = self.reps.get_power_plant_electricity_spot_market_profits_by_tick(
+                    self.reps.current_tick - 1)
                 emissions_per_plant = self.reps.get_power_plant_emissions_by_tick(self.reps.current_tick - 1)
                 willingness_to_pay_per_plant = {
                     key: value / emissions_per_plant[key] if emissions_per_plant[key] != 0 else value for (key, value)
@@ -35,4 +37,4 @@ class CO2MarketDetermineCO2Price(MarketModule):
                         total_emissions += emissions_per_plant[power_plant_name]
                         co2price = willingness_to_pay_per_plant[power_plant_name]
 
-                self.reps.create_or_update_market_clearing_point(market, co2price, 0, self.reps.current_tick)
+            self.reps.create_or_update_market_clearing_point(market, co2price, 0, self.reps.current_tick)
