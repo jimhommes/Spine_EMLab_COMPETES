@@ -37,4 +37,5 @@ class CO2MarketDetermineCO2Price(MarketModule):
                         total_emissions += emissions_per_plant[power_plant_name]
                         co2price = willingness_to_pay_per_plant[power_plant_name]
 
+            print(co2price)
             self.reps.create_or_update_market_clearing_point(market, co2price, 0, self.reps.current_tick)

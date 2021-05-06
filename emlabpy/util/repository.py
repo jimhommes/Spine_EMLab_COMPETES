@@ -167,7 +167,7 @@ class Repository:
 
     def get_power_plant_costs_by_tick(self, power_plant: PowerPlant, time: int) -> float:
         mc = power_plant.calculate_marginal_cost_excl_co2_market_cost(self, time)
-        foc = power_plant.get_actual_fixed_operating_cost()
+        foc = power_plant.get_actual_fixed_operating_cost() / 8760
         total_capacity = self.get_total_accepted_amounts_by_power_plant_and_tick(power_plant, time)
         return foc + mc * total_capacity
 
