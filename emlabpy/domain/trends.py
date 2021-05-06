@@ -1,5 +1,5 @@
 from domain.import_object import *
-from numpy import random
+import random
 import math
 
 
@@ -70,9 +70,11 @@ class TriangularTrend(Trend):
     def get_value(self, time):
         while len(self.values) <= time:
             last_value = self.values[-1]
-            self.values.append(last_value + random.default_rng().triangular(self.min * self.values[0],
-                                                                            self.top * self.values[0],
-                                                                            self.max * self.values[0]))
+            random_number = random.triangular(-1, 1, 0)
+            if random_number < 0:
+                self.values.append(last_value * (self.top + (random_number * (self.top - self.min))))
+            else:
+                self.values.append(last_value * (self.top + (random_number * (self.max - self.top))))
         return self.values[time]
 
 
