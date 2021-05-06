@@ -76,9 +76,9 @@ class Repository:
         self.dbrw.stage_power_plant_dispatch_plan(ppdp, time)
         return ppdp
 
-    def get_sorted_dispatch_plans_by_market(self, market: Market) -> list:
-        return sorted([i for i in self.power_plant_dispatch_plans.values() if i.bidding_market == market],
-                      key=lambda i: i.price)
+    def get_sorted_dispatch_plans_by_market_and_time(self, market: Market, time: int) -> list:
+        return sorted([i for i in self.power_plant_dispatch_plans.values()
+                       if i.bidding_market == market and i.tick == time], key=lambda i: i.price)
 
     def create_or_update_market_clearing_point(self,
                                                market: Market,

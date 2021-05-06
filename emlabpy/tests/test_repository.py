@@ -41,7 +41,7 @@ class TestRepository:
                                                                 EnergyProducer("newbidder1"),
                                                                 esm,
                                                                 100, 60)
-        assert reps.get_sorted_dispatch_plans_by_market(esm) == [ppdp4, ppdp1, ppdp2, ppdp3, ppdp5]
+        assert reps.get_sorted_dispatch_plans_by_market_and_time(esm) == [ppdp4, ppdp1, ppdp2, ppdp3, ppdp5]
 
     def test_create_market_clearing_point(self, reps: Repository, mocker):
         spy = mocker.spy(reps.dbrw, 'stage_market_clearing_point')
