@@ -33,8 +33,8 @@ class PowerPlant(ImportObject):
     def calculate_emission_intensity(self, reps):
         emission = 0
         for substance_in_fuel_mix in reps.get_substances_in_fuel_mix_by_plant(self):
-            amount_per_mw = substance_in_fuel_mix.share / (self.efficiency *
-                                                           substance_in_fuel_mix.substance.energy_density)
+            amount_per_mw = 3600 * substance_in_fuel_mix.share / (self.efficiency *
+                                                                  substance_in_fuel_mix.substance.energy_density)
             co2_density = substance_in_fuel_mix.substance.co2_density * (1 - float(
                 self.technology.co2_capture_efficiency))
             emission_for_this_fuel = amount_per_mw * co2_density

@@ -20,7 +20,7 @@ class CO2MarketDetermineCO2Price(MarketModule):
                 co2price = self.reps.substances['co2'].get_price_for_tick(0)
             #     TODO: What to do with the first CO2 price?
             else:
-                co2_cap = self.reps.get_government().co2_cap_trend.get_value(self.reps.current_tick - 1)
+                co2_cap = self.reps.get_government().co2_cap_trend.get_value(self.reps.current_tick - 1) / 8760
                 profits_per_plant = self.reps.get_power_plant_electricity_spot_market_profits_by_tick(
                     self.reps.current_tick - 1)
                 emissions_per_plant = self.reps.get_power_plant_emissions_by_tick(self.reps.current_tick - 1)
@@ -31,11 +31,14 @@ class CO2MarketDetermineCO2Price(MarketModule):
 
                 co2price = max(willingness_to_pay_per_plant.values())
                 total_emissions = 0
-                for (power_plant_name, wtp) in sorted(willingness_to_pay_per_plant.items(), key=lambda item: item[1]):
+                for (power_plant_name, wtp) in sorted(willingness_to_pay_per_plant.items(),
+                                                      key=lambda item: item[1], reverse=True):
                     plant = self.reps.power_plants[power_plant_name]
                     if co2_cap >= total_emissions + emissions_per_plant[power_plant_name]:
                         total_emissions += emissions_per_plant[power_plant_name]
-                        co2price = willingness_to_pay_per_plant[power_plant_name]
+                        co2price = wtp
+                    else:
+                        break
 
             print(co2price)
             self.reps.create_or_update_market_clearing_point(market, co2price, 0, self.reps.current_tick)

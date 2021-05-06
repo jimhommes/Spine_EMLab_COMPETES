@@ -167,7 +167,7 @@ class Repository:
 
     def get_power_plant_costs_by_tick(self, power_plant: PowerPlant, time: int) -> float:
         mc = power_plant.calculate_marginal_cost_excl_co2_market_cost(self, time)
-        foc = power_plant.get_actual_fixed_operating_cost() / 8760
+        foc = power_plant.get_actual_fixed_operating_cost() / 8760  # TODO: Fix right timing
         total_capacity = self.get_total_accepted_amounts_by_power_plant_and_tick(power_plant, time)
         return foc + mc * total_capacity
 
@@ -182,6 +182,7 @@ class Repository:
     def get_power_plant_emissions_by_tick(self, time: int) -> dict:
         res = {}
         for power_plant in self.power_plants.values():
-            res[power_plant.name] = self.get_total_accepted_amounts_by_power_plant_and_tick(power_plant, time) \
-                                    * power_plant.calculate_emission_intensity(self)
+            total_capacity = self.get_total_accepted_amounts_by_power_plant_and_tick(power_plant, time)
+            emission_intensity = power_plant.calculate_emission_intensity(self)
+            res[power_plant.name] = total_capacity * emission_intensity
         return res
