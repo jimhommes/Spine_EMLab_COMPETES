@@ -56,7 +56,8 @@ class Repository:
                                                    price: float,
                                                    time: int) -> PowerPlantDispatchPlan:
         ppdp = next((ppdp for ppdp in self.power_plant_dispatch_plans.values() if ppdp.plant == plant and
-                     ppdp.bidding_market == bidding_market), None)
+                     ppdp.bidding_market == bidding_market and
+                     ppdp.tick == time), None)
         if ppdp is None:
             # PowerPlantDispatchPlan not found, so create a new one
             name = 'PowerPlantDispatchPlan ' + str(datetime.now())
@@ -69,10 +70,10 @@ class Repository:
         ppdp.price = price
         ppdp.status = self.power_plant_dispatch_plan_status_awaiting
         ppdp.accepted_amount = 0
-        ppdp.tick = self.current_tick
+        ppdp.tick = time
 
         self.power_plant_dispatch_plans[ppdp.name] = ppdp
-        self.dbrw.stage_power_plant_dispatch_plan(ppdp, self.current_tick)
+        self.dbrw.stage_power_plant_dispatch_plan(ppdp, time)
         return ppdp
 
     def get_sorted_dispatch_plans_by_market(self, market: Market) -> list:
