@@ -40,5 +40,8 @@ class CO2MarketDetermineCO2Price(MarketModule):
                     else:
                         break
 
-            print(co2price)
+            co2price = self.floor_co2price(co2price)
             self.reps.create_or_update_market_clearing_point(market, co2price, 0, self.reps.current_tick)
+
+    def floor_co2price(self, co2price):
+        return max(co2price, self.reps.get_government().co2_min_price_trend.get_value(self.reps.current_tick))

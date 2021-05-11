@@ -66,3 +66,23 @@ class SlopingDemandCurve:
             return self.price_cap - m * (volume - self.lm_volume)
         elif self.um_volume < volume:
             return 0
+
+
+class MarketStabilityReserve(ImportObject):
+    def __init__(self, name: str):
+        super().__init__(name)
+        self.reserve = [0 for i in range(100)]
+        self.upper_trigger_trend = None
+        self.lower_trigger_trend = None
+        self.release_trend = None
+        self.zone = None
+
+    def add_parameter_value(self, reps, parameter_name: str, parameter_value: str, alternative: str):
+        if parameter_name == 'UpperTriggerTrend':
+            self.upper_trigger_trend = reps.trends[parameter_value]
+        elif parameter_name == 'LowerTriggerTrend':
+            self.lower_trigger_trend = reps.trends[parameter_value]
+        elif parameter_name == 'ReleaseTrend':
+            self.release_trend = reps.trends[parameter_value]
+        elif parameter_name == 'Zone':
+            self.zone = reps.zones[parameter_value]

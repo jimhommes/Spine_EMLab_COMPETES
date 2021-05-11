@@ -151,12 +151,18 @@ class SpineDBReaderWriter:
         object_name = mcp.name
         self.stage_object(self.market_clearing_point_object_classname, object_name)
         self.stage_object_parameter_values(self.market_clearing_point_object_classname, object_name,
-                                           [('Market', mcp.market),
+                                           [('Market', mcp.market.name),
                                             ('Price', mcp.price),
                                             ('TotalCapacity', mcp.capacity)], current_tick)
 
     def stage_init_alternative(self, current_tick: int):
         self.db.import_alternatives([str(current_tick)])
+
+    def stage_payment_co2_allowances(self, power_plant, cash, allowances, time):
+        param_name = 'Allowances'
+        self.stage_object_parameter('PowerPlants', param_name)
+        self.stage_object_parameter_values('PowerPlants', power_plant.name, [(param_name, allowances)], time)
+        self.stage_object_parameter_values('EnergyProducers', power_plant.owner.name, [('cash', cash)], time)
 
     def commit(self, commit_message: str):
         self.db.commit(commit_message)

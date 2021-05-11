@@ -92,7 +92,7 @@ class Repository:
             name = 'MarketClearingPoint ' + str(datetime.now())
             mcp = MarketClearingPoint(name)
 
-        mcp.market = market.name
+        mcp.market = market
         mcp.price = price
         mcp.capacity = capacity
         mcp.tick = time
@@ -186,3 +186,13 @@ class Repository:
             emission_intensity = power_plant.calculate_emission_intensity(self)
             res[power_plant.name] = total_capacity * emission_intensity
         return res
+
+    def get_allowances_in_circulation(self) -> int:
+        return sum([i.banked_allowances for i in self.power_plants.values()])
+
+    def get_co2_market_for_zone(self, zone: Zone):
+        return next(i for i in self.co2_markets.values()
+                    if i.parameters['zone'] == self.power_grid_nodes[zone.name].parameters['Zone'])
+
+    def get_co2_market_for_plant(self, power_plant: PowerPlant):
+        return self.get_co2_market_for_zone(power_plant.location)

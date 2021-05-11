@@ -14,6 +14,7 @@ class PowerPlant(ImportObject):
         # this.setActualEfficiency(this.getTechnology().getEfficiency(
         #                 timeOfPermitorBuildingStart + getActualLeadtime() + getActualPermittime()));
         self.construction_start_time = 0
+        self.banked_allowances = [0 for i in range(100)]
 
     def add_parameter_value(self, reps, parameter_name, parameter_value, alternative):
         if parameter_name == 'Technology':
@@ -29,6 +30,8 @@ class PowerPlant(ImportObject):
             self.capacity = int(parameter_value)
         elif parameter_name == 'Efficiency':
             self.efficiency = float(parameter_value)
+        elif parameter_name == 'Allowances':
+            self.banked_allowances[int(alternative)] = int(parameter_value)
 
     def calculate_emission_intensity(self, reps):
         emission = 0

@@ -1023,6 +1023,43 @@
                         ]
                     }
                 }
+            ],
+            "MarketStabilityReserve": [
+                {
+                    "Mapping 1": {
+                        "mapping": [
+                            {
+                                "map_type": "ObjectClass",
+                                "position": "table_name",
+                                "value": "MarketStabilityReserve"
+                            },
+                            {
+                                "map_type": "Object",
+                                "position": 0
+                            },
+                            {
+                                "map_type": "ObjectMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterDefinition",
+                                "position": -1
+                            },
+                            {
+                                "map_type": "Alternative",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterValueMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterValue",
+                                "position": "hidden"
+                            }
+                        ]
+                    }
+                }
             ]
         },
         "table_options": {
@@ -1065,7 +1102,8 @@
             "PowerGeneratingTechnologyTarget": {},
             "TargetInvestors": {},
             "PowerPlants": {},
-            "CapacityMarkets": {}
+            "CapacityMarkets": {},
+            "MarketStabilityReserve": {}
         },
         "table_types": {
             "ldcNLDE-hourly": {
@@ -1258,6 +1296,12 @@
                 "2": "float",
                 "3": "float",
                 "4": "float"
+            },
+            "MarketStabilityReserve": {
+                "0": "string",
+                "1": "string",
+                "2": "string",
+                "3": "string"
             }
         },
         "table_row_types": {
@@ -1330,6 +1374,9 @@
             "CapacityMarkets": {
                 "1": "string",
                 "0": "string"
+            },
+            "MarketStabilityReserve": {
+                "0": "string"
             }
         },
         "selected_tables": [
@@ -1348,6 +1395,7 @@
             "ElectricitySpotMarkets",
             "CapacityMarkets",
             "CO2Auction",
+            "MarketStabilityReserve",
             "EnergyConsumers",
             "EnergyProducers",
             "StepTrends",
