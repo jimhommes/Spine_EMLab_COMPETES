@@ -161,10 +161,13 @@ class SpineDBReaderWriter:
         self.db.import_alternatives([str(current_tick)])
 
     def stage_payment_co2_allowances(self, power_plant, cash, allowances, time):
+        self.stage_co2_allowances(power_plant, allowances, time)
+        self.stage_object_parameter_values('EnergyProducers', power_plant.owner.name, [('cash', cash)], time)
+
+    def stage_co2_allowances(self, power_plant, allowances, time):
         param_name = 'Allowances'
         self.stage_object_parameter('PowerPlants', param_name)
         self.stage_object_parameter_values('PowerPlants', power_plant.name, [(param_name, allowances)], time)
-        self.stage_object_parameter_values('EnergyProducers', power_plant.owner.name, [('cash', cash)], time)
 
     def commit(self, commit_message: str):
         self.db.commit(commit_message)
