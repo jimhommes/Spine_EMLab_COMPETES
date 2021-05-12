@@ -20,7 +20,14 @@ class CO2MarketDetermineCO2Price(MarketModule):
                 co2price = self.reps.substances['co2'].get_price_for_tick(0)
             #     TODO: What to do with the first CO2 price?
             else:
-                co2_cap = self.reps.get_government().co2_cap_trend.get_value(self.reps.current_tick - 1) / 8760
+                msr = self.reps.get_market_stability_reserve_for_market(market)
+                if msr is not None:
+                    co2_cap = self.reps.get_government().co2_cap_trend.get_value(self.reps.current_tick - 1) / 8760 - \
+                              self.reps.get_allowances_in_circulation(self.reps.current_tick)\
+                              + msr.flow
+                else:
+                    co2_cap = self.reps.get_government().co2_cap_trend.get_value(self.reps.current_tick - 1) / 8760 - \
+                              self.reps.get_allowances_in_circulation(self.reps.current_tick)
                 profits_per_plant = self.reps.get_power_plant_electricity_spot_market_profits_by_tick(
                     self.reps.current_tick - 1)
                 emissions_per_plant = self.reps.get_power_plant_emissions_by_tick(self.reps.current_tick - 1)

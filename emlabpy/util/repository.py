@@ -202,3 +202,10 @@ class Repository:
 
     def get_co2_market_for_plant(self, power_plant: PowerPlant):
         return self.get_co2_market_for_zone(power_plant.location)
+
+    def get_market_stability_reserve_for_market(self, market: Market):
+        try:
+            return next(i for i in self.market_stability_reserves.values()
+                        if i.zone == market.parameters['zone'])
+        except StopIteration:
+            return None

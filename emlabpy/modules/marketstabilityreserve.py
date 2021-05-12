@@ -17,7 +17,8 @@ class DetermineMarketStabilityReserveFlow(DefaultModule):
                     msr.flow = -1 * min(msr.release_trend.get_value(self.reps.current_tick),
                                         msr.reserve[self.reps.current_tick])
                 msr.reserve[self.reps.current_tick] += msr.flow
-                self.reps.dbrw.stage_market_stability_reserve(msr, msr.reserve[self.reps.current_tick], self.reps.current_tick)
+                self.reps.dbrw.stage_market_stability_reserve(msr, msr.reserve[self.reps.current_tick],
+                                                              self.reps.current_tick)
 
 
 
