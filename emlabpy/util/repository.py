@@ -190,8 +190,8 @@ class Repository:
             res[power_plant.name] = total_capacity * emission_intensity
         return res
 
-    def get_allowances_in_circulation(self) -> int:
-        return sum([i.banked_allowances for i in self.power_plants.values()])
+    def get_allowances_in_circulation(self, time: int) -> int:
+        return sum([i.banked_allowances[time] for i in self.power_plants.values()])
 
     def get_co2_market_for_zone(self, zone: Zone):
         try:

@@ -76,6 +76,7 @@ class MarketStabilityReserve(ImportObject):
         self.lower_trigger_trend = None
         self.release_trend = None
         self.zone = None
+        self.flow = 0
 
     def add_parameter_value(self, reps, parameter_name: str, parameter_value: str, alternative: str):
         if parameter_name == 'UpperTriggerTrend':

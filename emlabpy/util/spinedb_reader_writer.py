@@ -169,5 +169,10 @@ class SpineDBReaderWriter:
         self.stage_object_parameter('PowerPlants', param_name)
         self.stage_object_parameter_values('PowerPlants', power_plant.name, [(param_name, allowances)], time)
 
+    def stage_market_stability_reserve(self, msr: MarketStabilityReserve, reserve, time):
+        param_name = 'Reserve'
+        self.stage_object_parameter('MarketStabilityReserve', param_name)
+        self.stage_object_parameter_values('MarketStabilityReserve', msr.name, [(param_name, reserve)], time)
+
     def commit(self, commit_message: str):
         self.db.commit(commit_message)
