@@ -18,13 +18,13 @@ class PayAndBankCO2Allowances(DefaultModule):
 
             if 1.5 * emissions * mcp.price <= int(power_plant.owner.parameters['cash']):
                 power_plant.owner.parameters['cash'] = int(power_plant.owner.parameters['cash']) - 1.5 * emissions * mcp.price
-                power_plant.banked_allowances += 1.5 * emissions
+                power_plant.banked_allowances[self.reps.current_tick] = 1.5 * emissions
             elif emissions * mcp.price <= int(power_plant.owner.parameters['cash']):
                 power_plant.owner.parameters['cash'] = int(power_plant.owner.parameters['cash']) - emissions * mcp.price
-                power_plant.banked_allowances += emissions
-            elif power_plant.banked_allowances < emissions and \
-                    (power_plant.owner.banked_allowances - emissions) * mcp.price <= int(power_plant.owner.parameters['cash']):
+                power_plant.banked_allowances[self.reps.current_tick] += emissions
+            elif power_plant.banked_allowances[self.reps.current_tick] < emissions and \
+                    (power_plant.banked_allowances[self.reps.current_tick] - emissions) * mcp.price <= int(power_plant.owner.parameters['cash']):
                 power_plant.parameters['cash'] = int(power_plant.parameters['cash']) - (power_plant.banked_allowances - emissions) * mcp.price
-                power_plant.banked_allowances += (power_plant.banked_allowances - emissions)
+                power_plant.banked_allowances[self.reps.current_tick] += (power_plant.banked_allowances[self.reps.current_tick] - emissions)
             self.reps.dbrw.stage_payment_co2_allowances(power_plant, int(power_plant.owner.parameters['cash']),
                                                         power_plant.banked_allowances, self.reps.current_tick)

@@ -91,6 +91,8 @@ class SpineDBReaderWriter:
         db_objects_to_dict(reps, db_data, reps.market_clearing_points, 'MarketClearingPoints', MarketClearingPoint)
         db_objects_to_dict(reps, db_data, reps.national_governments, 'NationalGovernments', NationalGovernment)
         db_objects_to_dict(reps, db_data, reps.governments, 'Governments', Government)
+        db_objects_to_dict(reps, db_data, reps.market_stability_reserves, 'MarketStabilityReserve',
+                           MarketStabilityReserve)
 
         import_fuel_mix(db_data, reps)  # Stand-alone a.t.m. because it's the only relationship_parameter_values
 

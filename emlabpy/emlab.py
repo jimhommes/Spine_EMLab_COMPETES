@@ -7,6 +7,7 @@ Jim Hommes - 25-3-2021
 
 import sys
 
+from modules.marketstabilityreserve import DetermineMarketStabilityReserveFlow
 from modules.payments import PayAndBankCO2Allowances
 from util.spinedb_reader_writer import *
 from modules.capacitymarket import *
@@ -36,6 +37,7 @@ capacity_market_submit_bids = CapacityMarketSubmitBids(reps)
 capacity_market_clear = CapacityMarketClearing(reps)
 co2_market_determine_co2_price = CO2MarketDetermineCO2Price(reps)
 payment_and_bank_co2 = PayAndBankCO2Allowances(reps)
+market_stability_reserve = DetermineMarketStabilityReserveFlow(reps)
 
 spinedb_reader_writer.commit('Initialize all module import structures')
 
@@ -49,6 +51,7 @@ if run_capacity_market:
 
 # Run CO2 Market
 if run_co2_market:
+    market_stability_reserve.act_and_commit(reps.current_tick)
     co2_market_determine_co2_price.act_and_commit(reps.current_tick)
     payment_and_bank_co2.act_and_commit(reps.current_tick)
 

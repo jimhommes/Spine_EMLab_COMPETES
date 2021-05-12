@@ -5,6 +5,7 @@ All objects are read through the SpineDBReader and stored in the Repository.
 Jim Hommes - 25-3-2021
 """
 from datetime import datetime
+from typing import Optional
 
 from domain.actors import *
 from domain.energy import *
@@ -40,6 +41,7 @@ class Repository:
         self.zones = dict()
         self.national_governments = dict()
         self.governments = dict()
+        self.market_stability_reserves = dict()
 
         self.power_plant_dispatch_plan_status_accepted = 'Accepted'
         self.power_plant_dispatch_plan_status_failed = 'Failed'
@@ -137,10 +139,11 @@ class Repository:
         else:
             return []
 
-    def get_market_clearing_point_for_market_and_time(self, market: Market, time: int) -> MarketClearingPoint:
-        res = [i for i in self.market_clearing_points.values() if i.market == market and i.tick == time]
-        if len(res) > 0:
-            return res[0]
+    def get_market_clearing_point_for_market_and_time(self, market: Market, time: int) -> Optional[MarketClearingPoint]:
+        try:
+            return next(i for i in self.market_clearing_points.values() if i.market == market and i.tick == time)
+        except StopIteration:
+            return None
 
     def get_market_clearing_point_price_for_market_and_time(self, market: Market, time: int) -> float:
         if time >= 0:
@@ -159,7 +162,7 @@ class Repository:
         return sum([float(
             i.accepted_amount * self.get_market_clearing_point_for_market_and_time(i.bidding_market, time).price
         )
-                    for i in self.get_power_plant_dispatch_plans_by_plant_and_tick(power_plant, time)])
+            for i in self.get_power_plant_dispatch_plans_by_plant_and_tick(power_plant, time)])
 
     def get_total_accepted_amounts_by_power_plant_and_tick(self, power_plant: PowerPlant, time: int) -> float:
         return sum([i.accepted_amount for i in self.power_plant_dispatch_plans.values() if i.tick == time and
@@ -191,8 +194,11 @@ class Repository:
         return sum([i.banked_allowances for i in self.power_plants.values()])
 
     def get_co2_market_for_zone(self, zone: Zone):
-        return next(i for i in self.co2_markets.values()
-                    if i.parameters['zone'] == self.power_grid_nodes[zone.name].parameters['Zone'])
+        try:
+            return next(i for i in self.co2_markets.values()
+                        if i.parameters['zone'] == self.power_grid_nodes[zone.name].parameters['Zone'])
+        except StopIteration:
+            return None
 
     def get_co2_market_for_plant(self, power_plant: PowerPlant):
         return self.get_co2_market_for_zone(power_plant.location)
