@@ -31,11 +31,11 @@ class CO2MarketDetermineCO2Price(MarketModule):
                 msr = self.reps.get_market_stability_reserve_for_market(market)
                 if msr is not None:
                     co2_cap = self.reps.get_government().co2_cap_trend.get_value(self.reps.current_tick - 1) / 8760 - \
-                              self.reps.get_allowances_in_circulation(self.reps.current_tick)\
+                              self.reps.get_allowances_in_circulation(self.reps.zones[market.parameters['zone']], self.reps.current_tick)\
                               + msr.flow
                 else:
                     co2_cap = self.reps.get_government().co2_cap_trend.get_value(self.reps.current_tick - 1) / 8760 - \
-                              self.reps.get_allowances_in_circulation(self.reps.current_tick)
+                              self.reps.get_allowances_in_circulation(self.reps.zones[market.parameters['zone']], self.reps.current_tick)
 
                 # Get profits, emissions and calculate WTP
                 profits_per_plant = self.reps.get_power_plant_electricity_spot_market_profits_by_tick(

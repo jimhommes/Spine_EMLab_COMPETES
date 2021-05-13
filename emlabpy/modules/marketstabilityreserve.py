@@ -23,7 +23,7 @@ class DetermineMarketStabilityReserveFlow(DefaultModule):
         if self.reps.current_tick > 1:
             for msr in self.reps.market_stability_reserves.values():
                 time = self.reps.current_tick - 2
-                euas_in_circulation = self.reps.get_allowances_in_circulation(time)
+                euas_in_circulation = self.reps.get_allowances_in_circulation(msr.zone, time)
                 if euas_in_circulation > msr.upper_trigger_trend.get_value(time):
                     msr.flow = 0.12 * euas_in_circulation
                 elif euas_in_circulation < msr.lower_trigger_trend.get_value(time):

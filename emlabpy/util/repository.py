@@ -158,8 +158,9 @@ class Repository:
         except StopIteration:
             return None
 
-    def get_allowances_in_circulation(self, time: int) -> int:
-        return sum([i.banked_allowances[time] for i in self.power_plants.values()])
+    def get_allowances_in_circulation(self, zone: Zone, time: int) -> int:
+        return sum([i.banked_allowances[time] for i in self.power_plants.values()
+                    if i.location.parameters['Zone'] == zone.name])
 
     def get_co2_market_for_zone(self, zone: Zone) -> Optional[CO2Market]:
         try:

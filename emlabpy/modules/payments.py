@@ -58,6 +58,11 @@ class UseCO2Allowances(DefaultModule):
             power_plant.banked_allowances[self.reps.current_tick] -= total_capacity * emission_intensity
             self.reps.dbrw.stage_co2_allowances(power_plant, power_plant.banked_allowances[self.reps.current_tick],
                                                 self.reps.current_tick)
-        if self.reps.get_allowances_in_circulation(self.reps.current_tick) < self.reps.get_government().co2_cap_trend.get_value(self.reps.current_tick):
-            pass    # TODO: allowances in circulation should be per zone, and retrieve MSR per zone
+
+        # Surplus of EAUs gets added to MSR
+        for msr in self.reps.market_stability_reserves.values():
+            euas_in_circulation = self.reps.get_allowances_in_circulation(msr.zone, self.reps.current_tick)
+            cap = self.reps.get_government().co2_cap_trend.get_value(self.reps.current_tick)
+            if euas_in_circulation < cap:
+                msr.reserve[self.reps.current_tick] += (cap - euas_in_circulation)
 
