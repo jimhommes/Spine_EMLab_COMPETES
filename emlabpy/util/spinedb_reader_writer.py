@@ -104,6 +104,10 @@ class SpineDBReaderWriter:
 
         return reps
 
+    """
+    Staging functions that are the core for communicating with SpineDB
+    """
+
     def stage_object_class(self, object_class_name: str):
         self.stage_object_classes([object_class_name])
 
@@ -128,6 +132,13 @@ class SpineDBReaderWriter:
         import_arr = [(object_class_name, object_name, i[0], i[1], str(current_tick)) for i in arr_of_tuples]
         self.db.import_object_parameter_values(import_arr)
 
+    def commit(self, commit_message: str):
+        self.db.commit(commit_message)
+
+    """
+    Element specific initialization staging functions
+    """
+
     def stage_init_market_clearing_point_structure(self):
         self.stage_object_class(self.market_clearing_point_object_classname)
         self.stage_object_parameters(self.market_clearing_point_object_classname, ['Market', 'Price', 'TotalCapacity'])
@@ -137,6 +148,13 @@ class SpineDBReaderWriter:
         self.stage_object_parameters(self.powerplant_dispatch_plan_classname,
                                      ['Plant', 'Market', 'Price', 'Capacity', 'EnergyProducer', 'AcceptedAmount',
                                       'Status'])
+
+    def stage_init_alternative(self, current_tick: int):
+        self.db.import_alternatives([str(current_tick)])
+
+    """
+    Element specific staging functions
+    """
 
     def stage_power_plant_dispatch_plan(self, ppdp: PowerPlantDispatchPlan, current_tick: int):
         self.stage_object(self.powerplant_dispatch_plan_classname, ppdp.name)
@@ -157,9 +175,6 @@ class SpineDBReaderWriter:
                                             ('Price', mcp.price),
                                             ('TotalCapacity', mcp.capacity)], current_tick)
 
-    def stage_init_alternative(self, current_tick: int):
-        self.db.import_alternatives([str(current_tick)])
-
     def stage_payment_co2_allowances(self, power_plant, cash, allowances, time):
         self.stage_co2_allowances(power_plant, allowances, time)
         self.stage_object_parameter_values('EnergyProducers', power_plant.owner.name, [('cash', cash)], time)
@@ -173,6 +188,3 @@ class SpineDBReaderWriter:
         param_name = 'Reserve'
         self.stage_object_parameter('MarketStabilityReserve', param_name)
         self.stage_object_parameter_values('MarketStabilityReserve', msr.name, [(param_name, reserve)], time)
-
-    def commit(self, commit_message: str):
-        self.db.commit(commit_message)

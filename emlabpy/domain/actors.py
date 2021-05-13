@@ -1,3 +1,8 @@
+"""
+This file contains all lifeforms or actors in the energy world.
+
+Jim Hommes - 13-5-2021
+"""
 from domain.import_object import *
 
 

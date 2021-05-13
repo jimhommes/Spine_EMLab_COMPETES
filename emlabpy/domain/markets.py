@@ -1,7 +1,15 @@
+"""
+This file contains all Market and Market operation classes.
+
+Jim Hommes - 13-5-2021
+"""
 from domain.import_object import *
 
 
 class Market(ImportObject):
+    """
+    The parent class of all markets.
+    """
     pass
 
 
@@ -49,6 +57,9 @@ class MarketClearingPoint(ImportObject):
 
 
 class SlopingDemandCurve:
+    """
+    The SlopingDemandCurve as required in the CapacityMarket.
+    """
     def __init__(self, irm, lm, um, d_peak, price_cap):
         self.irm = irm
         self.lm = lm
@@ -69,6 +80,9 @@ class SlopingDemandCurve:
 
 
 class MarketStabilityReserve(ImportObject):
+    """
+    The MarketStabilityReserve as part of the CO2 Market.
+    """
     def __init__(self, name: str):
         super().__init__(name)
         self.reserve = [0 for i in range(100)]

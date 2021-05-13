@@ -1,9 +1,17 @@
+"""
+This file contains all Trend classes: mathematical definitions of functions.
+
+Jim Hommes - 13-5-2021
+"""
 from domain.import_object import *
 import random
 import math
 
 
 class Trend(ImportObject):
+    """
+    This class is the parent class of all Trend classes.
+    """
     def __init__(self, name):
         super().__init__(name)
 
@@ -12,6 +20,9 @@ class Trend(ImportObject):
 
 
 class GeometricTrend(Trend):
+    """
+    The GeometricTrend is an exponential growth trend. It requires a start value and the growth percentage (0 - 1)
+    """
     def __init__(self, name):
         super().__init__(name)
         self.start = 0
@@ -28,6 +39,9 @@ class GeometricTrend(Trend):
 
 
 class StepTrend(Trend):
+    """
+    The StepTrend is a linear growth trend. It will grow by a fixed increment.
+    """
     def __init__(self, name):
         super().__init__(name)
         self.duration = 0
@@ -50,6 +64,11 @@ class StepTrend(Trend):
 
 
 class TriangularTrend(Trend):
+    """
+    The TriangularTrend grows according to a Triangular distribution.
+    Because of the random nature of this trend, values are saved in self.values so that once generated, the value \
+    does not change.
+    """
     def __init__(self, name):
         super().__init__(name)
         self.top = 0

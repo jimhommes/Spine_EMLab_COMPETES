@@ -1,8 +1,21 @@
+"""
+This file contains all classes towards the MarketStabilityReserve.
+
+Jim Hommes - 13-5-2021
+"""
 from modules.defaultmodule import DefaultModule
 from util.repository import Repository
 
 
 class DetermineMarketStabilityReserveFlow(DefaultModule):
+    """
+    This class determines the action of the MarketStabilityReserve.
+    In the CO2Auction, when calculating the CO2 Cap the MSR is taken into consideration.
+
+    This class checks whether the amount of EUAs in circulation triggers the upper or lower trigger.
+    If it triggers the upper trigger, 12% of the EUAs are withdrawn.
+    If it triggers the lower trigger, the MSR releases a fixed number (according to a trend) of EUAs.
+    """
     def __init__(self, reps: Repository):
         super().__init__("Market Stability Reserve: Determine Flows", reps)
 

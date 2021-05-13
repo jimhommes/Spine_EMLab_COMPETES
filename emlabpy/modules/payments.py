@@ -1,8 +1,21 @@
+"""
+This file handles all (temporary) payments and allocations.
+COMPETES will be doing this, but for the development of the MarketStabilityReserve an allocation of EUAs was
+necessary.
+
+Jim Hommes - 13-5-2021
+"""
 from modules.defaultmodule import DefaultModule
 from util.repository import Repository
 
 
 class PayAndBankCO2Allowances(DefaultModule):
+    """
+    This class describes the actor behaviour in buying CO2 Allowances.
+    If possible, the actor will buy 150% of necessary credits.
+    Otherwise, the actor will buy 100% of necessary credits.
+    If that's not possible, the actor will try to buy the difference required for the actor to have sufficient credits.
+    """
     def __init__(self, reps: Repository):
         super().__init__("Payment Module: CO2 Payments and Banking", reps)
 
@@ -31,6 +44,9 @@ class PayAndBankCO2Allowances(DefaultModule):
 
 
 class UseCO2Allowances(DefaultModule):
+    """
+    This class handles the actual usage of credits and their return to the market.
+    """
     def __init__(self, reps: Repository):
         super().__init__("Payment Module: Use CO2 Allowances and Subtract From Banked", reps)
 
@@ -40,5 +56,8 @@ class UseCO2Allowances(DefaultModule):
                                                                                           self.reps.current_tick)
             emission_intensity = power_plant.calculate_emission_intensity(self.reps)
             power_plant.banked_allowances[self.reps.current_tick] -= total_capacity * emission_intensity
-            self.reps.dbrw.stage_co2_allowances(power_plant, power_plant.banked_allowances[self.reps.current_tick], self.reps.current_tick)
+            self.reps.dbrw.stage_co2_allowances(power_plant, power_plant.banked_allowances[self.reps.current_tick],
+                                                self.reps.current_tick)
+        if self.reps.get_allowances_in_circulation(self.reps.current_tick) < self.reps.get_government().co2_cap_trend.get_value(self.reps.current_tick):
+            pass    # TODO: allowances in circulation should be per zone, and retrieve MSR per zone
 

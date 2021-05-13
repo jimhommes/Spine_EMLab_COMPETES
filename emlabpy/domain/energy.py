@@ -1,3 +1,8 @@
+"""
+This file contains all classes directly related to energy. PowerPlants, fuels, technologies, etc.
+
+Jim Hommes - 13-5-2021
+"""
 from domain.import_object import *
 
 
