@@ -1,132 +1,54 @@
 {
-    "name": "Import EMLAB Init",
+    "name": "Import Shared Init EMLAB",
     "item_type": "Importer",
     "mapping": {
         "table_mappings": {
-            "IntermittentResourceProfiles": [
+            "BusCountry": [
                 {
                     "Mapping 1": {
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name",
-                                "value": "IntermittentResourceProfiles"
-                            },
-                            {
-                                "map_type": "Object",
-                                "position": 0
-                            },
-                            {
-                                "map_type": "ObjectMetadata",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterDefinition",
-                                "position": -1
-                            },
-                            {
-                                "map_type": "Alternative",
-                                "position": "hidden",
-                                "value": "init"
-                            },
-                            {
-                                "map_type": "ParameterValueMetadata",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterValue",
-                                "position": "hidden"
-                            }
-                        ]
-                    }
-                }
-            ],
-            "Interconnectors": [
-                {
-                    "Mapping 1": {
-                        "mapping": [
-                            {
-                                "map_type": "ObjectClass",
-                                "position": "table_name",
-                                "value": "Interconnectors"
-                            },
-                            {
-                                "map_type": "Object",
-                                "position": 0
-                            },
-                            {
-                                "map_type": "ObjectMetadata",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterDefinition",
-                                "position": -1
-                            },
-                            {
-                                "map_type": "Alternative",
-                                "position": "hidden",
-                                "value": "init"
-                            },
-                            {
-                                "map_type": "ParameterValueMetadata",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterValue",
-                                "position": "hidden"
-                            }
-                        ]
-                    }
-                }
-            ],
-            "InterconnectorNodes": [
-                {
-                    "Mapping 1": {
-                        "mapping": [
-                            {
-                                "map_type": "RelationshipClass",
-                                "position": "table_name",
-                                "value": "InterconnectorNodes"
-                            },
-                            {
-                                "map_type": "RelationshipClassObjectClass",
-                                "position": "hidden",
-                                "value": "Interconnectors"
-                            },
-                            {
-                                "map_type": "RelationshipClassObjectClass",
                                 "position": "hidden",
                                 "value": "PowerGridNodes"
                             },
                             {
-                                "map_type": "Relationship",
-                                "position": "hidden",
-                                "value": "relationship"
-                            },
-                            {
-                                "map_type": "RelationshipObject",
-                                "position": 0
-                            },
-                            {
-                                "map_type": "RelationshipObject",
+                                "map_type": "Object",
                                 "position": 1
                             },
                             {
-                                "map_type": "RelationshipMetadata",
+                                "map_type": "ObjectMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterDefinition",
+                                "position": -1
+                            },
+                            {
+                                "map_type": "Alternative",
+                                "position": "hidden",
+                                "value": "init"
+                            },
+                            {
+                                "map_type": "ParameterValueMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterValue",
                                 "position": "hidden"
                             }
                         ]
                     }
                 }
             ],
-            "ElectricitySpotMarkets": [
+            "Country": [
                 {
                     "Mapping 1": {
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name",
-                                "value": "ElectricitySpotMarkets"
+                                "position": "hidden",
+                                "value": "Zones"
                             },
                             {
                                 "map_type": "Object",
@@ -157,14 +79,55 @@
                     }
                 }
             ],
-            "CO2Auction": [
+            "Economic Lifetime": [
                 {
                     "Mapping 1": {
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name",
-                                "value": "CO2Auction"
+                                "position": "hidden",
+                                "value": "PowerGeneratingTechnologies",
+                                "skip_columns": [
+                                    0
+                                ]
+                            },
+                            {
+                                "map_type": "Object",
+                                "position": 2
+                            },
+                            {
+                                "map_type": "ObjectMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterDefinition",
+                                "position": -1
+                            },
+                            {
+                                "map_type": "Alternative",
+                                "position": "hidden",
+                                "value": "init"
+                            },
+                            {
+                                "map_type": "ParameterValueMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterValue",
+                                "position": "hidden"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "FuelGen": [
+                {
+                    "Mapping 1": {
+                        "mapping": [
+                            {
+                                "map_type": "ObjectClass",
+                                "position": "hidden",
+                                "value": "Substances"
                             },
                             {
                                 "map_type": "Object",
@@ -195,14 +158,64 @@
                     }
                 }
             ],
-            "EnergyConsumers": [
+            "FuelMap": [
                 {
                     "Mapping 1": {
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name",
-                                "value": "EnergyConsumers"
+                                "position": "hidden",
+                                "value": "PowerGeneratingTechnologies",
+                                "skip_columns": [
+                                    3
+                                ]
+                            },
+                            {
+                                "map_type": "Object",
+                                "position": 2
+                            },
+                            {
+                                "map_type": "ObjectMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterDefinition",
+                                "position": -1
+                            },
+                            {
+                                "map_type": "Alternative",
+                                "position": "hidden",
+                                "value": "init"
+                            },
+                            {
+                                "map_type": "ParameterValueMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterValueType",
+                                "position": "hidden",
+                                "value": "map"
+                            },
+                            {
+                                "map_type": "ParameterValueIndex",
+                                "position": -1
+                            },
+                            {
+                                "map_type": "ExpandedValue",
+                                "position": "hidden"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "FuelpriceTrends": [
+                {
+                    "Mapping 1": {
+                        "mapping": [
+                            {
+                                "map_type": "ObjectClass",
+                                "position": "hidden",
+                                "value": "TriangularTrends"
                             },
                             {
                                 "map_type": "Object",
@@ -231,20 +244,18 @@
                             }
                         ]
                     }
-                }
-            ],
-            "EnergyProducers": [
+                },
                 {
-                    "Mapping 1": {
+                    "Mapping 2": {
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name",
-                                "value": "EnergyProducers"
+                                "position": "hidden",
+                                "value": "Substances"
                             },
                             {
                                 "map_type": "Object",
-                                "position": 0
+                                "position": 5
                             },
                             {
                                 "map_type": "ObjectMetadata",
@@ -252,12 +263,12 @@
                             },
                             {
                                 "map_type": "ParameterDefinition",
-                                "position": -1
+                                "position": "hidden",
+                                "value": "trend"
                             },
                             {
                                 "map_type": "Alternative",
-                                "position": "hidden",
-                                "value": "init"
+                                "position": "hidden"
                             },
                             {
                                 "map_type": "ParameterValueMetadata",
@@ -265,220 +276,23 @@
                             },
                             {
                                 "map_type": "ParameterValue",
-                                "position": "hidden"
-                            }
-                        ]
-                    }
-                }
-            ],
-            "StepTrends": [
-                {
-                    "Mapping 1": {
-                        "mapping": [
-                            {
-                                "map_type": "ObjectClass",
-                                "position": "table_name",
-                                "value": "StepTrends"
-                            },
-                            {
-                                "map_type": "Object",
                                 "position": 0
-                            },
-                            {
-                                "map_type": "ObjectMetadata",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterDefinition",
-                                "position": -1
-                            },
-                            {
-                                "map_type": "Alternative",
-                                "position": "hidden",
-                                "value": "init"
-                            },
-                            {
-                                "map_type": "ParameterValueMetadata",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterValue",
-                                "position": "hidden"
                             }
                         ]
                     }
                 }
             ],
-            "Governments": [
-                {
-                    "Mapping 1": {
-                        "mapping": [
-                            {
-                                "map_type": "ObjectClass",
-                                "position": "table_name",
-                                "value": "Governments"
-                            },
-                            {
-                                "map_type": "Object",
-                                "position": 0
-                            },
-                            {
-                                "map_type": "ObjectMetadata",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterDefinition",
-                                "position": -1
-                            },
-                            {
-                                "map_type": "Alternative",
-                                "position": "hidden",
-                                "value": "init"
-                            },
-                            {
-                                "map_type": "ParameterValueMetadata",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterValue",
-                                "position": "hidden"
-                            }
-                        ]
-                    }
-                }
-            ],
-            "NationalGovernments": [
-                {
-                    "Mapping 1": {
-                        "mapping": [
-                            {
-                                "map_type": "ObjectClass",
-                                "position": "table_name",
-                                "value": "NationalGovernments"
-                            },
-                            {
-                                "map_type": "Object",
-                                "position": 0
-                            },
-                            {
-                                "map_type": "ObjectMetadata",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterDefinition",
-                                "position": -1
-                            },
-                            {
-                                "map_type": "Alternative",
-                                "position": "hidden",
-                                "value": "init"
-                            },
-                            {
-                                "map_type": "ParameterValueMetadata",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterValue",
-                                "position": "hidden"
-                            }
-                        ]
-                    }
-                }
-            ],
-            "GeometricTrends": [
-                {
-                    "Mapping 1": {
-                        "mapping": [
-                            {
-                                "map_type": "ObjectClass",
-                                "position": "table_name",
-                                "value": "GeometricTrends"
-                            },
-                            {
-                                "map_type": "Object",
-                                "position": 0
-                            },
-                            {
-                                "map_type": "ObjectMetadata",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterDefinition",
-                                "position": -1
-                            },
-                            {
-                                "map_type": "Alternative",
-                                "position": "hidden",
-                                "value": "init"
-                            },
-                            {
-                                "map_type": "ParameterValueMetadata",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterValue",
-                                "position": "hidden"
-                            }
-                        ]
-                    }
-                }
-            ],
-            "TargetInvestors": [
-                {
-                    "Mapping 1": {
-                        "mapping": [
-                            {
-                                "map_type": "ObjectClass",
-                                "position": "table_name",
-                                "value": "TargetInvestors"
-                            },
-                            {
-                                "map_type": "Object",
-                                "position": 0
-                            },
-                            {
-                                "map_type": "ObjectMetadata",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterDefinition",
-                                "position": -1
-                            },
-                            {
-                                "map_type": "Alternative",
-                                "position": "hidden",
-                                "value": "init"
-                            },
-                            {
-                                "map_type": "ParameterValueMetadata",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterValue",
-                                "position": "hidden"
-                            }
-                        ]
-                    }
-                }
-            ],
-            "TargetInvestorTargets": [
+            "Fueltype": [
                 {
                     "Mapping 1": {
                         "mapping": [
                             {
                                 "map_type": "RelationshipClass",
-                                "position": "table_name",
-                                "value": "TargetInvestorTargets"
+                                "position": "hidden"
                             },
                             {
                                 "map_type": "RelationshipClassObjectClass",
-                                "position": "hidden",
-                                "value": "TargetInvestors"
-                            },
-                            {
-                                "map_type": "RelationshipClassObjectClass",
-                                "position": "hidden",
-                                "value": "PowerGeneratingTechnologyTarget"
+                                "position": "hidden"
                             },
                             {
                                 "map_type": "Relationship",
@@ -487,11 +301,7 @@
                             },
                             {
                                 "map_type": "RelationshipObject",
-                                "position": 0
-                            },
-                            {
-                                "map_type": "RelationshipObject",
-                                "position": 1
+                                "position": "hidden"
                             },
                             {
                                 "map_type": "RelationshipMetadata",
@@ -501,18 +311,72 @@
                     }
                 }
             ],
-            "CapacityMarkets": [
+            "Hourly Demand": [
                 {
                     "Mapping 1": {
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
                                 "position": "table_name",
-                                "value": "CapacityMarkets"
+                                "value": "Hourly Demand",
+                                "skip_columns": [
+                                    0,
+                                    1,
+                                    2,
+                                    3
+                                ]
                             },
                             {
                                 "map_type": "Object",
-                                "position": 0
+                                "position": -1
+                            },
+                            {
+                                "map_type": "ObjectMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterDefinition",
+                                "position": "hidden",
+                                "value": "Hourly Demand"
+                            },
+                            {
+                                "map_type": "Alternative",
+                                "position": "hidden",
+                                "value": "init"
+                            },
+                            {
+                                "map_type": "ParameterValueMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterValueType",
+                                "position": "hidden",
+                                "value": "map"
+                            },
+                            {
+                                "map_type": "ParameterValueIndex",
+                                "position": 4
+                            },
+                            {
+                                "map_type": "ExpandedValue",
+                                "position": "hidden"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "NL Installed Capacity (+heat)": [
+                {
+                    "Mapping 1": {
+                        "mapping": [
+                            {
+                                "map_type": "ObjectClass",
+                                "position": "hidden",
+                                "value": "PowerPlants"
+                            },
+                            {
+                                "map_type": "Object",
+                                "position": 8
                             },
                             {
                                 "map_type": "ObjectMetadata",
@@ -539,18 +403,123 @@
                     }
                 }
             ],
-            "MarketStabilityReserve": [
+            "NL Installed Capacity-RES (+he": [
                 {
                     "Mapping 1": {
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name",
-                                "value": "MarketStabilityReserve"
+                                "position": "hidden",
+                                "value": "PowerPlants"
                             },
                             {
                                 "map_type": "Object",
-                                "position": 0
+                                "position": 8
+                            },
+                            {
+                                "map_type": "ObjectMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterDefinition",
+                                "position": -1
+                            },
+                            {
+                                "map_type": "Alternative",
+                                "position": "hidden",
+                                "value": "init"
+                            },
+                            {
+                                "map_type": "ParameterValueMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterValue",
+                                "position": "hidden"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "Technologies": [
+                {
+                    "Mapping 1": {
+                        "mapping": [
+                            {
+                                "map_type": "ObjectClass",
+                                "position": "hidden",
+                                "value": "PowerGeneratingTechnologies"
+                            },
+                            {
+                                "map_type": "Object",
+                                "position": 4
+                            },
+                            {
+                                "map_type": "ObjectMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterDefinition",
+                                "position": -1
+                            },
+                            {
+                                "map_type": "Alternative",
+                                "position": "hidden",
+                                "value": "init"
+                            },
+                            {
+                                "map_type": "ParameterValueMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterValueType",
+                                "position": "hidden",
+                                "value": "map"
+                            },
+                            {
+                                "map_type": "ParameterValueIndex",
+                                "position": 3
+                            },
+                            {
+                                "map_type": "ExpandedValue",
+                                "position": "hidden"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "Techtype": [
+                {
+                    "Mapping 1": {
+                        "mapping": [
+                            {
+                                "map_type": "ObjectClass",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "Object",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ObjectMetadata",
+                                "position": "hidden"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "VRE Technologies": [
+                {
+                    "Mapping 1": {
+                        "mapping": [
+                            {
+                                "map_type": "ObjectClass",
+                                "position": "hidden",
+                                "value": "PowerGeneratingTechnologies"
+                            },
+                            {
+                                "map_type": "Object",
+                                "position": 1
                             },
                             {
                                 "map_type": "ObjectMetadata",
@@ -579,68 +548,153 @@
             ]
         },
         "table_options": {
-            "InterconnectorNodes": {
+            "BusCountry": {},
+            "Country": {},
+            "Economic Lifetime": {},
+            "FuelGen": {},
+            "FuelMap": {},
+            "FuelpriceTrends": {
+                "header": false,
+                "row": 1
+            },
+            "Fueltype": {},
+            "Hourly Demand": {},
+            "NL Installed Capacity (+heat)": {},
+            "NL Installed Capacity-RES (+he": {},
+            "Technologies": {
+                "header": false
+            },
+            "Techtype": {
+                "row": 0,
                 "header": true
             },
-            "TargetInvestorTargets": {
-                "header": true
-            },
-            "IntermittentResourceProfiles": {},
-            "Interconnectors": {},
-            "ElectricitySpotMarkets": {},
-            "CO2Auction": {},
-            "EnergyConsumers": {},
-            "EnergyProducers": {},
-            "StepTrends": {},
-            "Governments": {},
-            "NationalGovernments": {},
-            "GeometricTrends": {},
-            "TargetInvestors": {},
-            "CapacityMarkets": {},
-            "MarketStabilityReserve": {}
+            "VRE Technologies": {}
         },
         "table_types": {
-            "IntermittentResourceProfiles": {
-                "0": "string",
-                "1": "string",
-                "2": "string"
-            },
-            "Interconnectors": {
-                "0": "string",
-                "1": "float"
-            },
-            "InterconnectorNodes": {
-                "0": "string",
-                "1": "string"
-            },
-            "ElectricitySpotMarkets": {
-                "0": "string",
-                "1": "float",
-                "2": "float",
-                "3": "float",
-                "4": "string",
-                "5": "string",
-                "6": "string",
-                "7": "string"
-            },
-            "CO2Auction": {
-                "0": "string",
-                "1": "float",
-                "2": "float",
-                "3": "string"
-            },
-            "EnergyConsumers": {
-                "0": "string",
-                "1": "float",
-                "2": "float",
-                "3": "float"
-            },
-            "EnergyProducers": {
+            "BusCountry": {
                 "0": "string",
                 "1": "string",
                 "2": "float",
                 "3": "float",
                 "4": "float",
+                "5": "float",
+                "6": "float"
+            },
+            "Country": {
+                "0": "string",
+                "1": "float",
+                "2": "string"
+            },
+            "Economic Lifetime": {
+                "0": "string",
+                "1": "float",
+                "2": "string"
+            },
+            "FuelGen": {
+                "0": "string",
+                "1": "float"
+            },
+            "FuelMap": {
+                "0": "string",
+                "1": "string",
+                "2": "string",
+                "3": "float"
+            },
+            "FuelpriceTrends": {
+                "0": "string",
+                "1": "float",
+                "2": "float",
+                "3": "float",
+                "4": "float",
+                "5": "string"
+            },
+            "Fueltype": {
+                "0": "string",
+                "1": "float"
+            },
+            "NL Installed Capacity (+heat)": {
+                "0": "string",
+                "1": "string",
+                "2": "string",
+                "3": "string",
+                "4": "string",
+                "5": "float",
+                "6": "string",
+                "7": "string",
+                "8": "string",
+                "9": "float",
+                "10": "string",
+                "11": "string",
+                "12": "float",
+                "13": "float",
+                "14": "float",
+                "15": "float",
+                "16": "float",
+                "17": "string",
+                "18": "float",
+                "19": "float",
+                "20": "string",
+                "21": "float",
+                "22": "float",
+                "23": "float",
+                "24": "float",
+                "25": "string"
+            },
+            "NL Installed Capacity-RES (+he": {
+                "0": "string",
+                "1": "string",
+                "2": "string",
+                "3": "string",
+                "4": "string",
+                "5": "float",
+                "6": "string",
+                "7": "string",
+                "8": "string",
+                "9": "float",
+                "10": "string",
+                "11": "string",
+                "12": "float",
+                "13": "float",
+                "14": "float",
+                "15": "float",
+                "16": "float",
+                "17": "float",
+                "18": "float",
+                "19": "float",
+                "20": "float",
+                "21": "float",
+                "22": "float",
+                "23": "float"
+            },
+            "Technologies": {
+                "0": "float",
+                "1": "float",
+                "2": "float",
+                "3": "string",
+                "4": "string",
+                "5": "float",
+                "6": "float",
+                "7": "float",
+                "8": "float"
+            },
+            "Techtype": {
+                "0": "string",
+                "1": "float"
+            },
+            "VRE Technologies": {
+                "0": "float",
+                "1": "string",
+                "2": "float",
+                "3": "float",
+                "4": "float",
+                "5": "float"
+            },
+            "Hourly Demand": {
+                "0": "float",
+                "1": "string",
+                "2": "float",
+                "3": "float",
+                "4": "string",
                 "5": "float",
                 "6": "float",
                 "7": "float",
@@ -652,111 +706,71 @@
                 "13": "float",
                 "14": "float",
                 "15": "float",
-                "16": "string"
-            },
-            "StepTrends": {
-                "0": "string",
-                "1": "float",
-                "2": "float",
-                "3": "float",
-                "4": "float"
-            },
-            "Governments": {
-                "0": "string",
-                "1": "float",
-                "2": "string",
-                "3": "string",
-                "4": "string"
-            },
-            "NationalGovernments": {
-                "0": "string",
-                "1": "string",
-                "2": "string"
-            },
-            "GeometricTrends": {
-                "0": "string",
-                "1": "float",
-                "2": "string"
-            },
-            "TargetInvestors": {
-                "0": "string",
-                "1": "string",
-                "2": "string"
-            },
-            "TargetInvestorTargets": {
-                "0": "string",
-                "1": "string"
-            },
-            "CapacityMarkets": {
-                "0": "string",
-                "1": "float",
-                "2": "float",
-                "3": "float",
-                "4": "float",
-                "5": "string"
-            },
-            "MarketStabilityReserve": {
-                "0": "string",
-                "1": "string",
-                "2": "string",
-                "3": "string",
-                "4": "string"
+                "16": "float",
+                "17": "float",
+                "18": "float",
+                "19": "float",
+                "20": "float",
+                "21": "float",
+                "22": "float",
+                "23": "float",
+                "24": "float",
+                "25": "float"
             }
         },
         "table_row_types": {
-            "IntermittentResourceProfiles": {
+            "Country": {
                 "0": "string"
             },
-            "Interconnectors": {
+            "BusCountry": {
                 "0": "string"
             },
-            "ElectricitySpotMarkets": {
+            "FuelGen": {
                 "0": "string"
             },
-            "CO2Auction": {
+            "Fueltype": {
                 "0": "string"
             },
-            "EnergyConsumers": {
+            "Techtype": {
                 "0": "string"
             },
-            "EnergyProducers": {
+            "Economic Lifetime": {
                 "0": "string"
             },
-            "StepTrends": {
+            "FuelMap": {
                 "0": "string"
             },
-            "Governments": {
+            "FuelpriceTrends": {
                 "0": "string"
             },
-            "NationalGovernments": {
+            "Hourly Demand": {
                 "0": "string"
             },
-            "GeometricTrends": {
+            "NL Installed Capacity (+heat)": {
                 "0": "string"
             },
-            "TargetInvestors": {
+            "NL Installed Capacity-RES (+he": {
                 "0": "string"
             },
-            "CapacityMarkets": {
-                "1": "string",
+            "Technologies": {
                 "0": "string"
             },
-            "MarketStabilityReserve": {
+            "VRE Technologies": {
                 "0": "string"
             }
         },
         "selected_tables": [
-            "CapacityMarkets",
-            "CO2Auction",
-            "ElectricitySpotMarkets",
-            "EnergyConsumers",
-            "EnergyProducers",
-            "GeometricTrends",
-            "Governments",
-            "IntermittentResourceProfiles",
-            "MarketStabilityReserve",
-            "NationalGovernments",
-            "StepTrends"
+            "BusCountry",
+            "Country",
+            "Economic Lifetime",
+            "FuelGen",
+            "FuelMap",
+            "FuelpriceTrends",
+            "Hourly Demand",
+            "NL Installed Capacity (+heat)",
+            "NL Installed Capacity-RES (+he",
+            "Technologies",
+            "VRE Technologies"
         ],
         "source_type": "ExcelConnector"
     },

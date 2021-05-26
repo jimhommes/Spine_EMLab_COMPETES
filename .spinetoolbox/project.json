@@ -19,6 +19,16 @@
                     "type": "path",
                     "relative": true,
                     "path": ".spinetoolbox/specifications/Tool/clock.json"
+                },
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/specifications/Tool/co2_market.json"
+                },
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/specifications/Tool/competes_real.json"
                 }
             ],
             "Importer": [
@@ -26,288 +36,103 @@
                     "type": "path",
                     "relative": true,
                     "path": ".spinetoolbox/specifications/Importer/Import Init Data to DB.json"
+                },
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/specifications/Importer/import_shared_init_emlab.json"
                 }
             ]
         },
         "connections": [
             {
                 "from": [
-                    "Import Init Data to DB",
+                    "Import EMLAB Init",
                     "right"
                 ],
                 "to": [
-                    "DB",
+                    "DB EMLAB",
                     "left"
                 ]
             },
             {
                 "from": [
-                    "Load Init File",
+                    "EMLAB Init Data",
                     "right"
                 ],
                 "to": [
-                    "Import Init Data to DB",
+                    "Import EMLAB Init",
                     "left"
                 ]
             },
             {
                 "from": [
-                    "DB",
+                    "SHARED Init Data",
                     "right"
                 ],
                 "to": [
-                    "Capacity Market",
+                    "Import SHARED Init to EMLAB",
                     "left"
                 ]
             },
             {
                 "from": [
-                    "DB",
-                    "bottom"
+                    "Import SHARED Init to EMLAB",
+                    "right"
                 ],
                 "to": [
-                    "Clock Initialization",
+                    "DB EMLAB",
                     "left"
                 ]
             },
             {
                 "from": [
-                    "DB",
-                    "bottom"
+                    "COMPETES Init Data",
+                    "right"
                 ],
                 "to": [
-                    "COMPETES Dummy",
+                    "Import COMPETES Init",
                     "left"
                 ]
             },
             {
                 "from": [
-                    "Clock Initialization",
+                    "Import COMPETES Init",
                     "right"
                 ],
                 "to": [
-                    "COMPETES Dummy",
-                    "bottom"
-                ]
-            },
-            {
-                "from": [
-                    "DB",
-                    "right"
-                ],
-                "to": [
-                    "Clock Increment",
+                    "DB COMPETES",
                     "left"
                 ]
             },
             {
                 "from": [
-                    "DB",
+                    "SHARED Init Data",
                     "right"
                 ],
                 "to": [
-                    "COMPETES Dummy 1",
+                    "Import SHARED Init to COMPETES",
                     "left"
                 ]
             },
             {
                 "from": [
-                    "DB",
+                    "Import SHARED Init to COMPETES",
                     "right"
                 ],
                 "to": [
-                    "Capacity Market 1",
+                    "DB COMPETES",
                     "left"
-                ]
-            },
-            {
-                "from": [
-                    "DB",
-                    "right"
-                ],
-                "to": [
-                    "Clock Increment 1",
-                    "left"
-                ]
-            },
-            {
-                "from": [
-                    "COMPETES Dummy 1",
-                    "right"
-                ],
-                "to": [
-                    "Capacity Market 1",
-                    "right"
-                ]
-            },
-            {
-                "from": [
-                    "Capacity Market 1",
-                    "right"
-                ],
-                "to": [
-                    "Clock Increment 1",
-                    "right"
-                ]
-            },
-            {
-                "from": [
-                    "Clock Increment",
-                    "right"
-                ],
-                "to": [
-                    "COMPETES Dummy 1",
-                    "bottom"
-                ]
-            },
-            {
-                "from": [
-                    "Capacity Market",
-                    "right"
-                ],
-                "to": [
-                    "Clock Increment",
-                    "right"
-                ]
-            },
-            {
-                "from": [
-                    "COMPETES Dummy",
-                    "right"
-                ],
-                "to": [
-                    "Capacity Market",
-                    "right"
-                ]
-            },
-            {
-                "from": [
-                    "Clock Increment 1",
-                    "right"
-                ],
-                "to": [
-                    "COMPETES Dummy 1 1",
-                    "bottom"
-                ]
-            },
-            {
-                "from": [
-                    "COMPETES Dummy 1 1",
-                    "right"
-                ],
-                "to": [
-                    "Capacity Market 1 1",
-                    "right"
-                ]
-            },
-            {
-                "from": [
-                    "DB",
-                    "right"
-                ],
-                "to": [
-                    "COMPETES Dummy 1 1",
-                    "left"
-                ]
-            },
-            {
-                "from": [
-                    "DB",
-                    "right"
-                ],
-                "to": [
-                    "Capacity Market 1 1",
-                    "left"
-                ]
-            },
-            {
-                "from": [
-                    "COMPETES Dummy 1 1 1",
-                    "right"
-                ],
-                "to": [
-                    "Capacity Market 1 1 1",
-                    "right"
-                ]
-            },
-            {
-                "from": [
-                    "DB",
-                    "right"
-                ],
-                "to": [
-                    "COMPETES Dummy 1 1 1",
-                    "left"
-                ]
-            },
-            {
-                "from": [
-                    "DB",
-                    "right"
-                ],
-                "to": [
-                    "Capacity Market 1 1 1",
-                    "left"
-                ]
-            },
-            {
-                "from": [
-                    "Capacity Market 1 1",
-                    "right"
-                ],
-                "to": [
-                    "Clock Increment 1 1",
-                    "right"
-                ]
-            },
-            {
-                "from": [
-                    "DB",
-                    "right"
-                ],
-                "to": [
-                    "Clock Increment 1 1",
-                    "left"
-                ]
-            },
-            {
-                "from": [
-                    "Clock Increment 1 1",
-                    "right"
-                ],
-                "to": [
-                    "COMPETES Dummy 1 1 1",
-                    "bottom"
-                ]
-            },
-            {
-                "from": [
-                    "DB",
-                    "right"
-                ],
-                "to": [
-                    "Clock Increment 1 2",
-                    "left"
-                ]
-            },
-            {
-                "from": [
-                    "Capacity Market 1 1 1",
-                    "right"
-                ],
-                "to": [
-                    "Clock Increment 1 2",
-                    "right"
                 ]
             }
         ]
     },
     "items": {
-        "DB": {
+        "DB EMLAB": {
             "type": "Data Store",
             "description": "",
-            "x": -125.72719826009808,
-            "y": 142.99316444032473,
+            "x": 150.66017397727788,
+            "y": -93.13796295982979,
             "url": {
                 "dialect": "sqlite",
                 "username": "",
@@ -317,252 +142,130 @@
                 "database": {
                     "type": "path",
                     "relative": true,
-                    "path": ".spinetoolbox/items/db/DB.sqlite"
+                    "path": ".spinetoolbox/items/db_emlab/DB.sqlite"
                 }
             },
             "cancel_on_error": true
         },
-        "Load Init File": {
+        "EMLAB Init Data": {
             "type": "Data Connection",
             "description": "Loads all initialization values",
-            "x": -481.66501405027975,
-            "y": 148.08913595146925,
+            "x": -137.54146033062875,
+            "y": -140.30282141177443,
             "references": [
                 {
                     "type": "path",
                     "relative": true,
-                    "path": "resources/data/init_ScenarioNLIntermittent.xlsx"
+                    "path": "resources/data/EMLAB Init.xlsx"
                 }
             ]
         },
-        "Capacity Market": {
-            "type": "Tool",
-            "description": "",
-            "x": 22.790020647544196,
-            "y": 203.1005607927534,
-            "specification": "Capacity Market",
-            "execute_in_work": false,
-            "cmd_line_args": [
-                {
-                    "type": "resource",
-                    "arg": "db_url@DB"
-                },
-                {
-                    "type": "literal",
-                    "arg": "run_capacity_market"
-                }
-            ]
-        },
-        "COMPETES Dummy": {
-            "type": "Tool",
-            "description": "",
-            "x": 23.273782220322488,
-            "y": 270.7774052683033,
-            "specification": "COMPETES",
-            "execute_in_work": false,
-            "cmd_line_args": [
-                {
-                    "type": "resource",
-                    "arg": "db_url@DB"
-                }
-            ]
-        },
-        "Clock Initialization": {
-            "type": "Tool",
-            "description": "",
-            "x": -97.5353377102972,
-            "y": 384.4789848434474,
-            "specification": "Clock",
-            "execute_in_work": false,
-            "cmd_line_args": [
-                {
-                    "type": "resource",
-                    "arg": "db_url@DB"
-                },
-                {
-                    "type": "literal",
-                    "arg": "initialize_clock"
-                }
-            ]
-        },
-        "Clock Increment": {
-            "type": "Tool",
-            "description": "",
-            "x": 22.363235730577884,
-            "y": 133.43459192753284,
-            "specification": "Clock",
-            "execute_in_work": false,
-            "cmd_line_args": [
-                {
-                    "type": "resource",
-                    "arg": "db_url@DB"
-                },
-                {
-                    "type": "literal",
-                    "arg": "increment_clock"
-                }
-            ]
-        },
-        "COMPETES Dummy 1": {
-            "type": "Tool",
-            "description": "",
-            "x": 131.350991505867,
-            "y": 109.07340019763448,
-            "specification": "COMPETES",
-            "execute_in_work": false,
-            "cmd_line_args": [
-                {
-                    "type": "resource",
-                    "arg": "db_url@DB"
-                }
-            ]
-        },
-        "Capacity Market 1": {
-            "type": "Tool",
-            "description": "",
-            "x": 128.9240111111228,
-            "y": 38.79210838463629,
-            "specification": "Capacity Market",
-            "execute_in_work": false,
-            "cmd_line_args": [
-                {
-                    "type": "resource",
-                    "arg": "db_url@DB"
-                },
-                {
-                    "type": "literal",
-                    "arg": "run_capacity_market"
-                }
-            ]
-        },
-        "Clock Increment 1": {
-            "type": "Tool",
-            "description": "",
-            "x": 128.957504512274,
-            "y": -30.6348079908027,
-            "specification": "Clock",
-            "execute_in_work": false,
-            "cmd_line_args": [
-                {
-                    "type": "resource",
-                    "arg": "db_url@DB"
-                },
-                {
-                    "type": "literal",
-                    "arg": "increment_clock"
-                }
-            ]
-        },
-        "COMPETES Dummy 1 1": {
-            "type": "Tool",
-            "description": "",
-            "x": 295.911570441272,
-            "y": -53.92432989920067,
-            "specification": "COMPETES",
-            "execute_in_work": false,
-            "cmd_line_args": [
-                {
-                    "type": "resource",
-                    "arg": "db_url@DB"
-                }
-            ]
-        },
-        "Capacity Market 1 1": {
-            "type": "Tool",
-            "description": "",
-            "x": 294.17837330474555,
-            "y": -131.0516024746297,
-            "specification": "Capacity Market",
-            "execute_in_work": false,
-            "cmd_line_args": [
-                {
-                    "type": "resource",
-                    "arg": "db_url@DB"
-                },
-                {
-                    "type": "literal",
-                    "arg": "run_capacity_market"
-                }
-            ]
-        },
-        "COMPETES Dummy 1 1 1": {
-            "type": "Tool",
-            "description": "",
-            "x": 446.16501405027964,
-            "y": -222.0442682456736,
-            "specification": "COMPETES",
-            "execute_in_work": false,
-            "cmd_line_args": [
-                {
-                    "type": "resource",
-                    "arg": "db_url@DB"
-                }
-            ]
-        },
-        "Capacity Market 1 1 1": {
-            "type": "Tool",
-            "description": "",
-            "x": 449.9721713465375,
-            "y": -307.7887548788118,
-            "specification": "Capacity Market",
-            "execute_in_work": false,
-            "cmd_line_args": [
-                {
-                    "type": "resource",
-                    "arg": "db_url@DB"
-                },
-                {
-                    "type": "literal",
-                    "arg": "run_capacity_market"
-                }
-            ]
-        },
-        "Clock Increment 1 1": {
-            "type": "Tool",
-            "description": "",
-            "x": 289.3961460981675,
-            "y": -209.98045949448425,
-            "specification": "Clock",
-            "execute_in_work": false,
-            "cmd_line_args": [
-                {
-                    "type": "resource",
-                    "arg": "db_url@DB"
-                },
-                {
-                    "type": "literal",
-                    "arg": "increment_clock"
-                }
-            ]
-        },
-        "Clock Increment 1 2": {
-            "type": "Tool",
-            "description": "",
-            "x": 446.8814907190306,
-            "y": -389.0022614993972,
-            "specification": "Clock",
-            "execute_in_work": false,
-            "cmd_line_args": [
-                {
-                    "type": "resource",
-                    "arg": "db_url@DB"
-                },
-                {
-                    "type": "literal",
-                    "arg": "increment_clock"
-                }
-            ]
-        },
-        "Import Init Data to DB": {
+        "Import EMLAB Init": {
             "type": "Importer",
             "description": "",
-            "x": -304.66501405027975,
-            "y": 146.82756149245105,
-            "specification": "Import Init Data to DB",
+            "x": 13.204191709653344,
+            "y": -140.60472416430815,
+            "specification": "Import EMLAB Init",
             "cancel_on_error": true,
             "file_selection": [
                 [
-                    "init_ScenarioNLIntermittent.xlsx",
+                    "EMLAB Init.xlsx",
+                    true
+                ]
+            ]
+        },
+        "SHARED Init Data": {
+            "type": "Data Connection",
+            "description": "",
+            "x": -140.61085201154862,
+            "y": -1.9699438827623084,
+            "references": [
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": "resources/data/Shared Init.xlsx"
+                }
+            ]
+        },
+        "COMPETES Init Data": {
+            "type": "Data Connection",
+            "description": "",
+            "x": -135.66017397727785,
+            "y": 144.60472416430812,
+            "references": [
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": "resources/data/COMPETES EU 2050-KIP.xlsx"
+                },
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": "resources/data/COMPETES EU PowerPlants 2050-KIP.xlsx"
+                }
+            ]
+        },
+        "Import COMPETES Init": {
+            "type": "Importer",
+            "description": "",
+            "x": 13.10371545382867,
+            "y": 144.60472416430807,
+            "specification": "",
+            "cancel_on_error": false,
+            "file_selection": [
+                [
+                    "COMPETES EU 2050-KIP.xlsx",
+                    true
+                ],
+                [
+                    "COMPETES EU PowerPlants 2050-KIP.xlsx",
+                    true
+                ]
+            ]
+        },
+        "DB COMPETES": {
+            "type": "Data Store",
+            "description": "",
+            "x": 150.63099831766985,
+            "y": 87.19100187738674,
+            "url": {
+                "dialect": "sqlite",
+                "username": "",
+                "password": "",
+                "host": "",
+                "port": "",
+                "database": {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/items/db_competes/DB COMPETES.sqlite"
+                }
+            },
+            "cancel_on_error": false
+        },
+        "Import SHARED Init to COMPETES": {
+            "type": "Importer",
+            "description": "",
+            "x": 13.103715453828784,
+            "y": 50.97098199296448,
+            "specification": "",
+            "cancel_on_error": false,
+            "file_selection": [
+                [
+                    "Shared Init.xlsx",
+                    true
+                ]
+            ]
+        },
+        "Import SHARED Init to EMLAB": {
+            "type": "Importer",
+            "description": "",
+            "x": 12.60180960858986,
+            "y": -39.598457091806964,
+            "specification": "Import Shared Init EMLAB",
+            "cancel_on_error": false,
+            "file_selection": [
+                [
+                    "Shared Init.xlsx",
                     true
                 ]
             ]

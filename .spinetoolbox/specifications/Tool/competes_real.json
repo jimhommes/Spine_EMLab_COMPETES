@@ -1,8 +1,8 @@
 {
-    "name": "COMPETES Dummy",
+    "name": "COMPETES",
     "tooltype": "python",
     "includes": [
-        "competesdummy.py"
+        "callingaimms.py"
     ],
     "description": "",
     "inputfiles": [],
@@ -10,5 +10,5 @@
     "outputfiles": [],
     "cmdline_args": [],
     "execute_in_work": false,
-    "includes_main_path": "../../../emlabpy"
+    "includes_main_path": "../../../COMPETES"
 }

@@ -1,8 +1,8 @@
 {
-    "name": "COMPETES Dummy",
+    "name": "CO2 Market",
     "tooltype": "python",
     "includes": [
-        "competesdummy.py"
+        "emlab.py"
     ],
     "description": "",
     "inputfiles": [],
