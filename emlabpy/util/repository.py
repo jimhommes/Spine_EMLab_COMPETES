@@ -165,7 +165,7 @@ class Repository:
     def get_co2_market_for_zone(self, zone: Zone) -> Optional[CO2Market]:
         try:
             return next(i for i in self.co2_markets.values()
-                        if i.parameters['zone'] == self.power_grid_nodes[zone.name].parameters['Zone'])
+                        if i.parameters['zone'] == self.power_grid_nodes[zone.name].parameters['Country'])
         except StopIteration:
             return None
 
@@ -230,6 +230,7 @@ class Repository:
     # PowerGeneratingTechnologies
     def get_power_generating_technology_by_techtype_and_fuel(self, techtype: str, fuel: str):
         try:
-            return next(i for i in self.power_generating_technologies if i.techtype == techtype and i.fuel == fuel)
+            return next(i for i in self.power_generating_technologies.values()
+                        if i.techtype == techtype and i.fuel == fuel)
         except StopIteration:
             return None

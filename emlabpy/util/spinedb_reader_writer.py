@@ -57,7 +57,7 @@ def import_fuel_mix(db_data: dict, reps: Repository):
 
 def set_expected_lifetimes_of_power_generating_technologies(reps: Repository, db_data: dict, title: str):
     for unit in [i for i in db_data['object_parameter_values'] if i[0] == title]:
-        for (key, value) in json.loads(unit[3]).items():
+        for [key, value] in unit[3].to_dict()['data']:
             reps.get_power_generating_technology_by_techtype_and_fuel(unit[1], key).expected_lifetime = float(value)
 
 

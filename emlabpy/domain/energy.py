@@ -197,9 +197,9 @@ class SubstanceInFuelMix(ImportObject):
         self.substances = list()
         self.share = 1
 
-    def add_parameter_value(self, reps, parameter_name: str, parameter_value: str, alternative: str):
+    def add_parameter_value(self, reps, parameter_name: str, parameter_value, alternative: str):
         if parameter_name == 'FUEL1':
-            self.substances = list(parameter_value)
+            self.substances = [reps.substances[i] for i in parameter_value.to_dict()['data']]
 
 
 class PowerPlantDispatchPlan(ImportObject):

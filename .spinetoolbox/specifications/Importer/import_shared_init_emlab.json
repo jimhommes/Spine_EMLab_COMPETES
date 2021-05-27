@@ -234,7 +234,7 @@
                             },
                             {
                                 "map_type": "ParameterDefinition",
-                                "position": -1
+                                "position": "header"
                             },
                             {
                                 "map_type": "Alternative",
@@ -275,7 +275,8 @@
                             },
                             {
                                 "map_type": "Alternative",
-                                "position": "hidden"
+                                "position": "hidden",
+                                "value": "0"
                             },
                             {
                                 "map_type": "ParameterValueMetadata",
@@ -555,8 +556,8 @@
             "FuelGen": {},
             "FuelMap": {},
             "FuelpriceTrends": {
-                "header": false,
-                "row": 1
+                "header": true,
+                "row": 0
             },
             "Fueltype": {},
             "Hourly Demand": {},
@@ -593,11 +594,15 @@
             },
             "FuelGen": {
                 "0": "string",
-                "1": "float"
+                "1": "float",
+                "2": "string",
+                "3": "string",
+                "4": "string",
+                "5": "string"
             },
             "FuelMap": {
                 "0": "string",
-                "1": "float",
+                "1": "string",
                 "2": "string",
                 "3": "float"
             },
@@ -676,7 +681,11 @@
                 "5": "float",
                 "6": "float",
                 "7": "float",
-                "8": "float"
+                "8": "float",
+                "9": "string",
+                "10": "string",
+                "11": "string",
+                "12": "string"
             },
             "Techtype": {
                 "0": "string",

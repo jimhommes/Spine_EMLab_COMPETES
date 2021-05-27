@@ -22,7 +22,8 @@ class CO2MarketDetermineCO2Price(MarketModule):
             co2price = 0
             if self.reps.current_tick == 0:
                 # If first tick, COMPETES has not run yet. Set to CO2 substance cost
-                co2price = self.reps.substances['co2'].get_price_for_tick(0)
+                # co2price = self.reps.substances['co2'].get_price_for_tick(0)
+                co2price = 40
             #     TODO: What to do with the first CO2 price?
             else:
                 # If not first tick, base CO2 Price of profits/emissions last year
