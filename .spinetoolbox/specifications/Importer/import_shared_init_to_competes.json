@@ -1,5 +1,5 @@
 {
-    "name": "Import Shared Init EMLAB",
+    "name": "Import Shared Init to COMPETES",
     "item_type": "Importer",
     "mapping": {
         "table_mappings": {
@@ -9,8 +9,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "hidden",
-                                "value": "PowerGridNodes"
+                                "position": "table_name",
+                                "value": "BusCountry"
                             },
                             {
                                 "map_type": "Object",
@@ -47,8 +47,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "hidden",
-                                "value": "Zones"
+                                "position": "table_name",
+                                "value": "Country"
                             },
                             {
                                 "map_type": "Object",
@@ -85,11 +85,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "hidden",
-                                "value": "PowerGeneratingTechnologies",
-                                "skip_columns": [
-                                    0
-                                ]
+                                "position": "table_name",
+                                "value": "Economic Lifetime"
                             },
                             {
                                 "map_type": "Object",
@@ -113,7 +110,16 @@
                                 "position": "hidden"
                             },
                             {
-                                "map_type": "ParameterValue",
+                                "map_type": "ParameterValueType",
+                                "position": "hidden",
+                                "value": "map"
+                            },
+                            {
+                                "map_type": "ParameterValueIndex",
+                                "position": 0
+                            },
+                            {
+                                "map_type": "ExpandedValue",
                                 "position": "hidden"
                             }
                         ]
@@ -126,8 +132,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "hidden",
-                                "value": "Substances"
+                                "position": "table_name",
+                                "value": "FuelGen"
                             },
                             {
                                 "map_type": "Object",
@@ -164,11 +170,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "hidden",
-                                "value": "PowerGeneratingTechnologies",
-                                "skip_columns": [
-                                    3
-                                ]
+                                "position": "table_name",
+                                "value": "FuelMap"
                             },
                             {
                                 "map_type": "Object",
@@ -198,7 +201,7 @@
                             },
                             {
                                 "map_type": "ParameterValueIndex",
-                                "position": -1
+                                "position": 2
                             },
                             {
                                 "map_type": "ExpandedValue",
@@ -214,8 +217,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "hidden",
-                                "value": "TriangularTrends"
+                                "position": "table_name",
+                                "value": "FuelpriceTrends"
                             },
                             {
                                 "map_type": "Object",
@@ -244,42 +247,6 @@
                             }
                         ]
                     }
-                },
-                {
-                    "Mapping 2": {
-                        "mapping": [
-                            {
-                                "map_type": "ObjectClass",
-                                "position": "hidden",
-                                "value": "Substances"
-                            },
-                            {
-                                "map_type": "Object",
-                                "position": 5
-                            },
-                            {
-                                "map_type": "ObjectMetadata",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterDefinition",
-                                "position": "hidden",
-                                "value": "trend"
-                            },
-                            {
-                                "map_type": "Alternative",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterValueMetadata",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterValue",
-                                "position": 0
-                            }
-                        ]
-                    }
                 }
             ],
             "Fueltype": [
@@ -287,24 +254,33 @@
                     "Mapping 1": {
                         "mapping": [
                             {
-                                "map_type": "RelationshipClass",
+                                "map_type": "ObjectClass",
+                                "position": "table_name",
+                                "value": "Fueltype"
+                            },
+                            {
+                                "map_type": "Object",
+                                "position": 0
+                            },
+                            {
+                                "map_type": "ObjectMetadata",
                                 "position": "hidden"
                             },
                             {
-                                "map_type": "RelationshipClassObjectClass",
-                                "position": "hidden"
+                                "map_type": "ParameterDefinition",
+                                "position": -1
                             },
                             {
-                                "map_type": "Relationship",
+                                "map_type": "Alternative",
                                 "position": "hidden",
-                                "value": "relationship"
+                                "value": "0"
                             },
                             {
-                                "map_type": "RelationshipObject",
+                                "map_type": "ParameterValueMetadata",
                                 "position": "hidden"
                             },
                             {
-                                "map_type": "RelationshipMetadata",
+                                "map_type": "ParameterValue",
                                 "position": "hidden"
                             }
                         ]
@@ -318,12 +294,7 @@
                             {
                                 "map_type": "ObjectClass",
                                 "position": "table_name",
-                                "value": "Hourly Demand",
-                                "skip_columns": [
-                                    1,
-                                    2,
-                                    3
-                                ]
+                                "value": "Hourly Demand"
                             },
                             {
                                 "map_type": "Object",
@@ -358,6 +329,18 @@
                             },
                             {
                                 "map_type": "ParameterValueIndex",
+                                "position": 1
+                            },
+                            {
+                                "map_type": "ParameterValueIndex",
+                                "position": 2
+                            },
+                            {
+                                "map_type": "ParameterValueIndex",
+                                "position": 3
+                            },
+                            {
+                                "map_type": "ParameterValueIndex",
                                 "position": 4
                             },
                             {
@@ -374,8 +357,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "hidden",
-                                "value": "PowerPlants"
+                                "position": "table_name",
+                                "value": "NL Installed Capacity (+heat)"
                             },
                             {
                                 "map_type": "Object",
@@ -412,8 +395,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "hidden",
-                                "value": "PowerPlants"
+                                "position": "table_name",
+                                "value": "NL Installed Capacity-RES (+he"
                             },
                             {
                                 "map_type": "Object",
@@ -446,12 +429,15 @@
             ],
             "Technologies": [
                 {
-                    "Mapping 1": {
+                    "Mapping 2": {
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "hidden",
-                                "value": "PowerGeneratingTechnologies"
+                                "position": "table_name",
+                                "value": "Technologies",
+                                "skip_columns": [
+                                    0
+                                ]
                             },
                             {
                                 "map_type": "Object",
@@ -473,7 +459,7 @@
                             },
                             {
                                 "map_type": "ParameterValueMetadata",
-                                "position": "hidden"
+                                "position": "header"
                             },
                             {
                                 "map_type": "ParameterValueType",
@@ -490,7 +476,7 @@
                             },
                             {
                                 "map_type": "ExpandedValue",
-                                "position": 8
+                                "position": "hidden"
                             }
                         ]
                     }
@@ -502,15 +488,33 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "hidden"
+                                "position": "table_name",
+                                "value": "Techtype"
                             },
                             {
                                 "map_type": "Object",
-                                "position": "hidden"
+                                "position": 0
                             },
                             {
                                 "map_type": "ObjectMetadata",
                                 "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterDefinition",
+                                "position": -1
+                            },
+                            {
+                                "map_type": "Alternative",
+                                "position": "hidden",
+                                "value": "0"
+                            },
+                            {
+                                "map_type": "ParameterValueMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterValue",
+                                "position": -1
                             }
                         ]
                     }
@@ -522,8 +526,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "hidden",
-                                "value": "PowerGeneratingTechnologies"
+                                "position": "table_name",
+                                "value": "VRE Technologies"
                             },
                             {
                                 "map_type": "Object",
@@ -561,10 +565,7 @@
             "Economic Lifetime": {},
             "FuelGen": {},
             "FuelMap": {},
-            "FuelpriceTrends": {
-                "header": false,
-                "row": 1
-            },
+            "FuelpriceTrends": {},
             "Fueltype": {},
             "Hourly Demand": {},
             "NL Installed Capacity (+heat)": {},
@@ -572,10 +573,7 @@
             "Technologies": {
                 "header": false
             },
-            "Techtype": {
-                "row": 0,
-                "header": true
-            },
+            "Techtype": {},
             "VRE Technologies": {}
         },
         "table_types": {
@@ -619,6 +617,34 @@
             "Fueltype": {
                 "0": "string",
                 "1": "float"
+            },
+            "Hourly Demand": {
+                "0": "string",
+                "1": "string",
+                "2": "string",
+                "3": "string",
+                "4": "string",
+                "5": "float",
+                "6": "float",
+                "7": "float",
+                "8": "float",
+                "9": "float",
+                "10": "float",
+                "11": "float",
+                "12": "float",
+                "13": "float",
+                "14": "float",
+                "15": "float",
+                "16": "float",
+                "17": "float",
+                "18": "float",
+                "19": "float",
+                "20": "float",
+                "21": "float",
+                "22": "float",
+                "23": "float",
+                "24": "float",
+                "25": "float"
             },
             "NL Installed Capacity (+heat)": {
                 "0": "string",
@@ -675,7 +701,7 @@
                 "23": "float"
             },
             "Technologies": {
-                "0": "float",
+                "0": "string",
                 "1": "float",
                 "2": "float",
                 "3": "string",
@@ -696,59 +722,29 @@
                 "3": "float",
                 "4": "float",
                 "5": "float"
-            },
-            "Hourly Demand": {
-                "0": "string",
-                "1": "string",
-                "2": "float",
-                "3": "float",
-                "4": "string",
-                "5": "float",
-                "6": "float",
-                "7": "float",
-                "8": "float",
-                "9": "float",
-                "10": "float",
-                "11": "float",
-                "12": "float",
-                "13": "float",
-                "14": "float",
-                "15": "float",
-                "16": "float",
-                "17": "float",
-                "18": "float",
-                "19": "float",
-                "20": "float",
-                "21": "float",
-                "22": "float",
-                "23": "float",
-                "24": "float",
-                "25": "float"
             }
         },
         "table_row_types": {
-            "Country": {
-                "0": "string"
-            },
             "BusCountry": {
                 "0": "string"
             },
-            "FuelGen": {
-                "0": "string"
-            },
-            "Fueltype": {
-                "0": "string"
-            },
-            "Techtype": {
+            "Country": {
                 "0": "string"
             },
             "Economic Lifetime": {
+                "0": "string"
+            },
+            "FuelGen": {
+                "1": "string",
                 "0": "string"
             },
             "FuelMap": {
                 "0": "string"
             },
             "FuelpriceTrends": {
+                "0": "string"
+            },
+            "Fueltype": {
                 "0": "string"
             },
             "Hourly Demand": {
@@ -760,10 +756,13 @@
             "NL Installed Capacity-RES (+he": {
                 "0": "string"
             },
-            "Technologies": {
+            "Techtype": {
                 "0": "string"
             },
             "VRE Technologies": {
+                "0": "string"
+            },
+            "Technologies": {
                 "0": "string"
             }
         },
@@ -774,10 +773,12 @@
             "FuelGen",
             "FuelMap",
             "FuelpriceTrends",
+            "Fueltype",
             "Hourly Demand",
             "NL Installed Capacity (+heat)",
             "NL Installed Capacity-RES (+he",
             "Technologies",
+            "Techtype",
             "VRE Technologies"
         ],
         "source_type": "ExcelConnector"

@@ -41,6 +41,21 @@
                     "type": "path",
                     "relative": true,
                     "path": ".spinetoolbox/specifications/Importer/import_shared_init_emlab.json"
+                },
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/specifications/Importer/import_shared_init_to_competes.json"
+                },
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/specifications/Importer/import_competes.json"
+                },
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/specifications/Importer/import_competes_(pp).json"
                 }
             ]
         },
@@ -124,6 +139,56 @@
                     "DB COMPETES",
                     "left"
                 ]
+            },
+            {
+                "from": [
+                    "COMPETES Init Data",
+                    "right"
+                ],
+                "to": [
+                    "Import COMPETES Init (PP)",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "Import COMPETES Init (PP)",
+                    "right"
+                ],
+                "to": [
+                    "DB COMPETES",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "Import SHARED Init to EMLAB",
+                    "left"
+                ],
+                "to": [
+                    "Import EMLAB Init",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "Import SHARED Init to COMPETES",
+                    "left"
+                ],
+                "to": [
+                    "Import COMPETES Init",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "Import SHARED Init to COMPETES",
+                    "left"
+                ],
+                "to": [
+                    "Import COMPETES Init (PP)",
+                    "left"
+                ]
             }
         ]
     },
@@ -132,7 +197,7 @@
             "type": "Data Store",
             "description": "",
             "x": 150.66017397727788,
-            "y": -93.13796295982979,
+            "y": -141.05826716380133,
             "url": {
                 "dialect": "sqlite",
                 "username": "",
@@ -151,7 +216,7 @@
             "type": "Data Connection",
             "description": "Loads all initialization values",
             "x": -137.54146033062875,
-            "y": -140.30282141177443,
+            "y": -188.22312561574597,
             "references": [
                 {
                     "type": "path",
@@ -164,7 +229,7 @@
             "type": "Importer",
             "description": "",
             "x": 13.204191709653344,
-            "y": -140.60472416430815,
+            "y": -188.5250283682797,
             "specification": "Import EMLAB Init",
             "cancel_on_error": true,
             "file_selection": [
@@ -178,7 +243,7 @@
             "type": "Data Connection",
             "description": "",
             "x": -140.61085201154862,
-            "y": -1.9699438827623084,
+            "y": -49.89024808673385,
             "references": [
                 {
                     "type": "path",
@@ -191,7 +256,7 @@
             "type": "Data Connection",
             "description": "",
             "x": -135.66017397727785,
-            "y": 144.60472416430812,
+            "y": 96.68441996033658,
             "references": [
                 {
                     "type": "path",
@@ -209,8 +274,8 @@
             "type": "Importer",
             "description": "",
             "x": 13.10371545382867,
-            "y": 144.60472416430807,
-            "specification": "",
+            "y": 96.68441996033653,
+            "specification": "Import COMPETES",
             "cancel_on_error": false,
             "file_selection": [
                 [
@@ -219,7 +284,7 @@
                 ],
                 [
                     "COMPETES EU PowerPlants 2050-KIP.xlsx",
-                    true
+                    false
                 ]
             ]
         },
@@ -227,7 +292,7 @@
             "type": "Data Store",
             "description": "",
             "x": 150.63099831766985,
-            "y": 87.19100187738674,
+            "y": 39.2706976734152,
             "url": {
                 "dialect": "sqlite",
                 "username": "",
@@ -246,8 +311,8 @@
             "type": "Importer",
             "description": "",
             "x": 13.103715453828784,
-            "y": 50.97098199296448,
-            "specification": "",
+            "y": 3.0506777889929424,
+            "specification": "Import Shared Init to COMPETES",
             "cancel_on_error": false,
             "file_selection": [
                 [
@@ -260,12 +325,30 @@
             "type": "Importer",
             "description": "",
             "x": 12.60180960858986,
-            "y": -39.598457091806964,
+            "y": -87.5187612957785,
             "specification": "Import Shared Init EMLAB",
             "cancel_on_error": false,
             "file_selection": [
                 [
                     "Shared Init.xlsx",
+                    true
+                ]
+            ]
+        },
+        "Import COMPETES Init (PP)": {
+            "type": "Importer",
+            "description": "",
+            "x": 12.174447218848165,
+            "y": 192.52502836827966,
+            "specification": "Import COMPETES (PP)",
+            "cancel_on_error": false,
+            "file_selection": [
+                [
+                    "COMPETES EU 2050-KIP.xlsx",
+                    false
+                ],
+                [
+                    "COMPETES EU PowerPlants 2050-KIP.xlsx",
                     true
                 ]
             ]
