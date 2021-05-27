@@ -226,3 +226,10 @@ class Repository:
 
     def get_government(self) -> Government:
         return next(i for i in self.governments.values())
+
+    # PowerGeneratingTechnologies
+    def get_power_generating_technology_by_techtype_and_fuel(self, techtype: str, fuel: str):
+        try:
+            return next(i for i in self.power_generating_technologies if i.techtype == techtype and i.fuel == fuel)
+        except StopIteration:
+            return None

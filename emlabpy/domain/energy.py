@@ -20,22 +20,32 @@ class PowerPlant(ImportObject):
         #                 timeOfPermitorBuildingStart + getActualLeadtime() + getActualPermittime()));
         self.construction_start_time = 0
         self.banked_allowances = [0 for i in range(100)]
+        self.techtypestr = ''
+        self.fuelstr = ''
 
     def add_parameter_value(self, reps, parameter_name, parameter_value, alternative):
-        if parameter_name == 'Technology':
-            self.technology = reps.power_generating_technologies[parameter_value]
-        elif parameter_name == 'Location':
+        if parameter_name == 'TECHTYPENL':
+            self.techtypestr = parameter_value
+            if self.fuelstr != '':
+                self.technology = reps.get_power_generating_technology_by_techtype_and_fuel(self.techtypestr,
+                                                                                            self.fuelstr)
+        elif parameter_name == 'FUELNL':
+            self.fuelstr = parameter_value
+            if self.techtypestr != '':
+                self.technology = reps.get_power_generating_technology_by_techtype_and_fuel(self.techtypestr,
+                                                                                            self.fuelstr)
+        elif parameter_name == 'BUSNL':
             self.location = reps.power_grid_nodes[parameter_value]
-        elif parameter_name == 'Age':
+        elif parameter_name == 'Age':   # TODO
             self.age = int(parameter_value)
             self.construction_start_time = -1 * int(parameter_value)
-        elif parameter_name == 'Owner':
+        elif parameter_name == 'FirmNL':
             self.owner = reps.energy_producers[parameter_value]
-        elif parameter_name == 'Capacity':
-            self.capacity = int(parameter_value)
-        elif parameter_name == 'Efficiency':
+        elif parameter_name == 'MWNL':
+            self.capacity = -1 * int(parameter_value)
+        elif parameter_name == 'EfficiencyNL':
             self.efficiency = float(parameter_value)
-        elif parameter_name == 'Allowances':
+        elif parameter_name == 'Allowances':    # TODO
             self.banked_allowances[int(alternative)] = int(parameter_value)
 
     def calculate_emission_intensity(self, reps):
@@ -91,60 +101,66 @@ class PowerPlant(ImportObject):
 class PowerGeneratingTechnology(ImportObject):
     def __init__(self, name):
         super().__init__(name)
-        self.capacity = 0
-        self.intermittent = False
-        self.applicable_for_long_term_contract = False
-        self.peak_segment_dependent_availability = 0
-        self.base_segment_dependent_availability = 0
-        self.maximum_installed_capacity_fraction_per_agent = 0
-        self.maximum_installed_capacity_fraction_in_country = 0
-        self.minimum_fuel_quality = 0
+        # self.capacity = 0
+        # self.intermittent = False
+        # self.applicable_for_long_term_contract = False
+        # self.peak_segment_dependent_availability = 0
+        # self.base_segment_dependent_availability = 0
+        # self.maximum_installed_capacity_fraction_per_agent = 0
+        # self.maximum_installed_capacity_fraction_in_country = 0
+        # self.minimum_fuel_quality = 0
         self.expected_permittime = 0
         self.expected_leadtime = 0
         self.expected_lifetime = 0
-        self.fixed_operating_cost_modifier_after_lifetime = 0
-        self.minimum_running_hours = 0
-        self.depreciation_time = 0
-        self.efficiency_time_series = None
+        # self.fixed_operating_cost_modifier_after_lifetime = 0
+        # self.minimum_running_hours = 0
+        # self.depreciation_time = 0
+        # self.efficiency_time_series = None
         self.fixed_operating_cost_time_series = None
-        self.investment_cost_time_series = None
+        # self.investment_cost_time_series = None
         self.co2_capture_efficiency = 0
+        self.fuel = ''
+        self.techtype = ''
 
     def add_parameter_value(self, reps, parameter_name, parameter_value, alternative):
-        if parameter_name == 'capacity':
-            self.capacity = int(parameter_value)
-        elif parameter_name == 'intermittent':
-            self.intermittent = 'TRUE' == parameter_value
-        elif parameter_name == 'applicableForLongTermContract':
-            self.applicable_for_long_term_contract = bool(parameter_value)
-        elif parameter_name == 'peakSegmentDependentAvailability':
-            self.peak_segment_dependent_availability = float(parameter_value)
-        elif parameter_name == 'baseSegmentDependentAvailability':
-            self.base_segment_dependent_availability = float(parameter_value)
-        elif parameter_name == 'maximumInstalledCapacityFractionPerAgent':
-            self.maximum_installed_capacity_fraction_per_agent = float(parameter_value)
-        elif parameter_name == 'maximumInstalledCapacityFractionInCountry':
-            self.maximum_installed_capacity_fraction_in_country = float(parameter_value)
-        elif parameter_name == 'minimumFuelQuality':
-            self.minimum_fuel_quality = float(parameter_value)
+        if parameter_name == 'FUELNEW':
+            self.fuel = parameter_value
+        elif parameter_name == 'FUELTYPENEW':
+            self.techtype = parameter_value
+        # elif parameter_name == 'capacity': # TODO
+        #     self.capacity = int(parameter_value)
+        # elif parameter_name == 'intermittent':
+        #     self.intermittent = 'TRUE' == parameter_value
+        # elif parameter_name == 'applicableForLongTermContract':
+        #     self.applicable_for_long_term_contract = bool(parameter_value)
+        # elif parameter_name == 'peakSegmentDependentAvailability':
+        #     self.peak_segment_dependent_availability = float(parameter_value)
+        # elif parameter_name == 'baseSegmentDependentAvailability':
+        #     self.base_segment_dependent_availability = float(parameter_value)
+        # elif parameter_name == 'maximumInstalledCapacityFractionPerAgent':
+        #     self.maximum_installed_capacity_fraction_per_agent = float(parameter_value)
+        # elif parameter_name == 'maximumInstalledCapacityFractionInCountry':
+        #     self.maximum_installed_capacity_fraction_in_country = float(parameter_value)
+        # elif parameter_name == 'minimumFuelQuality':
+        #     self.minimum_fuel_quality = float(parameter_value)
         elif parameter_name == 'expectedPermittime':
             self.expected_permittime = int(parameter_value)
         elif parameter_name == 'expectedLeadtime':
             self.expected_leadtime = int(parameter_value)
-        elif parameter_name == 'expectedLifetime':
+        elif parameter_name == 'Lifetime':  # TODO
             self.expected_lifetime = int(parameter_value)
-        elif parameter_name == 'fixedOperatingCostModifierAfterLifetime':
-            self.fixed_operating_cost_modifier_after_lifetime = float(parameter_value)
-        elif parameter_name == 'minimumRunningHours':
-            self.minimum_running_hours = int(parameter_value)
-        elif parameter_name == 'depreciationTime':
-            self.depreciation_time = int(parameter_value)
-        elif parameter_name == 'efficiencyTimeSeries':
-            self.efficiency_time_series = reps.trends[parameter_value]
+        # elif parameter_name == 'fixedOperatingCostModifierAfterLifetime':
+        #     self.fixed_operating_cost_modifier_after_lifetime = float(parameter_value)
+        # elif parameter_name == 'minimumRunningHours':
+        #     self.minimum_running_hours = int(parameter_value)
+        # elif parameter_name == 'depreciationTime':
+        #     self.depreciation_time = int(parameter_value)
+        # elif parameter_name == 'efficiencyTimeSeries':
+        #     self.efficiency_time_series = reps.trends[parameter_value]
         elif parameter_name == 'fixedOperatingCostTimeSeries':
             self.fixed_operating_cost_time_series = reps.trends[parameter_value]
-        elif parameter_name == 'investmentCostTimeSeries':
-            self.investment_cost_time_series = reps.trends[parameter_value]
+        # elif parameter_name == 'investmentCostTimeSeries':
+        #     self.investment_cost_time_series = reps.trends[parameter_value]
         elif parameter_name == 'co2CaptureEfficiency':
             self.co2_capture_efficiency = float(parameter_value)
 
@@ -174,10 +190,16 @@ class Substance(ImportObject):
         return self.trend.get_value(tick)
 
 
-class SubstanceInFuelMix:
-    def __init__(self, substance, share):
-        self.substance = substance
-        self.share = share
+class SubstanceInFuelMix(ImportObject):
+    def __init__(self, name: str):
+        super().__init__(name)
+        self.substance = None
+        self.substances = list()
+        self.share = 1
+
+    def add_parameter_value(self, reps, parameter_name: str, parameter_value: str, alternative: str):
+        if parameter_name == 'FUEL1':
+            self.substances = list(parameter_value)
 
 
 class PowerPlantDispatchPlan(ImportObject):

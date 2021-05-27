@@ -189,6 +189,16 @@
                     "Import COMPETES Init (PP)",
                     "left"
                 ]
+            },
+            {
+                "from": [
+                    "DB EMLAB",
+                    "right"
+                ],
+                "to": [
+                    "EMLAB CO2 Market",
+                    "left"
+                ]
             }
         ]
     },
@@ -196,8 +206,8 @@
         "DB EMLAB": {
             "type": "Data Store",
             "description": "",
-            "x": 150.66017397727788,
-            "y": -141.05826716380133,
+            "x": 152.34496264075105,
+            "y": -144.4278444907478,
             "url": {
                 "dialect": "sqlite",
                 "username": "",
@@ -242,8 +252,8 @@
         "SHARED Init Data": {
             "type": "Data Connection",
             "description": "",
-            "x": -140.61085201154862,
-            "y": -49.89024808673385,
+            "x": -134.71409168939235,
+            "y": -46.520670759787414,
             "references": [
                 {
                     "type": "path",
@@ -291,8 +301,8 @@
         "DB COMPETES": {
             "type": "Data Store",
             "description": "",
-            "x": 150.63099831766985,
-            "y": 39.2706976734152,
+            "x": 148.93279289721866,
+            "y": 96.76184275879108,
             "url": {
                 "dialect": "sqlite",
                 "username": "",
@@ -351,6 +361,24 @@
                     "COMPETES EU PowerPlants 2050-KIP.xlsx",
                     true
                 ]
+            ]
+        },
+        "EMLAB CO2 Market": {
+            "type": "Tool",
+            "description": "",
+            "x": 301.57717076170616,
+            "y": -144.04943072696014,
+            "specification": "CO2 Market",
+            "execute_in_work": false,
+            "cmd_line_args": [
+                {
+                    "type": "resource",
+                    "arg": "db_url@DB EMLAB"
+                },
+                {
+                    "type": "literal",
+                    "arg": "run_co2_market"
+                }
             ]
         }
     }

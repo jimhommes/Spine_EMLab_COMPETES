@@ -86,10 +86,7 @@
                             {
                                 "map_type": "ObjectClass",
                                 "position": "hidden",
-                                "value": "PowerGeneratingTechnologies",
-                                "skip_columns": [
-                                    0
-                                ]
+                                "value": "PowerGeneratingTechnologyLifetime"
                             },
                             {
                                 "map_type": "Object",
@@ -113,7 +110,16 @@
                                 "position": "hidden"
                             },
                             {
-                                "map_type": "ParameterValue",
+                                "map_type": "ParameterValueType",
+                                "position": "hidden",
+                                "value": "map"
+                            },
+                            {
+                                "map_type": "ParameterValueIndex",
+                                "position": 0
+                            },
+                            {
+                                "map_type": "ExpandedValue",
                                 "position": "hidden"
                             }
                         ]
@@ -165,8 +171,9 @@
                             {
                                 "map_type": "ObjectClass",
                                 "position": "hidden",
-                                "value": "PowerGeneratingTechnologies",
+                                "value": "PowerGeneratingTechnologyFuel",
                                 "skip_columns": [
+                                    1,
                                     3
                                 ]
                             },
@@ -194,11 +201,11 @@
                             {
                                 "map_type": "ParameterValueType",
                                 "position": "hidden",
-                                "value": "map"
+                                "value": "array"
                             },
                             {
                                 "map_type": "ParameterValueIndex",
-                                "position": -1
+                                "position": "hidden"
                             },
                             {
                                 "map_type": "ExpandedValue",
@@ -455,7 +462,7 @@
                             },
                             {
                                 "map_type": "Object",
-                                "position": 4
+                                "position": 0
                             },
                             {
                                 "map_type": "ObjectMetadata",
@@ -463,8 +470,7 @@
                             },
                             {
                                 "map_type": "ParameterDefinition",
-                                "position": "hidden",
-                                "value": "TechMap"
+                                "position": -1
                             },
                             {
                                 "map_type": "Alternative",
@@ -476,21 +482,8 @@
                                 "position": "hidden"
                             },
                             {
-                                "map_type": "ParameterValueType",
-                                "position": "hidden",
-                                "value": "map"
-                            },
-                            {
-                                "map_type": "ParameterValueIndex",
-                                "position": 0
-                            },
-                            {
-                                "map_type": "ParameterValueIndex",
-                                "position": -1
-                            },
-                            {
-                                "map_type": "ExpandedValue",
-                                "position": 8
+                                "map_type": "ParameterValue",
+                                "position": "hidden"
                             }
                         ]
                     }
@@ -604,7 +597,7 @@
             },
             "FuelMap": {
                 "0": "string",
-                "1": "string",
+                "1": "float",
                 "2": "string",
                 "3": "float"
             },
@@ -675,7 +668,7 @@
                 "23": "float"
             },
             "Technologies": {
-                "0": "float",
+                "0": "string",
                 "1": "float",
                 "2": "float",
                 "3": "string",

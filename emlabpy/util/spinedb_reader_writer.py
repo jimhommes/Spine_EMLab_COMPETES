@@ -6,6 +6,7 @@ Jim Hommes - 25-3-2021
 """
 from util.repository import *
 from util.spinedb import SpineDB
+import json
 
 
 def db_objects_to_dict(reps: Repository, db_data: dict, to_dict: dict, object_class_name: str, class_to_create):
@@ -54,6 +55,12 @@ def import_fuel_mix(db_data: dict, reps: Repository):
                 reps.substances[unit[1][1]], float(unit[3]))]
 
 
+def set_expected_lifetimes_of_power_generating_technologies(reps: Repository, db_data: dict, title: str):
+    for unit in [i for i in db_data['object_parameter_values'] if i[0] == title]:
+        for (key, value) in json.loads(unit[3]).items():
+            reps.get_power_generating_technology_by_techtype_and_fuel(unit[1], key).expected_lifetime = float(value)
+
+
 class SpineDBReaderWriter:
     """
     The class that handles all writing and reading to the SpineDB.
@@ -82,7 +89,7 @@ class SpineDBReaderWriter:
         db_objects_to_dict(reps, db_data, reps.co2_markets, 'CO2Auction', CO2Market)
         db_objects_to_dict(reps, db_data, reps.power_generating_technologies, 'PowerGeneratingTechnologies',
                            PowerGeneratingTechnology)
-        db_objects_to_dict(reps, db_data, reps.load, 'ldcNLDE-hourly', HourlyLoad)
+        db_objects_to_dict(reps, db_data, reps.load, 'HourlyDemand', HourlyLoad)
         db_objects_to_dict(reps, db_data, reps.capacity_markets, 'CapacityMarkets', CapacityMarket)
         db_objects_to_dict(reps, db_data, reps.power_grid_nodes, 'PowerGridNodes', PowerGridNode)
         db_objects_to_dict(reps, db_data, reps.power_plants, 'PowerPlants', PowerPlant)
@@ -93,8 +100,13 @@ class SpineDBReaderWriter:
         db_objects_to_dict(reps, db_data, reps.governments, 'Governments', Government)
         db_objects_to_dict(reps, db_data, reps.market_stability_reserves, 'MarketStabilityReserve',
                            MarketStabilityReserve)
+        db_objects_to_dict(reps, db_data, reps.power_plants_fuel_mix, 'PowerGeneratingTechnologyFuel',
+                           SubstanceInFuelMix)
 
-        import_fuel_mix(db_data, reps)  # Stand-alone a.t.m. because it's the only relationship_parameter_values
+        # import_fuel_mix(db_data, reps)  # Stand-alone a.t.m. because it's the only relationship_parameter_values
+
+        # Because of COMPETES structure, this is hard to set normally. So separate function:
+        set_expected_lifetimes_of_power_generating_technologies(reps, db_data, 'PowerGeneratingTechnologyLifetime')
 
         # Determine current tick
         reps.current_tick = max(
