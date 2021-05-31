@@ -222,7 +222,7 @@ def add_parameter_value_to_repository_based_on_object_class_name(reps, db_line):
         add_parameter_value_to_repository(reps, db_line, reps.capacity_markets, CapacityMarket)
     elif object_class_name == 'PowerGeneratingTechnologies':
         add_parameter_value_to_repository(reps, db_line, reps.power_generating_technologies, PowerGeneratingTechnology)
-    elif object_class_name == 'HourlyDemand':
+    elif object_class_name == 'Hourly Demand':
         add_parameter_value_to_repository(reps, db_line, reps.load, HourlyLoad)
     elif object_class_name == 'PowerGridNodes':
         add_parameter_value_to_repository(reps, db_line, reps.power_grid_nodes, PowerGridNode)
