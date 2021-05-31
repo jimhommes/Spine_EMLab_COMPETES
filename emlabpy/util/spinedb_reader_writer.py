@@ -4,67 +4,10 @@ This is a separate file so that all import definitions are centralized.
 
 Jim Hommes - 25-3-2021
 """
-from util.repository import *
-from util.spinedb import SpineDB
-
-import json
 import logging
 
-
-def db_objects_to_dict(reps: Repository, db_data: dict, to_dict: dict, object_class_name: str, class_to_create):
-    """
-    Common function to read a SpineDB entry to a Python dict with {object_class_name: class_to_create}
-    class_to_create should inherit ImportObject
-    All parameters are then added to ImportObject.parameters
-
-    :param reps: The repository, so that functions with custom add_parameter_value can add extract objects.
-    :param db_data: The exported data from SpineDB
-    :param to_dict: The dictionary in which this data should be exported
-    :param object_class_name: The SpineDB class name of the object class
-    :param class_to_create: The Python class to insert into the dictionary
-    """
-    for unit in [i for i in db_data['objects'] if i[0] == object_class_name]:
-        to_dict[unit[1]] = class_to_create(unit[1])
-
-    for unit in to_dict.values():
-        for parameterValue in [i for i in db_data['object_parameter_values']
-                               if i[0] == object_class_name and i[1] == unit.name]:
-            logging.info('Parameter value found. Class: ' + object_class_name +
-                         ', Object: ' + unit.name + ', Parameter: ' + str(parameterValue[2]) +
-                         ', Value: ' + str(parameterValue[3]) + ', alt: ' + str(parameterValue[4]))
-            unit.add_parameter_value(reps, parameterValue[2], parameterValue[3], parameterValue[4])
-
-
-def db_relationships_to_arr(db_data: dict, to_arr: list, relationship_class_name: str):
-    """
-    Function used to translate SpineDB relationships to an array of tuples
-
-    :param db_data: The exported data from SpineDB
-    :param to_arr: The array in which this data should be exported
-    :param relationship_class_name: The SpineDB class name of the relationship
-    """
-    for unit in [i for i in db_data['relationships'] if i[0] == relationship_class_name]:
-        if len(unit[1]) == 2:
-            to_arr.append((unit[1][0], unit[1][1]))
-        else:
-            to_arr.append((unit[1][0], unit[1][1], unit[1][2]))
-
-
-def import_fuel_mix(db_data: dict, reps: Repository):
-    for unit in [i for i in db_data['relationship_parameter_values'] if i[0] == 'PowerGeneratingTechnologyFuel']:
-        if unit[1][0] in reps.power_plants_fuel_mix.keys():
-            reps.power_plants_fuel_mix[unit[1][0]].append(SubstanceInFuelMix(
-                reps.substances[unit[1][1]], float(unit[3])))
-        else:
-            reps.power_plants_fuel_mix[unit[1][0]] = [SubstanceInFuelMix(
-                reps.substances[unit[1][1]], float(unit[3]))]
-
-
-def set_expected_lifetimes_of_power_generating_technologies(reps: Repository, db_data: dict, title: str):
-    for unit in [i for i in db_data['object_parameter_values'] if i[0] == title]:
-        for [key, value] in unit[3].to_dict()['data']:
-            logging.info('PowerGeneratingTechnology found: ' + title + ', expected lifetime: ' + str(value))
-            reps.get_power_generating_technology_by_techtype_and_fuel(unit[1], key).expected_lifetime = float(value)
+from util.repository import *
+from util.spinedb import SpineDB
 
 
 class SpineDBReaderWriter:
@@ -84,33 +27,24 @@ class SpineDBReaderWriter:
         reps.dbrw = self
         db_data = self.db.export_data()
 
-        # Import all initialized variables
-        db_objects_to_dict(reps, db_data, reps.trends, 'GeometricTrends', GeometricTrend)
-        db_objects_to_dict(reps, db_data, reps.trends, 'TriangularTrends', TriangularTrend)
-        db_objects_to_dict(reps, db_data, reps.trends, 'StepTrends', StepTrend)
-        db_objects_to_dict(reps, db_data, reps.zones, 'Zones', Zone)
-        db_objects_to_dict(reps, db_data, reps.energy_producers, 'EnergyProducers', EnergyProducer)
-        db_objects_to_dict(reps, db_data, reps.substances, 'Substances', Substance)
-        db_objects_to_dict(reps, db_data, reps.electricity_spot_markets, 'ElectricitySpotMarkets',
-                           ElectricitySpotMarket)
-        db_objects_to_dict(reps, db_data, reps.co2_markets, 'CO2Auction', CO2Market)
-        db_objects_to_dict(reps, db_data, reps.power_generating_technologies, 'PowerGeneratingTechnologies',
-                           PowerGeneratingTechnology)
-        db_objects_to_dict(reps, db_data, reps.load, 'HourlyDemand', HourlyLoad)
-        db_objects_to_dict(reps, db_data, reps.capacity_markets, 'CapacityMarkets', CapacityMarket)
-        db_objects_to_dict(reps, db_data, reps.power_grid_nodes, 'PowerGridNodes', PowerGridNode)
-        db_objects_to_dict(reps, db_data, reps.power_plants, 'PowerPlants', PowerPlant)
-        db_objects_to_dict(reps, db_data, reps.power_plant_dispatch_plans, 'PowerPlantDispatchPlans',
-                           PowerPlantDispatchPlan)
-        db_objects_to_dict(reps, db_data, reps.market_clearing_points, 'MarketClearingPoints', MarketClearingPoint)
-        db_objects_to_dict(reps, db_data, reps.national_governments, 'NationalGovernments', NationalGovernment)
-        db_objects_to_dict(reps, db_data, reps.governments, 'Governments', Government)
-        db_objects_to_dict(reps, db_data, reps.market_stability_reserves, 'MarketStabilityReserve',
-                           MarketStabilityReserve)
-        db_objects_to_dict(reps, db_data, reps.power_plants_fuel_mix, 'PowerGeneratingTechnologyFuel',
-                           SubstanceInFuelMix)
+        # Sort the object_parameter_values and object_parameters
+        # so that the most recent (highest tick) and highest priority is first selected.
+        sorted_object_parameter_values = sorted(db_data['object_parameter_values'], reverse=True,
+                                                key=lambda item: int(item[4]))
+        sorted_parameter_names = sorted(db_data['object_parameters'],
+                                        key=lambda item: int(item[4]) if item[4] is not None else 0, reverse=True)
 
-        # import_fuel_mix(db_data, reps)  # Stand-alone a.t.m. because it's the only relationship_parameter_values
+        # Import all object parameter values in one go
+        for (object_class_name, parameter_name, _, _, _) in sorted_parameter_names:
+            for (_, object_name, _) in [i for i in db_data['objects'] if i[0] == object_class_name]:
+                try:
+                    db_line = next(i for i in sorted_object_parameter_values
+                                   if i[1] == object_name and i[2] == parameter_name)
+                    add_parameter_value_to_repository_based_on_object_class_name(reps, db_line)
+                except StopIteration:
+                    logging.warning('No value found for class: ' + object_class_name +
+                                    ', object: ' + object_name +
+                                    ', parameter: ' + parameter_name)
 
         # Because of COMPETES structure, this is hard to set normally. So separate function:
         set_expected_lifetimes_of_power_generating_technologies(reps, db_data, 'PowerGeneratingTechnologyLifetime')
@@ -123,6 +57,7 @@ class SpineDBReaderWriter:
         self.stage_init_alternative(reps.current_tick)
 
         logging.info('SpineDBRW: End Read Repository')
+        logging.info('Repository: ' + str(reps))
         return reps
 
     """
@@ -215,3 +150,93 @@ class SpineDBReaderWriter:
 
     def __repr__(self):
         return str(vars(self))
+
+
+def add_parameter_value_to_repository(reps: Repository, db_line: list, to_dict: dict, class_to_create):
+    object_name = db_line[1]
+    parameter_name = db_line[2]
+    parameter_value = db_line[3]
+    parameter_alt = db_line[4]
+    if object_name not in to_dict.keys():
+        to_dict[object_name] = class_to_create(object_name)
+
+    to_dict[object_name].add_parameter_value(reps, parameter_name, parameter_value, parameter_alt)
+
+
+def add_relationship_to_repository_array(db_data: dict, to_arr: list, relationship_class_name: str):
+    """
+    Function used to translate SpineDB relationships to an array of tuples
+
+    :param db_data: The exported data from SpineDB
+    :param to_arr: The array in which this data should be exported
+    :param relationship_class_name: The SpineDB class name of the relationship
+    """
+    for unit in [i for i in db_data['relationships'] if i[0] == relationship_class_name]:
+        if len(unit[1]) == 2:
+            to_arr.append((unit[1][0], unit[1][1]))
+        else:
+            to_arr.append((unit[1][0], unit[1][1], unit[1][2]))
+
+
+def set_expected_lifetimes_of_power_generating_technologies(reps: Repository, db_data: dict, object_class_name: str):
+    """
+    Separate function to add lifetime to PowerGeneratingTechnology objects. This is due to structure conflict with
+    COMPETES.
+
+    :param reps: Repository
+    :param db_data: Exported data from spinedb_api
+    :param object_class_name: The object_class_name for PowerGeneratingTechnology
+    """
+    for unit in [i for i in db_data['object_parameter_values'] if i[0] == object_class_name]:
+        for [key, value] in unit[3].to_dict()['data']:
+            logging.info('PowerGeneratingTechnology found: ' + object_class_name + ', expected lifetime: ' + str(value))
+            reps.get_power_generating_technology_by_techtype_and_fuel(unit[1], key).expected_lifetime = float(value)
+
+
+def add_parameter_value_to_repository_based_on_object_class_name(reps, db_line):
+    """
+    Function used to translate an object_parameter_value from SpineDB to a Repository dict entry.
+
+    :param reps: Repository
+    :param db_line: Line from exported data from spinedb_api
+    """
+
+    object_class_name = db_line[0]
+    if object_class_name == 'GeometricTrends':
+        add_parameter_value_to_repository(reps, db_line, reps.trends, GeometricTrend)
+    elif object_class_name == 'TriangularTrends':
+        add_parameter_value_to_repository(reps, db_line, reps.trends, TriangularTrend)
+    elif object_class_name == 'StepTrends':
+        add_parameter_value_to_repository(reps, db_line, reps.trends, StepTrend)
+    elif object_class_name == 'Zones':
+        add_parameter_value_to_repository(reps, db_line, reps.zones, Zone)
+    elif object_class_name == 'EnergyProducers':
+        add_parameter_value_to_repository(reps, db_line, reps.energy_producers, EnergyProducer)
+    elif object_class_name == 'Substances':
+        add_parameter_value_to_repository(reps, db_line, reps.substances, Substance)
+    elif object_class_name == 'ElectricitySpotMarkets':
+        add_parameter_value_to_repository(reps, db_line, reps.electricity_spot_markets, ElectricitySpotMarket)
+    elif object_class_name == 'CO2Auction':
+        add_parameter_value_to_repository(reps, db_line, reps.co2_markets, CO2Market)
+    elif object_class_name == 'CapacityMarkets':
+        add_parameter_value_to_repository(reps, db_line, reps.capacity_markets, CapacityMarket)
+    elif object_class_name == 'PowerGeneratingTechnologies':
+        add_parameter_value_to_repository(reps, db_line, reps.power_generating_technologies, PowerGeneratingTechnology)
+    elif object_class_name == 'HourlyDemand':
+        add_parameter_value_to_repository(reps, db_line, reps.load, HourlyLoad)
+    elif object_class_name == 'PowerGridNodes':
+        add_parameter_value_to_repository(reps, db_line, reps.power_grid_nodes, PowerGridNode)
+    elif object_class_name == 'PowerPlants':
+        add_parameter_value_to_repository(reps, db_line, reps.power_plants, PowerPlant)
+    elif object_class_name == 'PowerPlantDispatchPlans':
+        add_parameter_value_to_repository(reps, db_line, reps.power_plant_dispatch_plans, PowerPlantDispatchPlan)
+    elif object_class_name == 'MarketClearingPoints':
+        add_parameter_value_to_repository(reps, db_line, reps.market_clearing_points, MarketClearingPoint)
+    elif object_class_name == 'NationalGovernments':
+        add_parameter_value_to_repository(reps, db_line, reps.national_governments, NationalGovernment)
+    elif object_class_name == 'Governments':
+        add_parameter_value_to_repository(reps, db_line, reps.governments, Government)
+    elif object_class_name == 'MarketStabilityReserve':
+        add_parameter_value_to_repository(reps, db_line, reps.market_stability_reserves, MarketStabilityReserve)
+    elif object_class_name == 'PowerGeneratingTechnologyFuel':
+        add_parameter_value_to_repository(reps, db_line, reps.power_plants_fuel_mix, SubstanceInFuelMix)

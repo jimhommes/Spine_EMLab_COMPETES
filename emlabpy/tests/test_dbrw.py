@@ -128,7 +128,7 @@ class TestDBRW:
 
     def test_db_relationships_to_arr(self, dbrw):
         output_arr = []
-        db_relationships_to_arr(dbrw.db.export_data(), output_arr, 'TargetInvestorTargets')
+        add_relationship_to_repository_array(dbrw.db.export_data(), output_arr, 'TargetInvestorTargets')
         assert len(output_arr) == 2
         assert output_arr[0][0] == 'TargetInvestorNL'
         assert output_arr[0][1] == 'pvTarget'
