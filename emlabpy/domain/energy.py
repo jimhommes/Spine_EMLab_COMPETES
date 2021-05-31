@@ -42,7 +42,7 @@ class PowerPlant(ImportObject):
         elif parameter_name == 'FirmNL':
             self.owner = reps.energy_producers[parameter_value]
         elif parameter_name == 'MWNL':
-            self.capacity = -1 * int(parameter_value)
+            self.capacity = int(parameter_value)
         elif parameter_name == 'EfficiencyNL':
             self.efficiency = float(parameter_value)
         elif parameter_name == 'Allowances':    # TODO
