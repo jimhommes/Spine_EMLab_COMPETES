@@ -147,7 +147,7 @@ class Repository:
     # Markets
     def get_electricity_spot_market_for_plant(self, plant: PowerPlant) -> Optional[ElectricitySpotMarket]:
         try:
-            return next(i for i in self.electricity_spot_markets.values() if i.parameters['zone'] == plant.location.parameters['Zone'])
+            return next(i for i in self.electricity_spot_markets.values() if i.parameters['zone'] == plant.location.parameters['Country'])
         except StopIteration:
             return None
 
@@ -234,6 +234,17 @@ class Repository:
                         if i.techtype == techtype and i.fuel == fuel)
         except StopIteration:
             return None
+
+    # PowerGridNode
+    def get_power_grid_node_by_zone(self, zone: str):
+        try:
+            return next(i for i in self.power_grid_nodes.values() if i.parameters['Country'] == zone)
+        except StopIteration:
+            return None
+
+    # Hourly Demand
+    def get_hourly_demand_by_power_grid_node_and_year(self, node: PowerGridNode, year: int):
+        return self.load[node.name].get_hourly_demand_by_year(year).values()
 
     def __str__(self):
         return str(vars(self))

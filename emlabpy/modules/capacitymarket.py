@@ -15,6 +15,7 @@ class CapacityMarketSubmitBids(MarketModule):
 
     def __init__(self, reps: Repository):
         super().__init__('EM-Lab Capacity Market: Submit Bids', reps)
+        reps.dbrw.stage_init_power_plant_dispatch_plan_structure()
 
     def act(self):
         # For every EnergyProducer
@@ -64,11 +65,11 @@ class CapacityMarketClearing(MarketModule):
         super().__init__('EM-Lab Capacity Market: Clear Market', reps)
 
     def act(self):
-        # Retrieve Peak Load from dataset
-        # TODO: This should actually be retrieved from COMPETES
-        peak_load = max(json.loads(self.reps.load['NL'].parameters['ldc'].to_database())['data'].values())
-
         for market in self.reps.capacity_markets.values():
+            node = self.reps.get_power_grid_node_by_zone(market.parameters['zone'])
+            peak_load = max(self.reps.get_hourly_demand_by_power_grid_node_and_year(node, 2020))
+            # TODO: Year should be according to clocktick
+
             # Retrieve vars
             sdc = market.get_sloping_demand_curve(peak_load)
             sorted_ppdp = self.reps.get_sorted_power_plant_dispatch_plans_by_market_and_time(market,
