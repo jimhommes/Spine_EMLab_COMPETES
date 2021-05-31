@@ -26,3 +26,9 @@ class DefaultModule:
     def act_and_commit(self, current_tick: int):
         self.act()
         self.reps.dbrw.commit('Commit: ' + self.name + ' at ' + str(datetime.now()))
+
+    def __str__(self):
+        return str(vars(self))
+
+    def __repr__(self):
+        return str(vars(self))

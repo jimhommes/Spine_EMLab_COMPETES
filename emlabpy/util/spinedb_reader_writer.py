@@ -209,3 +209,9 @@ class SpineDBReaderWriter:
         param_name = 'Reserve'
         self.stage_object_parameter('MarketStabilityReserve', param_name)
         self.stage_object_parameter_values('MarketStabilityReserve', msr.name, [(param_name, reserve)], time)
+
+    def __str__(self):
+        return str(vars(self))
+
+    def __repr__(self):
+        return str(vars(self))

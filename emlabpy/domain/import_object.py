@@ -13,3 +13,9 @@ class ImportObject:
 
     def add_parameter_value(self, reps, parameter_name: str, parameter_value: str, alternative: str):
         self.parameters[parameter_name] = parameter_value
+
+    def __str__(self):
+        return str(vars(self))
+
+    def __repr__(self):
+        return str(vars(self))
