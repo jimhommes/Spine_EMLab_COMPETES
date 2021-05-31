@@ -15,6 +15,7 @@ class CO2MarketDetermineCO2Price(MarketModule):
 
     def __init__(self, reps: Repository):
         super().__init__('CO2 Market: Determine CO2 Price', reps)
+        reps.dbrw.stage_init_market_clearing_point_structure()
 
     def act(self):
         # For every CO2Market

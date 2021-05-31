@@ -154,13 +154,13 @@ class Repository:
     def get_capacity_market_for_plant(self, plant: PowerPlant) -> Optional[CapacityMarket]:
         try:
             return next(i for i in self.capacity_markets.values() if
-                        i.parameters['zone'] == plant.location.parameters['Zone'])
+                        i.parameters['zone'] == plant.location.parameters['Country'])
         except StopIteration:
             return None
 
     def get_allowances_in_circulation(self, zone: Zone, time: int) -> int:
         return sum([i.banked_allowances[time] for i in self.power_plants.values()
-                    if i.location.parameters['Zone'] == zone.name])
+                    if i.location.parameters['Country'] == zone.name])
 
     def get_co2_market_for_zone(self, zone: Zone) -> Optional[CO2Market]:
         try:

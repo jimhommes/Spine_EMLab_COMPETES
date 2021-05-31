@@ -6,7 +6,9 @@ Jim Hommes - 25-3-2021
 """
 from util.repository import *
 from util.spinedb import SpineDB
+
 import json
+import logging
 
 
 def db_objects_to_dict(reps: Repository, db_data: dict, to_dict: dict, object_class_name: str, class_to_create):
@@ -27,6 +29,9 @@ def db_objects_to_dict(reps: Repository, db_data: dict, to_dict: dict, object_cl
     for unit in to_dict.values():
         for parameterValue in [i for i in db_data['object_parameter_values']
                                if i[0] == object_class_name and i[1] == unit.name]:
+            logging.info('Parameter value found. Class: ' + object_class_name +
+                         ', Object: ' + unit.name + ', Parameter: ' + str(parameterValue[2]) +
+                         ', Value: ' + str(parameterValue[3]) + ', alt: ' + str(parameterValue[4]))
             unit.add_parameter_value(reps, parameterValue[2], parameterValue[3], parameterValue[4])
 
 
@@ -58,6 +63,7 @@ def import_fuel_mix(db_data: dict, reps: Repository):
 def set_expected_lifetimes_of_power_generating_technologies(reps: Repository, db_data: dict, title: str):
     for unit in [i for i in db_data['object_parameter_values'] if i[0] == title]:
         for [key, value] in unit[3].to_dict()['data']:
+            logging.info('PowerGeneratingTechnology found: ' + title + ', expected lifetime: ' + str(value))
             reps.get_power_generating_technology_by_techtype_and_fuel(unit[1], key).expected_lifetime = float(value)
 
 
@@ -73,6 +79,7 @@ class SpineDBReaderWriter:
         self.market_clearing_point_object_classname = 'MarketClearingPoints'
 
     def read_db_and_create_repository(self) -> Repository:
+        logging.info('SpineDBRW: Start Read Repository')
         reps = Repository()
         reps.dbrw = self
         db_data = self.db.export_data()
@@ -112,8 +119,10 @@ class SpineDBReaderWriter:
         reps.current_tick = max(
             [int(i[3]) for i in db_data['object_parameter_values'] if i[0] == i[1] == 'SystemClockTicks' and
              i[2] == 'ticks'])
+        logging.info('Current tick: ' + str(reps.current_tick))
         self.stage_init_alternative(reps.current_tick)
 
+        logging.info('SpineDBRW: End Read Repository')
         return reps
 
     """

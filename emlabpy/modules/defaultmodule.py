@@ -7,6 +7,8 @@ At the end of every module, there is a commit.
 Jim Hommes - 25-3-2021
 """
 
+import logging
+
 from datetime import datetime
 from util.repository import Repository
 
@@ -16,6 +18,7 @@ class DefaultModule:
     def __init__(self, name: str, reps: Repository):
         self.name: str = name
         self.reps: Repository = reps
+        logging.info('Initializing Module: ' + self.name)
 
     def act(self):
         pass
