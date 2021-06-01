@@ -1,3 +1,9 @@
+"""
+This script handles all communication passed from the EM-Lab SpineDB to the COMPETES SpineDB.
+As of this moment this only entails the CO2 Price.
+
+Jim Hommes - 1-6-2021
+"""
 import sys
 
 from spinedb import SpineDB
