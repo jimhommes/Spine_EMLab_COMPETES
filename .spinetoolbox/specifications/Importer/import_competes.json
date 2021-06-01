@@ -619,7 +619,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "Fuelpriceyears"
                             },
                             {
                                 "map_type": "Object",
@@ -631,7 +632,8 @@
                             },
                             {
                                 "map_type": "ParameterDefinition",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "Fuelpriceyears"
                             },
                             {
                                 "map_type": "Alternative",
@@ -2996,7 +2998,6 @@
             "DR H2",
             "DR Heat",
             "DR Shifting",
-            "Fuelpriceyears",
             "H2 System",
             "H2 Technologies",
             "Historic Nuclear Availability",
