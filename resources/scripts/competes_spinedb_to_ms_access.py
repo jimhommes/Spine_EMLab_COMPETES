@@ -10,7 +10,7 @@ import sys
 from spinedb import SpineDB
 
 
-def export_to_mdb(path: str, filename: str, type1: dict, type2: dict):
+def export_to_mdb(path: str, filename: str, type1: dict, type2: dict, relationships: dict):
     print('Initializing connection to ' + filename)
     try:
         con_string = r'DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=' + path + filename + ';'
@@ -29,6 +29,12 @@ def export_to_mdb(path: str, filename: str, type1: dict, type2: dict):
             print('Exporting table ' + table)
             export_type2(cursor, table, obj_param_name, index_param_name)
         print('Finished Type 2 Mappings')
+
+        print('Staging Relationships...')
+        for (table, (object1_param_name, object2_param_name, index_param_name)) in relationships.items():
+            print('Exporting Relationships table ' + table)
+            export_relationships(cursor, table, object1_param_name, object2_param_name, index_param_name)
+        print('Finished Relationships')
 
         print('Committing...')
         cursor.commit()
@@ -69,6 +75,15 @@ def export_type2(cursor, table_name, id_param, index_param):
             # print(sql_statement.replace('?', '%s') % values)
             cursor.execute(sql_statement, values)
 
+
+def export_relationships(cursor, table, object1_param_name, object2_param_name, index_param_name):
+    for (_, [object1, object2], _, value_map, _) in [i for i in db_competes_data['relationship_parameter_values'] if i[0] == table]:
+        for value_map_row in value_map.to_dict()['data']:
+            index = value_map_row[0]
+            param_values = [('[' + str(i[0]) + ']', i[1]) for i in value_map_row[1]['data']]
+            sql_statement = 'INSERT INTO [' + table + '] ([' + object1_param_name + '],[' + object2_param_name + '],[' + index_param_name + '],' + ','.join([i[0] for i in param_values]) + ') VALUES (?,?,?,' + ','.join(['?' for i in param_values]) + ');'
+            values = (object1, object2, index,) + tuple(i[1] for i in param_values)
+            cursor.execute(sql_statement, values)
 
 
 print('===== Starting COMPETES SpineDB to MS Access script =====')
@@ -123,7 +138,9 @@ export_to_mdb(path_to_data, 'COMPETES EU 2050-KIP.mdb',
                'Technologies': ('FUELTYPENEW', 'TechnOrder'),
                'Unit Commitment Database': ('FUELTYPE', 'FUEL'),
                'VRE Capacities': ('Technology', 'Bus'),
-               'VRE LoadFactors': ('Technology', 'VRE Year')})
+               'VRE LoadFactors': ('Technology', 'VRE Year')},
+              {'HVDC Investments': ('Bus1', 'Bus2', 'InvYear'),
+               'Trading Capacities': ('CountryA', 'CountryB', 'Technology')})
 
 type1pp = {'Installed Capacity Abroad': '',
            'Installed Capacity-RES Abroad': '',
@@ -132,6 +149,8 @@ type1pp = {'Installed Capacity Abroad': '',
 
 type2pp = {'H2 Storage': ('', ''),
            'Storage': ('', '')}
+
+relationshipspp = {'HVDC Overlay': ('')}
 
 print('===== End of COMPETES SpineDB to MS Access script =====')
 
