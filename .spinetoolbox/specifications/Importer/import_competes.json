@@ -348,7 +348,7 @@
             ],
             "Demand Response": [
                 {
-                    "Mapping 1": {
+                    "Mapping 2": {
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
@@ -392,7 +392,7 @@
                             },
                             {
                                 "map_type": "ExpandedValue",
-                                "position": -1
+                                "position": "hidden"
                             }
                         ]
                     }
@@ -1457,11 +1457,11 @@
                             },
                             {
                                 "map_type": "ParameterValueIndex",
-                                "position": -1
+                                "position": 0
                             },
                             {
                                 "map_type": "ParameterValueIndex",
-                                "position": 0
+                                "position": -1
                             },
                             {
                                 "map_type": "ExpandedValue",
@@ -2294,9 +2294,9 @@
                 "2": "float"
             },
             "Days": {
-                "0": "float",
-                "1": "float",
-                "2": "float",
+                "0": "string",
+                "1": "string",
+                "2": "string",
                 "3": "float",
                 "4": "string",
                 "5": "float",
@@ -2730,7 +2730,7 @@
             },
             "SeasonTime": {
                 "0": "string",
-                "1": "float",
+                "1": "string",
                 "2": "float",
                 "3": "float",
                 "4": "string",

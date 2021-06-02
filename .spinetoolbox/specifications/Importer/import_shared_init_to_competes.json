@@ -438,7 +438,13 @@
                             {
                                 "map_type": "ObjectClass",
                                 "position": "table_name",
-                                "value": "Technologies"
+                                "value": "Technologies",
+                                "skip_columns": [
+                                    9,
+                                    10,
+                                    11,
+                                    12
+                                ]
                             },
                             {
                                 "map_type": "Object",
@@ -776,6 +782,7 @@
             }
         },
         "selected_tables": [
+            "Select All",
             "BusCountry",
             "Country",
             "Economic Lifetime",
