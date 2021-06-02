@@ -98,7 +98,8 @@
                             },
                             {
                                 "map_type": "ParameterDefinition",
-                                "position": -1
+                                "position": "table_name",
+                                "value": "Economic Lifetime"
                             },
                             {
                                 "map_type": "Alternative",
@@ -117,6 +118,10 @@
                             {
                                 "map_type": "ParameterValueIndex",
                                 "position": 0
+                            },
+                            {
+                                "map_type": "ParameterValueIndex",
+                                "position": -1
                             },
                             {
                                 "map_type": "ExpandedValue",
@@ -189,7 +194,8 @@
                             },
                             {
                                 "map_type": "ParameterDefinition",
-                                "position": -1
+                                "position": "table_name",
+                                "value": "FuelMap"
                             },
                             {
                                 "map_type": "Alternative",
@@ -207,7 +213,11 @@
                             },
                             {
                                 "map_type": "ParameterValueIndex",
-                                "position": 2
+                                "position": 0
+                            },
+                            {
+                                "map_type": "ParameterValueIndex",
+                                "position": -1
                             },
                             {
                                 "map_type": "ExpandedValue",
@@ -304,7 +314,7 @@
                             },
                             {
                                 "map_type": "Object",
-                                "position": -1
+                                "position": 0
                             },
                             {
                                 "map_type": "ObjectMetadata",
@@ -331,23 +341,11 @@
                             },
                             {
                                 "map_type": "ParameterValueIndex",
-                                "position": 0
-                            },
-                            {
-                                "map_type": "ParameterValueIndex",
-                                "position": 1
-                            },
-                            {
-                                "map_type": "ParameterValueIndex",
-                                "position": 2
-                            },
-                            {
-                                "map_type": "ParameterValueIndex",
-                                "position": 3
-                            },
-                            {
-                                "map_type": "ParameterValueIndex",
                                 "position": 4
+                            },
+                            {
+                                "map_type": "ParameterValueIndex",
+                                "position": -1
                             },
                             {
                                 "map_type": "ExpandedValue",
@@ -628,8 +626,8 @@
             "Hourly Demand": {
                 "0": "string",
                 "1": "string",
-                "2": "string",
-                "3": "string",
+                "2": "float",
+                "3": "float",
                 "4": "string",
                 "5": "float",
                 "6": "float",
@@ -778,7 +776,19 @@
             }
         },
         "selected_tables": [
-            "FuelGen"
+            "BusCountry",
+            "Country",
+            "Economic Lifetime",
+            "FuelGen",
+            "FuelMap",
+            "FuelpriceTrends",
+            "Fueltype",
+            "Hourly Demand",
+            "NL Installed Capacity (+heat)",
+            "NL Installed Capacity-RES (+he",
+            "Technologies",
+            "Techtype",
+            "VRE Technologies"
         ],
         "source_type": "ExcelConnector"
     },

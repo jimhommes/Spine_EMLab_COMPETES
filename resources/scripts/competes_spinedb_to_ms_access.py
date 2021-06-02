@@ -10,15 +10,6 @@ import sys
 from spinedb import SpineDB
 
 
-def escape_parameter(parameter):
-    to_escape = ['ORDER']
-
-    if parameter.upper() in to_escape:
-        return '[' + parameter + ']'
-    else:
-        return parameter
-
-
 def export_to_mdb(path: str, filename: str, type1: dict):
     print('Initializing connection to ' + filename)
     try:
