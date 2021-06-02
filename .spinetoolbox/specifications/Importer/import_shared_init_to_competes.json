@@ -128,12 +128,18 @@
             ],
             "FuelGen": [
                 {
-                    "Mapping 1": {
+                    "Mapping 2": {
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
                                 "position": "table_name",
-                                "value": "FuelGen"
+                                "value": "FuelGen",
+                                "skip_columns": [
+                                    2,
+                                    3,
+                                    4,
+                                    5
+                                ]
                             },
                             {
                                 "map_type": "Object",
@@ -429,15 +435,12 @@
             ],
             "Technologies": [
                 {
-                    "Mapping 2": {
+                    "Mapping 1": {
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
                                 "position": "table_name",
-                                "value": "Technologies",
-                                "skip_columns": [
-                                    0
-                                ]
+                                "value": "Technologies"
                             },
                             {
                                 "map_type": "Object",
@@ -449,8 +452,8 @@
                             },
                             {
                                 "map_type": "ParameterDefinition",
-                                "position": "hidden",
-                                "value": "TechMap"
+                                "position": "table_name",
+                                "value": "Technologies"
                             },
                             {
                                 "map_type": "Alternative",
@@ -459,7 +462,7 @@
                             },
                             {
                                 "map_type": "ParameterValueMetadata",
-                                "position": "header"
+                                "position": "hidden"
                             },
                             {
                                 "map_type": "ParameterValueType",
@@ -484,7 +487,7 @@
             ],
             "Techtype": [
                 {
-                    "Mapping 1": {
+                    "Mapping 2": {
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
@@ -514,7 +517,7 @@
                             },
                             {
                                 "map_type": "ParameterValue",
-                                "position": -1
+                                "position": "hidden"
                             }
                         ]
                     }
@@ -598,7 +601,11 @@
             },
             "FuelGen": {
                 "0": "string",
-                "1": "float"
+                "1": "float",
+                "2": "float",
+                "3": "float",
+                "4": "float",
+                "5": "string"
             },
             "FuelMap": {
                 "0": "string",
@@ -709,7 +716,11 @@
                 "5": "float",
                 "6": "float",
                 "7": "float",
-                "8": "float"
+                "8": "float",
+                "9": "float",
+                "10": "float",
+                "11": "string",
+                "12": "float"
             },
             "Techtype": {
                 "0": "string",
@@ -767,19 +778,7 @@
             }
         },
         "selected_tables": [
-            "BusCountry",
-            "Country",
-            "Economic Lifetime",
-            "FuelGen",
-            "FuelMap",
-            "FuelpriceTrends",
-            "Fueltype",
-            "Hourly Demand",
-            "NL Installed Capacity (+heat)",
-            "NL Installed Capacity-RES (+he",
-            "Technologies",
-            "Techtype",
-            "VRE Technologies"
+            "FuelGen"
         ],
         "source_type": "ExcelConnector"
     },

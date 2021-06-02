@@ -9,11 +9,13 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "ACnet"
                             },
                             {
                                 "map_type": "Object",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "ACnet"
                             },
                             {
                                 "map_type": "ObjectMetadata",
@@ -124,7 +126,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "Annual Demand"
                             },
                             {
                                 "map_type": "Object",
@@ -170,11 +173,13 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "Biomass Cofiring"
                             },
                             {
                                 "map_type": "Object",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "Biomass Cofiring"
                             },
                             {
                                 "map_type": "ObjectMetadata",
@@ -207,7 +212,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "Block"
                             },
                             {
                                 "map_type": "Object",
@@ -343,7 +349,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "Demand Response"
                             },
                             {
                                 "map_type": "Object",
@@ -355,7 +362,8 @@
                             },
                             {
                                 "map_type": "ParameterDefinition",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "Demand Response"
                             },
                             {
                                 "map_type": "Alternative",
@@ -393,7 +401,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "DR EV"
                             },
                             {
                                 "map_type": "Object",
@@ -405,7 +414,8 @@
                             },
                             {
                                 "map_type": "ParameterDefinition",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "DR EV"
                             },
                             {
                                 "map_type": "Alternative",
@@ -671,7 +681,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "H2 System"
                             },
                             {
                                 "map_type": "Object",
@@ -683,7 +694,8 @@
                             },
                             {
                                 "map_type": "ParameterDefinition",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "H2 System"
                             },
                             {
                                 "map_type": "Alternative",
@@ -721,7 +733,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "H2 Technologies"
                             },
                             {
                                 "map_type": "Object",
@@ -733,7 +746,8 @@
                             },
                             {
                                 "map_type": "ParameterDefinition",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "H2 Technologies"
                             },
                             {
                                 "map_type": "Alternative",
@@ -771,11 +785,13 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "Heat Demand DH NL"
                             },
                             {
                                 "map_type": "Object",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "Heat Demand DH NL"
                             },
                             {
                                 "map_type": "ObjectMetadata",
@@ -783,7 +799,8 @@
                             },
                             {
                                 "map_type": "ParameterDefinition",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "Heat Demand DH NL"
                             },
                             {
                                 "map_type": "Alternative",
@@ -874,11 +891,13 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "Historic Nuclear Availability"
                             },
                             {
                                 "map_type": "Object",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "Historic Nuclear Availability"
                             },
                             {
                                 "map_type": "ObjectMetadata",
@@ -886,7 +905,8 @@
                             },
                             {
                                 "map_type": "ParameterDefinition",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "Historic Nuclear Availability"
                             },
                             {
                                 "map_type": "Alternative",
@@ -1158,7 +1178,8 @@
                         "mapping": [
                             {
                                 "map_type": "RelationshipClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "HVDC Investments"
                             },
                             {
                                 "map_type": "RelationshipClassObjectClass",
@@ -1189,7 +1210,8 @@
                             },
                             {
                                 "map_type": "ParameterDefinition",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "HVDC Investments"
                             },
                             {
                                 "map_type": "Alternative",
@@ -1227,7 +1249,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "Incidence matrix"
                             },
                             {
                                 "map_type": "Object",
@@ -1264,7 +1287,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "Input_Years"
                             },
                             {
                                 "map_type": "Object",
@@ -1340,7 +1364,7 @@
                             {
                                 "map_type": "ObjectClass",
                                 "position": "hidden",
-                                "value": "constant"
+                                "value": "New Technologies"
                             },
                             {
                                 "map_type": "Object",
@@ -2449,17 +2473,17 @@
                 "0": "string",
                 "1": "string",
                 "2": "float",
-                "3": "float",
-                "4": "float",
-                "5": "float",
-                "6": "float",
-                "7": "float",
-                "8": "float",
-                "9": "float",
-                "10": "float",
-                "11": "float",
-                "12": "float",
-                "13": "float"
+                "3": "string",
+                "4": "string",
+                "5": "string",
+                "6": "string",
+                "7": "string",
+                "8": "string",
+                "9": "string",
+                "10": "string",
+                "11": "string",
+                "12": "string",
+                "13": "string"
             },
             "Hourly DR Profiles": {
                 "0": "float",
@@ -2547,7 +2571,30 @@
             "Incidence matrix": {
                 "0": "string",
                 "1": "string",
-                "2": "float"
+                "2": "float",
+                "3": "string",
+                "4": "string",
+                "5": "string",
+                "6": "string",
+                "7": "string",
+                "8": "string",
+                "9": "string",
+                "10": "string",
+                "11": "string",
+                "12": "string",
+                "13": "string",
+                "14": "string",
+                "15": "string",
+                "16": "string",
+                "17": "string",
+                "18": "string",
+                "19": "string",
+                "20": "string",
+                "21": "string",
+                "22": "string",
+                "23": "string",
+                "24": "string",
+                "25": "string"
             },
             "Input_Years": {
                 "0": "float",
