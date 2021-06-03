@@ -66,10 +66,11 @@ def export_to_mdb(path: str, filename: str,
         print("Connected To " + filename)
 
         # Unique structures / Separate function required
-        print('Staging Unique Mappings...')
-        export_co2_prices(cursor)
-        export_fuelpriceyears(cursor)
-        print('Finished Unique Mappings')
+        if filename == 'COMPETES EU 2050-KIP.mdb':
+            print('Staging Unique Mappings...')
+            export_co2_prices(cursor)
+            export_fuelpriceyears(cursor)
+            print('Finished Unique Mappings')
 
         print('Staging Type 1 Mappings...')
         for (table_name, id_parameter_name) in tables_objects_type1.items():
