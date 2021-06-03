@@ -229,7 +229,8 @@
                             },
                             {
                                 "map_type": "Alternative",
-                                "position": "hidden"
+                                "position": "hidden",
+                                "value": "0"
                             },
                             {
                                 "map_type": "ParameterValueMetadata",
@@ -1405,7 +1406,8 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "Nset"
                             },
                             {
                                 "map_type": "Object",
@@ -3063,6 +3065,7 @@
         },
         "selected_tables": [
             "Biomass Potential",
+            "Block",
             "Coal Tax NL",
             "Days",
             "Demand Response",
@@ -3082,6 +3085,7 @@
             "Input_Years",
             "Months",
             "New Technologies",
+            "Nset",
             "Overnight Cost (OC)",
             "Season",
             "SeasonDayHourCombo",

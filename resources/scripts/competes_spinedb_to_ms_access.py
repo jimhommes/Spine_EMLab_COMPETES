@@ -70,6 +70,7 @@ def export_to_mdb(path: str, filename: str,
             print('Staging Unique Mappings...')
             export_co2_prices(cursor)
             export_fuelpriceyears(cursor)
+            export_nset(cursor)
             print('Finished Unique Mappings')
 
         print('Staging Type 1 Mappings...')
@@ -249,6 +250,18 @@ def export_fuelpriceyears(cursor):
                 print("Exporting for year " + str(year) + ' and country ' + country)
                 sql_query = 'INSERT INTO [' + table_name_competes + '] ([Fuelname], [Country], [Year], ' + ', '.join(months) + ') VALUES (' + ','.join(['?']*15) + ');'
                 cursor.execute(sql_query, (fuelname, country, year,) + (prices[year - 2020],) * 12)
+
+
+def export_nset(cursor):
+    """
+    Separate function because of single object structure
+
+    :param cursor: PYODBC cursor
+    :return:
+    """
+    for (_, object_name, _) in [i for i in db_competes_data['objects'] if i[0] == 'Nset']:
+        sql_query = 'INSERT INTO [Nset] ([n2]) VALUES (?);'
+        cursor.execute(sql_query, (object_name,))
 
 
 print('===== Starting COMPETES SpineDB to MS Access script =====')
