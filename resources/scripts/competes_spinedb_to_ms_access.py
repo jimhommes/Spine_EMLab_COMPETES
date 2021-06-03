@@ -7,7 +7,33 @@ Jim Hommes - 1-6-2021
 import pyodbc
 import shutil
 import sys
+import numpy as np
 from spinedb import SpineDB
+
+
+class TriangularTrend:
+    """
+    COPIED FROM EMLAB
+
+    The TriangularTrend grows according to a Triangular distribution.
+    Because of the random nature of this trend, values are saved in self.values so that once generated, the value \
+    does not change.
+    """
+    def __init__(self, top, maxx, minn):
+        self.top = top
+        self.max = maxx
+        self.min = minn
+
+    def get_values(self, start, start_time, end_time):
+        res_values = [start]
+        for i in range(end_time-start_time):
+            last_value = res_values[-1]
+            random_number = np.random.triangular(-1, 0, 1)
+            if random_number < 0:
+                res_values.append(last_value * (self.top + (random_number * (self.top - self.min))))
+            else:
+                res_values.append(last_value * (self.top + (random_number * (self.max - self.top))))
+        return res_values
 
 
 def export_to_mdb(path: str, filename: str,
@@ -38,6 +64,12 @@ def export_to_mdb(path: str, filename: str,
         conn = pyodbc.connect(con_string)
         cursor = conn.cursor()
         print("Connected To " + filename)
+
+        # Unique structures / Separate function required
+        print('Staging Unique Mappings...')
+        export_co2_prices(cursor)
+        export_fuelpriceyears(cursor)
+        print('Finished Unique Mappings')
 
         print('Staging Type 1 Mappings...')
         for (table_name, id_parameter_name) in tables_objects_type1.items():
@@ -120,11 +152,11 @@ def export_type2(cursor, table_name, id_parameter_name, index_parameter_name):
         for value_map_row in value_map.to_dict()['data']:
             index = value_map_row[0]
             param_values = [('[' + str(i[0]) + ']', i[1]) for i in value_map_row[1]['data']]
-            sql_statement = 'INSERT INTO [' + table_name + '] ([' + id_parameter_name + '],[' + \
+            sql_query = 'INSERT INTO [' + table_name + '] ([' + id_parameter_name + '],[' + \
                             index_parameter_name + '],' + ','.join([i[0] for i in param_values]) + \
                             ') VALUES (?,?,' + ','.join(list('?' * len(param_values))) + ');'
             values = (id_parameter_value, index,) + tuple(i[1] for i in param_values)
-            cursor.execute(sql_statement, values)
+            cursor.execute(sql_query, values)
 
 
 def export_relationships_type1(cursor, table, object1_param_name, object2_param_name):
@@ -143,11 +175,11 @@ def export_relationships_type1(cursor, table, object1_param_name, object2_param_
                         for (itable, iobject_list, param_name, param_value, _)
                         in db_competes_data['relationship_parameter_values']
                         if itable == table and iobject_list == object_parameter_name_value_list]
-        sql_statement = 'INSERT INTO [' + table + '] ([' + object1_param_name + '],[' + \
+        sql_query = 'INSERT INTO [' + table + '] ([' + object1_param_name + '],[' + \
                         object2_param_name + '],' + ','.join([i[0] for i in param_values]) + \
                         ') VALUES (?,?,' + ','.join(list('?' * len(param_values))) + ');'
         values = tuple(object_parameter_name_value_list) + tuple(i[1] for i in param_values)
-        cursor.execute(sql_statement, values)
+        cursor.execute(sql_query, values)
 
 
 def export_relationships_type2(cursor, table, object1_param_name, object2_param_name, index_param_name):
@@ -168,12 +200,54 @@ def export_relationships_type2(cursor, table, object1_param_name, object2_param_
         for value_map_row in value_map.to_dict()['data']:
             index = value_map_row[0]
             param_values = [('[' + str(i[0]) + ']', i[1]) for i in value_map_row[1]['data']]
-            sql_statement = 'INSERT INTO [' + table + '] ([' + object1_param_name + '],[' + \
+            sql_query = 'INSERT INTO [' + table + '] ([' + object1_param_name + '],[' + \
                             object2_param_name + '],[' + index_param_name + '],' + \
                             ','.join([i[0] for i in param_values]) + ') VALUES (?,?,?,' + \
                             ','.join(list('?' * len(param_values))) + ');'
             values = (object1, object2, index,) + tuple(i[1] for i in param_values)
-            cursor.execute(sql_statement, values)
+            cursor.execute(sql_query, values)
+
+
+def export_co2_prices(cursor):
+    """
+    Separate function because of structure in SpineDB.
+
+    :param cursor: PYODBC Cursor
+    :return:
+    """
+    print('Exporting CO2 Prices...')
+    table_name = 'EU_ETS_CO2price'
+    for (object_class_name, year, month, price, _) in [i for i in db_competes_data['object_parameter_values']
+                                                       if i[0] == table_name]:
+        sql_query = 'INSERT INTO [' + table_name + '] ([Year input], [Month input], [CO2price]) VALUES (?,?,?)'
+        cursor.execute(sql_query, (year, month, price))
+
+
+def export_fuelpriceyears(cursor):
+    """
+    Separate function because of the required execution of the "trends" to print numbers into MS Access.
+
+    :param cursor: PYODBC
+    :return:
+    """
+    print('Exporting Fuelpriceyears...')
+    table_name_spine = 'FuelpriceTrends'
+    table_name_competes = 'Fuelpriceyears'
+    years = [2020, 2025, 2030, 2050]
+    months = ['[' + i[1] + ']' for i in db_competes_data['objects'] if i[0] == 'Months']
+    countries = [i[1] for i in db_competes_data['objects'] if i[0] == 'Country']
+    for (_, trend_name, _) in [i for i in db_competes_data['objects'] if i[0] == table_name_spine]:
+        param_values = {k: v for (table_name, object_name, k, v, _) in db_competes_data['object_parameter_values']
+                        if table_name == table_name_spine and object_name == trend_name}
+        fuelname = param_values['Fuel']
+        trend_obj = TriangularTrend(param_values['Top'], param_values['Max'], param_values['Min'])
+
+        for year in years:
+            prices = trend_obj.get_values(param_values['Start'], years[0], years[-1])
+            for country in countries:
+                print("Exporting for year " + str(year) + ' and country ' + country)
+                sql_query = 'INSERT INTO [' + table_name_competes + '] ([Fuelname], [Country], [Year], ' + ', '.join(months) + ') VALUES (' + ','.join(['?']*15) + ');'
+                cursor.execute(sql_query, (fuelname, country, year,) + (prices[year - 2020],) * 12)
 
 
 print('===== Starting COMPETES SpineDB to MS Access script =====')
@@ -244,3 +318,4 @@ export_to_mdb(path_to_data, 'COMPETES EU PowerPlants 2050-KIP',
               {'HVDC Overlay': ('Country 1', 'Country 2')}, {})
 
 print('===== End of COMPETES SpineDB to MS Access script =====')
+
