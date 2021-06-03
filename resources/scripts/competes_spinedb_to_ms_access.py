@@ -10,7 +10,7 @@ import sys
 from spinedb import SpineDB
 
 
-def export_to_mdb(path: str, filename: str, type1: dict, type2: dict, relationships: dict):
+def export_to_mdb(path: str, filename: str, type1: dict, type2: dict, relationships_type1: dict, relationships_type2: dict):
     print('Initializing connection to ' + filename)
     try:
         con_string = r'DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=' + path + filename + ';'
@@ -30,11 +30,18 @@ def export_to_mdb(path: str, filename: str, type1: dict, type2: dict, relationsh
             export_type2(cursor, table, obj_param_name, index_param_name)
         print('Finished Type 2 Mappings')
 
-        print('Staging Relationships...')
-        for (table, (object1_param_name, object2_param_name, index_param_name)) in relationships.items():
+        print('Staging Relationships Type 1...')
+        for (table, (object1_param_name, object2_param_name)) in relationships_type1.items():
             print('Exporting Relationships table ' + table)
-            export_relationships(cursor, table, object1_param_name, object2_param_name, index_param_name)
-        print('Finished Relationships')
+            export_relationships_type1(cursor, table, object1_param_name, object2_param_name)
+
+        print('Finished Relationships Type 1')
+
+        print('Staging Relationships Type 2...')
+        for (table, (object1_param_name, object2_param_name, index_param_name)) in relationships_type2.items():
+            print('Exporting Relationships table ' + table)
+            export_relationships_type2(cursor, table, object1_param_name, object2_param_name, index_param_name)
+        print('Finished Relationships Type 2')
 
         print('Committing...')
         cursor.commit()
@@ -55,7 +62,11 @@ def export_type1(cursor, table_name, id_param):
             param_names.append(param_name)
             param_values.append(str(param_value))
 
-        sql_statement = 'INSERT INTO [' + table_name + '] (['+id_param+'], ' + ', '.join(['[' + str(i) + ']' for i in param_names]) + \
+        if table_name == 'NL Installed Capacity-RES (+he':
+            table_res = 'NL Installed Capacity-RES (+heat)'
+        else:
+            table_res = table_name
+        sql_statement = 'INSERT INTO [' + table_res + '] (['+id_param+'], ' + ', '.join(['[' + str(i) + ']' for i in param_names]) + \
                         ") VALUES (?, " + ', '.join(['?' for i in param_values]) + ');'
         values = (unique_param,) + tuple(param_values)
         # print(values)
@@ -71,12 +82,21 @@ def export_type2(cursor, table_name, id_param, index_param):
             param_values = [('[' + str(i[0]) + ']', i[1]) for i in value_map_row[1]['data']]
             sql_statement = 'INSERT INTO [' + table_name + '] ([' + id_param + '],[' + index_param + '],' + ','.join([i[0] for i in param_values]) + ') VALUES (?,?,' + ','.join(['?' for i in param_values]) + ');'
             values = (unique_param, index,) + tuple(i[1] for i in param_values)
-            # print(values)
-            # print(sql_statement.replace('?', '%s') % values)
+            # if table_name == 'Storage':
+            #     print(values)
+            #     print(sql_statement)
             cursor.execute(sql_statement, values)
 
 
-def export_relationships(cursor, table, object1_param_name, object2_param_name, index_param_name):
+def export_relationships_type1(cursor, table, object1_param_name, object2_param_name):
+    for (_, object_list) in [i for i in db_competes_data['relationships'] if i[0] == table]:
+        param_values = [('[' + str(param_name) + ']', param_value) for (itable, iobject_list, param_name, param_value, _) in db_competes_data['relationship_parameter_values'] if itable == table and iobject_list == object_list]
+        sql_statement = 'INSERT INTO [' + table + '] ([' + object1_param_name + '],[' + object2_param_name + '],' + ','.join([i[0] for i in param_values]) + ') VALUES (?,?,' + ','.join(['?' for i in param_values]) + ');'
+        values = tuple(object_list) + tuple(i[1] for i in param_values)
+        cursor.execute(sql_statement, values)
+
+
+def export_relationships_type2(cursor, table, object1_param_name, object2_param_name, index_param_name):
     for (_, [object1, object2], _, value_map, _) in [i for i in db_competes_data['relationship_parameter_values'] if i[0] == table]:
         for value_map_row in value_map.to_dict()['data']:
             index = value_map_row[0]
@@ -139,18 +159,21 @@ export_to_mdb(path_to_data, 'COMPETES EU 2050-KIP.mdb',
                'Unit Commitment Database': ('FUELTYPE', 'FUEL'),
                'VRE Capacities': ('Technology', 'Bus'),
                'VRE LoadFactors': ('Technology', 'VRE Year')},
+              {},
               {'HVDC Investments': ('Bus1', 'Bus2', 'InvYear'),
                'Trading Capacities': ('CountryA', 'CountryB', 'Technology')})
 
-type1pp = {'Installed Capacity Abroad': '',
-           'Installed Capacity-RES Abroad': '',
-           'NL Installed Capacity (+heat)': '',
-           'NL Installed Capacity-RES (+he': ''}
+type1pp = {'Installed Capacity Abroad': 'UNITEU',
+           'Installed Capacity-RES Abroad': 'UNITEU',
+           'NL Installed Capacity (+heat)': 'UNITNL',
+           'NL Installed Capacity-RES (+he': 'UNITNL'}
 
-type2pp = {'H2 Storage': ('', ''),
-           'Storage': ('', '')}
+type2pp = {'H2 Storage': ('Bus Storage', 'Year'),
+           'Storage': ('UnitStorage', 'Year')}
 
-relationshipspp = {'HVDC Overlay': ('')}
+relationshipspp = {'HVDC Overlay': ('Country 1', 'Country 2')}
+
+export_to_mdb(path_to_data, 'COMPETES EU PowerPlants 2050-KIP', type1pp, type2pp, relationshipspp, {})
 
 print('===== End of COMPETES SpineDB to MS Access script =====')
 
