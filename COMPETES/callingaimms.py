@@ -6,27 +6,11 @@ Created on Fri Apr 23 10:37:40 2021
 """
 
 import subprocess
-from subprocess import CalledProcessError
 import os
-import sys
+#call COMPETES procedure specific
+command = 'C:\Users\\hernandezsernar\\AppData\\Local\\AIMMS\\IFA\\Aimms\\4.79.3.10-x64-VS2017\\Bin\\AimmsCmd.exe "C:\\Users\hernandezsernar\\Documents\\COMPETES\\Competes_2020.aimms" --run-only "examplespine"'
 
-# Retrieve paths from Spine
-path_to_aimms = sys.argv[1]
-path_to_competes = sys.argv[2]
-procedure_name = 'examplespine'
 
-# Call COMPETES procedure specific
-command = path_to_aimms + ' "' + path_to_competes + '" --run-only "' + procedure_name + '"'
-
-print("Running command: " + command)
-try:
-    output = subprocess.check_output(command)
-    print(output)
-except CalledProcessError as err:
-	print('----- Execution failed -----')
-	print(err)
-	print('----- Please execute COMPETES manually. Type "done" once another year has been executed -----')
-	line = input()
-	while line != 'done':
-		line = input()
+print("running...")
+ret = subprocess.call(command, shell=True)
 print("done!")

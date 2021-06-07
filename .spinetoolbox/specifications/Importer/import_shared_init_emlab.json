@@ -616,7 +616,7 @@
             },
             "Fueltype": {
                 "0": "string",
-                "1": "float"
+                "1": "string"
             },
             "NL Installed Capacity (+heat)": {
                 "0": "string",
