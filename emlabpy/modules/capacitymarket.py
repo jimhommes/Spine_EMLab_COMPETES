@@ -35,7 +35,7 @@ class CapacityMarketSubmitBids(MarketModule):
 
                 # Determine revenues from ElectricitySpotMarket
                 clearing_point_price = self.reps.get_market_clearing_point_price_for_market_and_time(
-                    emarket, self.reps.current_tick - 1)
+                    emarket, self.reps.current_tick)
                 expected_electricity_revenues = 0
                 if clearing_point_price >= mc:
                     expected_electricity_revenues += (clearing_point_price - mc) * \
