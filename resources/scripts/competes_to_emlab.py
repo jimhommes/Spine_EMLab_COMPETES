@@ -1,3 +1,9 @@
+"""
+This script handles all communication passed from the COMPETES Excel output to the EM-Lab SpineDB.
+It handles the MarketClearingPoint from the Hourly Nodal Prices and the unit generation as PowerPlantDispatchPlans.
+
+Jim Hommes - 10-6-2021
+"""
 from spinedb import *
 import sys
 import pandas
