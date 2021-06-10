@@ -57,7 +57,7 @@ class SpineDBReaderWriter:
         self.stage_init_alternative(reps.current_tick)
 
         logging.info('SpineDBRW: End Read Repository')
-        logging.info('Repository: ' + str(reps))
+        # logging.info('Repository: ' + str(reps))
         return reps
 
     """
