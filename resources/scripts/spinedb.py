@@ -225,9 +225,21 @@ class SpineDB(object):
         """
         try:
             _data_dict = export_functions.export_data(self._db_map)
+            return _data_dict
         except Exception as e:
-            self._handle_errors(e)
-        return _data_dict
+            self._handle_errors([e])
+            logging.warning(e)
+
+
+    def export_object_class(self, object_class_to_export) -> dict:
+        """
+        :return:
+        """
+        try:
+            _data_dict = export_functions.export_data(self._db_map, object_class_ids=object_class_to_export)
+            return _data_dict
+        except Exception as e:
+            self._handle_errors([e])
 
     def _handle_errors(self, errors: list):
         for e in errors:

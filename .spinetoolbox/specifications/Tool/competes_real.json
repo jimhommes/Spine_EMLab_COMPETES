@@ -7,9 +7,7 @@
     "description": "",
     "inputfiles": [],
     "inputfiles_opt": [],
-    "outputfiles": [
-        "example_output.xlsx"
-    ],
+    "outputfiles": [],
     "cmdline_args": [],
     "execute_in_work": false,
     "includes_main_path": "../../../COMPETES"

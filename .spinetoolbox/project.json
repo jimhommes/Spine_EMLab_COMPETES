@@ -39,6 +39,11 @@
                     "type": "path",
                     "relative": true,
                     "path": ".spinetoolbox/specifications/Tool/competes_spinedb_to_ms_access.json"
+                },
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/specifications/Tool/db_competes_to_db_emlab.json"
                 }
             ],
             "Importer": [
@@ -282,26 +287,6 @@
             },
             {
                 "from": [
-                    "COMPETES",
-                    "right"
-                ],
-                "to": [
-                    "Import COMPETES Output to DB EMLAB",
-                    "bottom"
-                ]
-            },
-            {
-                "from": [
-                    "Import COMPETES Output to DB EMLAB",
-                    "right"
-                ],
-                "to": [
-                    "DB EMLAB ref",
-                    "left"
-                ]
-            },
-            {
-                "from": [
                     "DB EMLAB ref",
                     "left"
                 ],
@@ -368,6 +353,36 @@
                 "to": [
                     "Prepare COMPETES",
                     "bottom"
+                ]
+            },
+            {
+                "from": [
+                    "COMPETES",
+                    "right"
+                ],
+                "to": [
+                    "DB COMPETES to DB EMLAB",
+                    "bottom"
+                ]
+            },
+            {
+                "from": [
+                    "DB COMPETES to DB EMLAB",
+                    "right"
+                ],
+                "to": [
+                    "EMLAB Capacity Market",
+                    "bottom"
+                ]
+            },
+            {
+                "from": [
+                    "DB EMLAB ref",
+                    "left"
+                ],
+                "to": [
+                    "DB COMPETES to DB EMLAB",
+                    "right"
                 ]
             }
         ]
@@ -618,25 +633,11 @@
                 }
             ]
         },
-        "Import COMPETES Output to DB EMLAB": {
-            "type": "Importer",
-            "description": "",
-            "x": 272.2211979030759,
-            "y": -4.960238359824686,
-            "specification": "",
-            "cancel_on_error": false,
-            "file_selection": [
-                [
-                    "example_output.xlsx",
-                    true
-                ]
-            ]
-        },
         "DB EMLAB ref": {
             "type": "Data Store",
             "description": "",
-            "x": 353.3127322628666,
-            "y": 9.594652422701877,
+            "x": 463.1508286813979,
+            "y": -6.528370904788964,
             "url": {
                 "dialect": "sqlite",
                 "username": "",
@@ -694,12 +695,7 @@
             "y": 117.71669823575637,
             "specification": "",
             "cancel_on_error": false,
-            "file_selection": [
-                [
-                    "example_output.xlsx",
-                    true
-                ]
-            ]
+            "file_selection": []
         },
         "DB COMPETES ref": {
             "type": "Data Store",
@@ -735,6 +731,28 @@
                     "type": "path",
                     "relative": true,
                     "path": "COMPETES/Data/empty_COMPETES EU PowerPlants 2050-KIP.mdb"
+                }
+            ]
+        },
+        "DB COMPETES to DB EMLAB": {
+            "type": "Tool",
+            "description": "",
+            "x": 249.90686157610807,
+            "y": -11.08457853764995,
+            "specification": "DB COMPETES to DB EMLAB",
+            "execute_in_work": false,
+            "cmd_line_args": [
+                {
+                    "type": "resource",
+                    "arg": "db_url@DB EMLAB ref"
+                },
+                {
+                    "type": "literal",
+                    "arg": "../../COMPETES/Results/"
+                },
+                {
+                    "type": "literal",
+                    "arg": "Output_Dynamic_Gen&Trans_?.xlsx"
                 }
             ]
         }
