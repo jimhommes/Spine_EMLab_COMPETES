@@ -66,10 +66,11 @@ class PowerPlant(ImportObject):
                * self.get_actual_nominal_capacity()
 
     def get_actual_nominal_capacity(self):
-        if self.capacity == 0:
-            return self.technology.capacity * float(self.location.parameters['CapacityMultiplicationFactor'])
-        else:
-            return self.capacity
+        return self.capacity
+        # if self.capacity == 0:
+        #     return self.technology.capacity * float(self.location.parameters['CapacityMultiplicationFactor'])
+        # else:
+        #     return self.capacity
 
     def calculate_marginal_fuel_cost_per_mw_by_tick(self, reps, time):
         fc = 0

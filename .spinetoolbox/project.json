@@ -44,6 +44,11 @@
                     "type": "path",
                     "relative": true,
                     "path": ".spinetoolbox/specifications/Tool/db_competes_to_db_emlab.json"
+                },
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/specifications/Tool/prepare_competes_output.json"
                 }
             ],
             "Importer": [
@@ -327,16 +332,6 @@
             },
             {
                 "from": [
-                    "COMPETES",
-                    "right"
-                ],
-                "to": [
-                    "Import COMPETES Output to DB COMPETES",
-                    "left"
-                ]
-            },
-            {
-                "from": [
                     "Import COMPETES Output to DB COMPETES",
                     "right"
                 ],
@@ -383,6 +378,36 @@
                 "to": [
                     "DB COMPETES to DB EMLAB",
                     "right"
+                ]
+            },
+            {
+                "from": [
+                    "COMPETES",
+                    "right"
+                ],
+                "to": [
+                    "Prepare COMPETES Output",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "Prepare COMPETES Output",
+                    "right"
+                ],
+                "to": [
+                    "Import COMPETES Output to DB COMPETES",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "DB EMLAB ref",
+                    "left"
+                ],
+                "to": [
+                    "Prepare COMPETES Output",
+                    "left"
                 ]
             }
         ]
@@ -691,17 +716,22 @@
         "Import COMPETES Output to DB COMPETES": {
             "type": "Importer",
             "description": "",
-            "x": 398.017039666341,
-            "y": 117.71669823575637,
+            "x": 565.2934066890584,
+            "y": 116.7090092777882,
             "specification": "",
             "cancel_on_error": false,
-            "file_selection": []
+            "file_selection": [
+                [
+                    "../../COMPETES/Results/current_Gen&Trans.xlsx",
+                    true
+                ]
+            ]
         },
         "DB COMPETES ref": {
             "type": "Data Store",
             "description": "",
-            "x": 599.7062405099235,
-            "y": 117.71669823575638,
+            "x": 766.9826075326412,
+            "y": 116.7090092777882,
             "url": {
                 "dialect": "sqlite",
                 "username": "",
@@ -753,6 +783,20 @@
                 {
                     "type": "literal",
                     "arg": "Output_Dynamic_Gen&Trans_?.xlsx"
+                }
+            ]
+        },
+        "Prepare COMPETES Output": {
+            "type": "Tool",
+            "description": "",
+            "x": 340.5988677932439,
+            "y": 115.88423016634036,
+            "specification": "Prepare COMPETES output",
+            "execute_in_work": false,
+            "cmd_line_args": [
+                {
+                    "type": "resource",
+                    "arg": "db_url@DB EMLAB ref"
                 }
             ]
         }
