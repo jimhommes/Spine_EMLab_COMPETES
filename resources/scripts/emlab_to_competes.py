@@ -77,10 +77,11 @@ if current_emlab_tick > 0:
         for valuemap_per_year in valuemap_per_fuel.values:
             i = valuemap_per_year.indexes.tolist().index(str(current_competes_tick))
             print('Old value: ' + str(valuemap_per_year.values[i]))
-            valuemap_per_year.values[i] -= technology_total_revenue[tech]
+            valuemap_per_year.values[i] -= float(technology_total_revenue[tech])
             print('New value: ' + str(valuemap_per_year.values[i]))
 
-        db_emlab.import_object_parameter_values([('Overnight Cost (OC)', tech, param_name, valuemap_per_fuel.to_dict(), '0')])
+        db_competes.import_data({'object_parameters': [('Overnight Cost (OC)', 'Overnight Cost (OC)')]})
+        db_competes.import_object_parameter_values([('Overnight Cost (OC)', tech, param_name, valuemap_per_fuel)])
 
     print('Done')
 
