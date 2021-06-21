@@ -4,7 +4,7 @@ from domain.actors import *
 class TestRepository:
 
     def test_get_power_plants_by_owner(self, reps):
-        assert reps.get_power_plants_by_owner(reps.energy_producers['Energy Producer NL A']) == \
+        assert reps.get_operational_power_plants_by_owner(reps.energy_producers['Energy Producer NL A']) == \
                [reps.power_plants['Power Plant 1']]
 
     def test_create_power_plant_dispatch_plan(self, reps, mocker):

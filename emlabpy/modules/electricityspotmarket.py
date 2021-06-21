@@ -23,7 +23,7 @@ class ElectricitySpotMarketSubmitBids(MarketModule):
         for energy_producer in self.reps.energy_producers.values():
 
             # For every plant owned by energyProducer
-            for powerplant in self.reps.get_power_plants_by_owner(energy_producer):
+            for powerplant in self.reps.get_operational_power_plants_by_owner(energy_producer):
                 market = self.reps.get_electricity_spot_market_for_plant(powerplant)
                 capacity = powerplant.get_actual_nominal_capacity()
                 mc = powerplant.calculate_marginal_cost_excl_co2_market_cost(self.reps,

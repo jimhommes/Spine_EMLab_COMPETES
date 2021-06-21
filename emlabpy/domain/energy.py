@@ -22,6 +22,7 @@ class PowerPlant(ImportObject):
         self.banked_allowances = [0 for i in range(100)]
         self.techtypestr = ''
         self.fuelstr = ''
+        self.status = 'NOTSET'
 
     def add_parameter_value(self, reps, parameter_name, parameter_value, alternative):
         if parameter_name == 'TECHTYPENL':
@@ -47,6 +48,8 @@ class PowerPlant(ImportObject):
             self.efficiency = float(parameter_value)
         elif parameter_name == 'Allowances':    # TODO
             self.banked_allowances[int(alternative)] = int(parameter_value)
+        elif parameter_name == 'STATUSNL':
+            self.status = parameter_value
 
     def calculate_emission_intensity(self, reps):
         emission = 0
@@ -105,7 +108,7 @@ class PowerGeneratingTechnology(ImportObject):
         # self.capacity = 0
         # self.intermittent = False
         # self.applicable_for_long_term_contract = False
-        # self.peak_segment_dependent_availability = 0
+        self.peak_segment_dependent_availability = 0
         # self.base_segment_dependent_availability = 0
         # self.maximum_installed_capacity_fraction_per_agent = 0
         # self.maximum_installed_capacity_fraction_in_country = 0
@@ -134,8 +137,8 @@ class PowerGeneratingTechnology(ImportObject):
         #     self.intermittent = 'TRUE' == parameter_value
         # elif parameter_name == 'applicableForLongTermContract':
         #     self.applicable_for_long_term_contract = bool(parameter_value)
-        # elif parameter_name == 'peakSegmentDependentAvailability':
-        #     self.peak_segment_dependent_availability = float(parameter_value)
+        elif parameter_name == 'peakSegmentDependentAvailability':
+            self.peak_segment_dependent_availability = float(parameter_value)
         # elif parameter_name == 'baseSegmentDependentAvailability':
         #     self.base_segment_dependent_availability = float(parameter_value)
         # elif parameter_name == 'maximumInstalledCapacityFractionPerAgent':

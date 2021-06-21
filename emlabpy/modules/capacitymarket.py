@@ -22,7 +22,7 @@ class CapacityMarketSubmitBids(MarketModule):
         for energy_producer in self.reps.energy_producers.values():
 
             # For every PowerPlant owned by energyProducer
-            for powerplant in self.reps.get_power_plants_by_owner(energy_producer):
+            for powerplant in self.reps.get_operational_power_plants_by_owner(energy_producer):
                 # Retrieve vars
                 market = self.reps.get_capacity_market_for_plant(powerplant)
                 emarket = self.reps.get_electricity_spot_market_for_plant(powerplant)
@@ -47,7 +47,7 @@ class CapacityMarketSubmitBids(MarketModule):
 
                 net_revenues = expected_electricity_revenues - fixed_on_m_cost
                 price_to_bid = 0
-                if self.reps.current_tick > 0:
+                if self.reps.current_tick > 0 and powerplant.get_actual_nominal_capacity() > 0:
                     if net_revenues <= 0:
                         price_to_bid = -1 * net_revenues / (powerplant.get_actual_nominal_capacity() *
                                                             powerplant.technology.peak_segment_dependent_availability)
@@ -67,8 +67,7 @@ class CapacityMarketClearing(MarketModule):
     def act(self):
         for market in self.reps.capacity_markets.values():
             node = self.reps.get_power_grid_node_by_zone(market.parameters['zone'])
-            peak_load = max(self.reps.get_hourly_demand_by_power_grid_node_and_year(node, 2020))
-            # TODO: Year should be according to clocktick
+            peak_load = max(self.reps.get_hourly_demand_by_power_grid_node_and_year(node, self.reps.current_tick + 2020))
 
             # Retrieve vars
             sdc = market.get_sloping_demand_curve(peak_load)

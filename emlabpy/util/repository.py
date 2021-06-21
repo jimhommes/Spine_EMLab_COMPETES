@@ -51,13 +51,16 @@ class Repository:
         self.power_plant_dispatch_plan_status_partly_accepted = 'Partly Accepted'
         self.power_plant_dispatch_plan_status_awaiting = 'Awaiting'
 
+        self.power_plant_status_operational = 'OPR'
+
     """
     Repository functions:
     All functions to get/create/set/update elements and values, possibly under criteria. Sorted on elements.
     """
     # PowerPlants
-    def get_power_plants_by_owner(self, owner: EnergyProducer) -> List[PowerPlant]:
-        return [i for i in self.power_plants.values() if i.owner == owner]
+    def get_operational_power_plants_by_owner(self, owner: EnergyProducer) -> List[PowerPlant]:
+        return [i for i in self.power_plants.values()
+                if i.owner == owner and i.status == self.power_plant_status_operational]
 
     def get_available_power_plant_capacity_at_tick(self, plant: PowerPlant, current_tick: int) -> float:
         ppdps_sum_accepted_amount = sum([float(i.accepted_amount) for i in
@@ -83,7 +86,7 @@ class Repository:
 
     def get_power_plant_electricity_spot_market_profits_by_tick(self, time: int) -> Dict[str, float]:
         res = {}
-        for power_plant in self.power_plants.values():
+        for power_plant in [i for i in self.power_plants.values() if i.status == self.power_plant_status_operational]:
             revenues = self.get_power_plant_electricity_spot_market_revenues_by_tick(power_plant, time)
             costs = self.get_power_plant_costs_by_tick(power_plant, time)
             res[power_plant.name] = revenues - costs
@@ -244,7 +247,8 @@ class Repository:
 
     # Hourly Demand
     def get_hourly_demand_by_power_grid_node_and_year(self, node: PowerGridNode, year: int):
-        return self.load[node.name].get_hourly_demand_by_year(year).values()
+        year_to_lookup = 5 * round(float(year / 5))
+        return self.load[node.name].get_hourly_demand_by_year(year_to_lookup).values()
 
     def __str__(self):
         return str(vars(self))

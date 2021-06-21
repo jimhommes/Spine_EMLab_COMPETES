@@ -87,6 +87,7 @@ try:    # Try statement to always close DB properly
     logging.info('End Run Modules')
 except Exception as e:
     logging.error('Exception occurred: ' + str(e))
+    raise
 finally:
     logging.info('Closing database connections...')
     spinedb_reader_writer.db.close_connection()
