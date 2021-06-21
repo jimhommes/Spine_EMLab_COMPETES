@@ -8,6 +8,7 @@ import pyodbc
 import shutil
 import sys
 import numpy as np
+import pandas
 from spinedb import SpineDB
 
 
@@ -102,12 +103,12 @@ def export_to_mdb(path: str, filename: str,
 
         print('Committing...')
         cursor.commit()
+    except pyodbc.Error as e:
+        print("Error in Connection", e)
+    finally:
         cursor.close()
         conn.close()
         print('Done')
-
-    except pyodbc.Error as e:
-        print("Error in Connection", e)
 
 
 def export_type1(cursor, table_name, id_parameter_name):
@@ -266,8 +267,11 @@ def export_nset(cursor):
 
 print('===== Starting COMPETES SpineDB to MS Access script =====')
 
+config_url = sys.argv[2]
+print('Config file path: ' + config_url)
+
 print('Copying empty databases...')
-originalfiles = sys.argv[2:]
+originalfiles = sys.argv[3:]
 targetfiles = [i.replace('empty_', '') for i in originalfiles]
 
 for originalfile in originalfiles:
@@ -282,58 +286,47 @@ try:
     print('Done')
 
     path_to_data = originalfiles[0].split("empty_")[0]
-    export_to_mdb(path_to_data, 'COMPETES EU 2050-KIP.mdb',
-                  {'BusCountry': 'Bus',
-                   'Country': 'Country',
-                   'FuelGen': 'FUELGEN',
-                   'Fueltype': 'FUELNEW',
-                   'Input_Years': 'Input Year',
-                   'Months': 'MonthDef',
-                   'Season': 'SeasonInput',
-                   'Techtype': 'FUELTYPENEW'},
-                  {'Biomass Potential': ('Bus', 'Year'),
-                   'Coal Tax NL': ('Country', 'Year'),
-                   'DR EV': ('Bus', 'Year'),
-                   'DR H2': ('Bus', 'Year'),
-                   'DR Heat': ('Bus', 'Year'),
-                   'DR Shifting': ('Bus', 'Year'),
-                   'Days': ('DayOrder', 'DayInput'),
-                   'Demand Response': ('DR', 'Year'),
-                   'Economic Lifetime': ('FUELTYPENEW', 'FuelNew'),
-                   'FuelMap': ('FUELTYPE', 'FUEL1'),
-                   'H2 System': ('Bus', 'Technology'),
-                   'H2 Technologies': ('Technology', 'Year'),
-                   'Historic Nuclear Availability': ('Month', 'Year'),
-                   'Hourly DR Profiles': ('Demand Year', 'Time'),
-                   'Hourly Demand': ('Demand Year', 'Time'),
-                   'Hourly EV Profiles': ('Demand Year', 'Time'),
-                   'Hourly H2 Demand': ('Demand Year', 'Time'),
-                   'Hourly Mustrun Hydro': ('Run Year', 'Time'),
-                   'Incidence matrix': ('Bus', 'Line'),
-                   'New Technologies': ('FUELTYPENEW', 'InvCountry'),
-                   'Overnight Cost (OC)': ('FUELTYPENEW', 'FUELNEW'),
-                   'SeasonDayHourCombo': ('Season1', 'Time'),
-                   'SeasonTime': ('Season1', 'Time'),
-                   'Technologies': ('FUELTYPENEW', 'TechnOrder'),
-                   'Unit Commitment Database': ('FUELTYPE', 'FUEL'),
-                   'VRE Capacities': ('Technology', 'Bus'),
-                   'VRE LoadFactors': ('Technology', 'VRE Year'),
-                   'VRE Technologies': ('Technology', 'Year'),
-                   'VRE FLH': ('Bus', 'VRE Year')},
-                  {},
-                  {'HVDC Investments': ('Bus1', 'Bus2', 'InvYear'),
-                   'Trading Capacities': ('CountryA', 'CountryB', 'Technology')})
 
-    export_to_mdb(path_to_data, 'COMPETES EU PowerPlants 2050-KIP',
-                  {'Installed Capacity Abroad': 'UNITEU',
-                   'Installed Capacity-RES Abroad': 'UNITEU',
-                   'NL Installed Capacity (+heat)': 'UNITNL',
-                   'NL Installed Capacity-RES (+he': 'UNITNL'},
-                  {'H2 Storage': ('Bus Storage', 'Year'),
-                   'Storage': ('UnitStorage', 'Year')},
-                  {'HVDC Overlay': ('Country 1', 'Country 2')}, {})
+    print('Reading type 1 mapping from config file')
+    object_mapping_type1 = {i[0]: i[1] for i in pandas.read_excel(config_url, 'Object Type 1').values}
+    print(object_mapping_type1)
+
+    print('Reading type 2 mapping from config file')
+    object_mapping_type2 = {i[0]: (i[1], i[2]) for i in pandas.read_excel(config_url, 'Object Type 2').values}
+    print(object_mapping_type2)
+
+    print('Reading relationship type 1 mapping from config file')
+    relationship_mapping_type1 = {i[0]: (i[1], i[2]) for i in pandas.read_excel(config_url, 'Relationship Type 1').values}
+    print(relationship_mapping_type1)
+
+    print('Reading relationship type 2 mapping from config file')
+    relationship_mapping_type2 = {i[0]: (i[1], i[2], i[3]) for i in pandas.read_excel(config_url, 'Relationship Type 2').values}
+    print(relationship_mapping_type2)
+
+    print('Reading PP type 1 mapping from config file')
+    pp_object_mapping_type1 = {i[0]: i[1] for i in pandas.read_excel(config_url, 'PP Object Type 1').values}
+    print(pp_object_mapping_type1)
+
+    print('Reading PP type 2 mapping from config file')
+    pp_object_mapping_type2 = {i[0]: (i[1], i[2]) for i in pandas.read_excel(config_url, 'PP Object Type 2').values}
+    print(pp_object_mapping_type2)
+
+    print('Reading PP relationship type 1 mapping from config file')
+    pp_relationship_mapping_type1 = {i[0]: (i[1], i[2]) for i in pandas.read_excel(config_url, 'PP Relationship Type 1').values}
+    print(pp_relationship_mapping_type1)
+
+    print('Reading PP relationship type 2 mapping from config file')
+    pp_relationship_mapping_type2 = {i[0]: (i[1], i[2], i[3]) for i in pandas.read_excel(config_url, 'PP Relationship Type 2').values}
+    print(pp_relationship_mapping_type2)
+
+    export_to_mdb(path_to_data, 'COMPETES EU 2050-KIP.mdb',
+                  object_mapping_type1, object_mapping_type2, relationship_mapping_type1, relationship_mapping_type2)
+
+    export_to_mdb(path_to_data, 'COMPETES EU PowerPlants 2050-KIP', pp_object_mapping_type1, pp_object_mapping_type2,
+                  pp_relationship_mapping_type1, pp_relationship_mapping_type2)
 except Exception as e:
     print('Exception occurred: ' + str(e))
+    raise
 finally:
     print('Closing database connection...')
     db_competes.close_connection()
