@@ -165,6 +165,10 @@ def add_parameter_value_to_repository(reps: Repository, db_line: list, to_dict: 
     parameter_name = db_line[2]
     parameter_value = db_line[3]
     parameter_alt = db_line[4]
+    logging.info('Adding parameter value: {object_name: ' + str(object_name)
+                 + ', parameter_name: ' + str(parameter_name)
+                 + ', parameter_value: ' + str(parameter_value)
+                 + ', parameter_alt: ' + str(parameter_alt) + '}')
     if object_name not in to_dict.keys():
         to_dict[object_name] = class_to_create(object_name)
 

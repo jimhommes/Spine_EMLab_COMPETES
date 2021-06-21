@@ -17,7 +17,9 @@ from modules.co2market import *
 
 # Initialize Logging
 logging.basicConfig(filename='logs/' + str(round(time.time() * 1000)) + '-log.txt', level=logging.DEBUG)
-logging.getLogger().addHandler(logging.StreamHandler())
+# Log to console? Uncomment next line
+# logging.getLogger().addHandler(logging.StreamHandler())
+
 logging.info('Starting EM-Lab Run')
 
 run_capacity_market = False
