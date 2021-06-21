@@ -409,6 +409,26 @@
                     "Prepare COMPETES Output",
                     "left"
                 ]
+            },
+            {
+                "from": [
+                    "EMLAB Config File",
+                    "bottom"
+                ],
+                "to": [
+                    "EMLAB CO2 Market",
+                    "right"
+                ]
+            },
+            {
+                "from": [
+                    "EMLAB Config File",
+                    "bottom"
+                ],
+                "to": [
+                    "EMLAB Capacity Market",
+                    "left"
+                ]
             }
         ]
     },
@@ -586,6 +606,10 @@
                     "arg": "db_url@DB EMLAB"
                 },
                 {
+                    "type": "resource",
+                    "arg": "EMLAB config.xlsx"
+                },
+                {
                     "type": "literal",
                     "arg": "run_co2_market"
                 }
@@ -688,6 +712,10 @@
                 {
                     "type": "resource",
                     "arg": "db_url@DB EMLAB ref"
+                },
+                {
+                    "type": "resource",
+                    "arg": "EMLAB config.xlsx"
                 },
                 {
                     "type": "literal",
@@ -797,6 +825,19 @@
                 {
                     "type": "resource",
                     "arg": "db_url@DB EMLAB ref"
+                }
+            ]
+        },
+        "EMLAB Config File": {
+            "type": "Data Connection",
+            "description": "",
+            "x": 36.4781449609666,
+            "y": -222.92199698368523,
+            "references": [
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": "resources/configurations/EMLAB config.xlsx"
                 }
             ]
         }

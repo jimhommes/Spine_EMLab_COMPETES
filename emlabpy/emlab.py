@@ -27,7 +27,7 @@ run_co2_market = False
 # Loop over provided arguments and select modules
 # Depending on which booleans have been set to True, these modules will be run
 logging.info('Selected modules: ' + str(sys.argv[2:]))
-for arg in sys.argv[2:]:
+for arg in sys.argv[3:]:
     if arg == 'run_capacity_market':
         run_electricity_spot_market = True
         run_capacity_market = True
@@ -41,8 +41,12 @@ for arg in sys.argv[2:]:
 db_url = sys.argv[1]
 logging.info('Selected database: ' + str(db_url))
 
+# Second argumant always has to be the Config Excel file
+config_url = sys.argv[2]
+logging.info('Configuration file found: ' + str(config_url))
+
 # Initialize SpineDB Reader Writer and load Repository
-spinedb_reader_writer = SpineDBReaderWriter(db_url)
+spinedb_reader_writer = SpineDBReaderWriter(db_url, config_url)
 reps = spinedb_reader_writer.read_db_and_create_repository()
 
 # Initialize all the modules
