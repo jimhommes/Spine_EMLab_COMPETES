@@ -276,61 +276,66 @@ print('Done copying empty databases')
 
 print('Connecting and exporting SpineDB...')
 db_competes = SpineDB(sys.argv[1])
-db_competes_data = db_competes.export_data()
-db_competes.close_connection()
-print('Done')
+try:
+    db_competes_data = db_competes.export_data()
+    db_competes.close_connection()
+    print('Done')
 
-path_to_data = originalfiles[0].split("empty_")[0]
-export_to_mdb(path_to_data, 'COMPETES EU 2050-KIP.mdb',
-              {'BusCountry': 'Bus',
-               'Country': 'Country',
-               'FuelGen': 'FUELGEN',
-               'Fueltype': 'FUELNEW',
-               'Input_Years': 'Input Year',
-               'Months': 'MonthDef',
-               'Season': 'SeasonInput',
-               'Techtype': 'FUELTYPENEW'},
-              {'Biomass Potential': ('Bus', 'Year'),
-               'Coal Tax NL': ('Country', 'Year'),
-               'DR EV': ('Bus', 'Year'),
-               'DR H2': ('Bus', 'Year'),
-               'DR Heat': ('Bus', 'Year'),
-               'DR Shifting': ('Bus', 'Year'),
-               'Days': ('DayOrder', 'DayInput'),
-               'Demand Response': ('DR', 'Year'),
-               'Economic Lifetime': ('FUELTYPENEW', 'FuelNew'),
-               'FuelMap': ('FUELTYPE', 'FUEL1'),
-               'H2 System': ('Bus', 'Technology'),
-               'H2 Technologies': ('Technology', 'Year'),
-               'Historic Nuclear Availability': ('Month', 'Year'),
-               'Hourly DR Profiles': ('Demand Year', 'Time'),
-               'Hourly Demand': ('Demand Year', 'Time'),
-               'Hourly EV Profiles': ('Demand Year', 'Time'),
-               'Hourly H2 Demand': ('Demand Year', 'Time'),
-               'Hourly Mustrun Hydro': ('Run Year', 'Time'),
-               'Incidence matrix': ('Bus', 'Line'),
-               'New Technologies': ('FUELTYPENEW', 'InvCountry'),
-               'Overnight Cost (OC)': ('FUELTYPENEW', 'FUELNEW'),
-               'SeasonDayHourCombo': ('Season1', 'Time'),
-               'SeasonTime': ('Season1', 'Time'),
-               'Technologies': ('FUELTYPENEW', 'TechnOrder'),
-               'Unit Commitment Database': ('FUELTYPE', 'FUEL'),
-               'VRE Capacities': ('Technology', 'Bus'),
-               'VRE LoadFactors': ('Technology', 'VRE Year'),
-               'VRE Technologies': ('Technology', 'Year'),
-               'VRE FLH': ('Bus', 'VRE Year')},
-              {},
-              {'HVDC Investments': ('Bus1', 'Bus2', 'InvYear'),
-               'Trading Capacities': ('CountryA', 'CountryB', 'Technology')})
+    path_to_data = originalfiles[0].split("empty_")[0]
+    export_to_mdb(path_to_data, 'COMPETES EU 2050-KIP.mdb',
+                  {'BusCountry': 'Bus',
+                   'Country': 'Country',
+                   'FuelGen': 'FUELGEN',
+                   'Fueltype': 'FUELNEW',
+                   'Input_Years': 'Input Year',
+                   'Months': 'MonthDef',
+                   'Season': 'SeasonInput',
+                   'Techtype': 'FUELTYPENEW'},
+                  {'Biomass Potential': ('Bus', 'Year'),
+                   'Coal Tax NL': ('Country', 'Year'),
+                   'DR EV': ('Bus', 'Year'),
+                   'DR H2': ('Bus', 'Year'),
+                   'DR Heat': ('Bus', 'Year'),
+                   'DR Shifting': ('Bus', 'Year'),
+                   'Days': ('DayOrder', 'DayInput'),
+                   'Demand Response': ('DR', 'Year'),
+                   'Economic Lifetime': ('FUELTYPENEW', 'FuelNew'),
+                   'FuelMap': ('FUELTYPE', 'FUEL1'),
+                   'H2 System': ('Bus', 'Technology'),
+                   'H2 Technologies': ('Technology', 'Year'),
+                   'Historic Nuclear Availability': ('Month', 'Year'),
+                   'Hourly DR Profiles': ('Demand Year', 'Time'),
+                   'Hourly Demand': ('Demand Year', 'Time'),
+                   'Hourly EV Profiles': ('Demand Year', 'Time'),
+                   'Hourly H2 Demand': ('Demand Year', 'Time'),
+                   'Hourly Mustrun Hydro': ('Run Year', 'Time'),
+                   'Incidence matrix': ('Bus', 'Line'),
+                   'New Technologies': ('FUELTYPENEW', 'InvCountry'),
+                   'Overnight Cost (OC)': ('FUELTYPENEW', 'FUELNEW'),
+                   'SeasonDayHourCombo': ('Season1', 'Time'),
+                   'SeasonTime': ('Season1', 'Time'),
+                   'Technologies': ('FUELTYPENEW', 'TechnOrder'),
+                   'Unit Commitment Database': ('FUELTYPE', 'FUEL'),
+                   'VRE Capacities': ('Technology', 'Bus'),
+                   'VRE LoadFactors': ('Technology', 'VRE Year'),
+                   'VRE Technologies': ('Technology', 'Year'),
+                   'VRE FLH': ('Bus', 'VRE Year')},
+                  {},
+                  {'HVDC Investments': ('Bus1', 'Bus2', 'InvYear'),
+                   'Trading Capacities': ('CountryA', 'CountryB', 'Technology')})
 
-export_to_mdb(path_to_data, 'COMPETES EU PowerPlants 2050-KIP',
-              {'Installed Capacity Abroad': 'UNITEU',
-               'Installed Capacity-RES Abroad': 'UNITEU',
-               'NL Installed Capacity (+heat)': 'UNITNL',
-               'NL Installed Capacity-RES (+he': 'UNITNL'},
-              {'H2 Storage': ('Bus Storage', 'Year'),
-               'Storage': ('UnitStorage', 'Year')},
-              {'HVDC Overlay': ('Country 1', 'Country 2')}, {})
-
-print('===== End of COMPETES SpineDB to MS Access script =====')
+    export_to_mdb(path_to_data, 'COMPETES EU PowerPlants 2050-KIP',
+                  {'Installed Capacity Abroad': 'UNITEU',
+                   'Installed Capacity-RES Abroad': 'UNITEU',
+                   'NL Installed Capacity (+heat)': 'UNITNL',
+                   'NL Installed Capacity-RES (+he': 'UNITNL'},
+                  {'H2 Storage': ('Bus Storage', 'Year'),
+                   'Storage': ('UnitStorage', 'Year')},
+                  {'HVDC Overlay': ('Country 1', 'Country 2')}, {})
+except Exception as e:
+    print('Exception occurred: ' + str(e))
+finally:
+    print('Closing database connection...')
+    db_competes.close_connection()
+    print('===== End of COMPETES SpineDB to MS Access script =====')
 
