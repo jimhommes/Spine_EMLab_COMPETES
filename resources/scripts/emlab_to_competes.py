@@ -27,6 +27,12 @@ try:
           ', which translates to COMPETES tick ' + str(current_competes_tick) + ' or rounded '
           + str(current_competes_tick_rounded))
 
+    print('Printing current COMPETES year to COMPETES folder...')
+    f = open(sys.argv[3], 'w')
+    f.write(str(current_competes_tick))
+    f.close()
+    print('Done')
+
     print('Creating structure...')
     object_class_name = 'EU_ETS_CO2price'
     print('Staging object class')

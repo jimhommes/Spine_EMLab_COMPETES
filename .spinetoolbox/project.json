@@ -546,8 +546,8 @@
         "DB COMPETES": {
             "type": "Data Store",
             "description": "",
-            "x": -379.13292273913146,
-            "y": 114.58779407730891,
+            "x": -379.1329227391315,
+            "y": 113.57451227283761,
             "url": {
                 "dialect": "sqlite",
                 "username": "",
@@ -566,7 +566,7 @@
             "type": "Importer",
             "description": "",
             "x": -514.9620001825213,
-            "y": 20.87662910751078,
+            "y": 19.863347303039482,
             "specification": "Import Shared Init to COMPETES",
             "cancel_on_error": false,
             "file_selection": [
@@ -663,6 +663,10 @@
                 {
                     "type": "resource",
                     "arg": "db_url@DB COMPETES"
+                },
+                {
+                    "type": "literal",
+                    "arg": "../../COMPETES/currentyear.txt"
                 }
             ]
         },
