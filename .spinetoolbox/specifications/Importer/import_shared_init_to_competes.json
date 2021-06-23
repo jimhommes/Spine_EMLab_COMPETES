@@ -579,6 +579,66 @@
                             },
                             {
                                 "map_type": "ParameterDefinition",
+                                "position": "table_name",
+                                "value": "VRE Technologies"
+                            },
+                            {
+                                "map_type": "Alternative",
+                                "position": "hidden",
+                                "value": "0"
+                            },
+                            {
+                                "map_type": "ParameterValueMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterValueType",
+                                "position": "hidden",
+                                "value": "map"
+                            },
+                            {
+                                "map_type": "IndexName",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterValueIndex",
+                                "position": 0
+                            },
+                            {
+                                "map_type": "IndexName",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterValueIndex",
+                                "position": -1
+                            },
+                            {
+                                "map_type": "ExpandedValue",
+                                "position": "hidden"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "VRE Capacities": [
+                {
+                    "Mapping 1": {
+                        "mapping": [
+                            {
+                                "map_type": "ObjectClass",
+                                "position": "table_name",
+                                "value": "VRE Capacities"
+                            },
+                            {
+                                "map_type": "Object",
+                                "position": 5
+                            },
+                            {
+                                "map_type": "ObjectMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterDefinition",
                                 "position": "table_name"
                             },
                             {
@@ -594,6 +654,14 @@
                                 "map_type": "ParameterValueType",
                                 "position": "hidden",
                                 "value": "map"
+                            },
+                            {
+                                "map_type": "IndexName",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterValueIndex",
+                                "position": 4
                             },
                             {
                                 "map_type": "IndexName",
@@ -635,7 +703,8 @@
                 "header": false
             },
             "Techtype": {},
-            "VRE Technologies": {}
+            "VRE Technologies": {},
+            "VRE Capacities": {}
         },
         "table_types": {
             "BusCountry": {
@@ -792,6 +861,15 @@
                 "3": "float",
                 "4": "float",
                 "5": "float"
+            },
+            "VRE Capacities": {
+                "0": "string",
+                "1": "float",
+                "2": "float",
+                "3": "float",
+                "4": "string",
+                "5": "string",
+                "6": "float"
             }
         },
         "table_row_types": {
@@ -834,6 +912,9 @@
             },
             "Technologies": {
                 "0": "string"
+            },
+            "VRE Capacities": {
+                "0": "string"
             }
         },
         "selected_tables": [
@@ -848,6 +929,7 @@
             "Technologies",
             "Techtype",
             "VRE Technologies",
+            "VRE Capacities",
             "NL Installed Capacity (+heat)",
             "NL Installed Capacity-RES (+he"
         ],

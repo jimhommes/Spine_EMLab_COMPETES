@@ -499,6 +499,14 @@
                             },
                             {
                                 "map_type": "IndexName",
+                                "position": 1
+                            },
+                            {
+                                "map_type": "ParameterValueIndex",
+                                "position": 1
+                            },
+                            {
+                                "map_type": "IndexName",
                                 "position": "hidden"
                             },
                             {
@@ -1146,6 +1154,14 @@
                             },
                             {
                                 "map_type": "ParameterValueIndex",
+                                "position": 1
+                            },
+                            {
+                                "map_type": "IndexName",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterValueIndex",
                                 "position": -1
                             },
                             {
@@ -1524,59 +1540,7 @@
                             },
                             {
                                 "map_type": "ParameterValueIndex",
-                                "position": -1
-                            },
-                            {
-                                "map_type": "ExpandedValue",
-                                "position": "hidden"
-                            }
-                        ]
-                    }
-                }
-            ],
-            "VRE Capacities": [
-                {
-                    "Mapping 1": {
-                        "mapping": [
-                            {
-                                "map_type": "ObjectClass",
-                                "position": "table_name",
-                                "value": "VRE Capacities"
-                            },
-                            {
-                                "map_type": "Object",
-                                "position": 5
-                            },
-                            {
-                                "map_type": "ObjectMetadata",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterDefinition",
-                                "position": "table_name",
-                                "value": "VRE Capacities"
-                            },
-                            {
-                                "map_type": "Alternative",
-                                "position": "hidden",
-                                "value": "0"
-                            },
-                            {
-                                "map_type": "ParameterValueMetadata",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterValueType",
-                                "position": "hidden",
-                                "value": "map"
-                            },
-                            {
-                                "map_type": "IndexName",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterValueIndex",
-                                "position": 4
+                                "position": 2
                             },
                             {
                                 "map_type": "IndexName",
@@ -1637,6 +1601,14 @@
                             {
                                 "map_type": "ParameterValueIndex",
                                 "position": 0
+                            },
+                            {
+                                "map_type": "IndexName",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterValueIndex",
+                                "position": 5
                             },
                             {
                                 "map_type": "IndexName",
@@ -1805,7 +1777,6 @@
             "SeasonTime": {},
             "Trading Capacities": {},
             "Unit Commitment Database": {},
-            "VRE Capacities": {},
             "VRE LoadFactors": {},
             "Biomass Potential": {},
             "VRE FLH": {}
@@ -1879,7 +1850,7 @@
             },
             "H2 System": {
                 "0": "string",
-                "1": "float",
+                "1": "string",
                 "2": "string",
                 "3": "string",
                 "4": "string",
@@ -2118,15 +2089,6 @@
                 "85": "float",
                 "86": "float"
             },
-            "VRE Capacities": {
-                "0": "string",
-                "1": "float",
-                "2": "float",
-                "3": "float",
-                "4": "string",
-                "5": "string",
-                "6": "float"
-            },
             "Nset": {
                 "0": "string"
             },
@@ -2182,7 +2144,7 @@
             "Unit Commitment Database": {
                 "0": "string",
                 "1": "string",
-                "2": "float",
+                "2": "string",
                 "3": "float",
                 "4": "float",
                 "5": "float",
@@ -2196,7 +2158,7 @@
                 "2": "string",
                 "3": "float",
                 "4": "float",
-                "5": "float",
+                "5": "string",
                 "6": "float",
                 "7": "float",
                 "8": "float",
@@ -2303,9 +2265,6 @@
             "Unit Commitment Database": {
                 "0": "string"
             },
-            "VRE Capacities": {
-                "0": "string"
-            },
             "VRE LoadFactors": {
                 "0": "string"
             },
@@ -2323,10 +2282,8 @@
             }
         },
         "selected_tables": [
-            "Select All",
             "VRE LoadFactors",
             "VRE FLH",
-            "VRE Capacities",
             "Unit Commitment Database",
             "Trading Capacities",
             "SeasonTime",
