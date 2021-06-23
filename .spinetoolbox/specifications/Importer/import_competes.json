@@ -1162,6 +1162,14 @@
                             },
                             {
                                 "map_type": "ParameterValueIndex",
+                                "position": 2
+                            },
+                            {
+                                "map_type": "IndexName",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterValueIndex",
                                 "position": -1
                             },
                             {
@@ -1697,7 +1705,7 @@
                             },
                             {
                                 "map_type": "Object",
-                                "position": 1
+                                "position": 0
                             },
                             {
                                 "map_type": "ObjectMetadata",
@@ -1729,6 +1737,14 @@
                             {
                                 "map_type": "ParameterValueIndex",
                                 "position": 3
+                            },
+                            {
+                                "map_type": "IndexName",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterValueIndex",
+                                "position": 1
                             },
                             {
                                 "map_type": "IndexName",
@@ -2282,6 +2298,7 @@
             }
         },
         "selected_tables": [
+            "Select All",
             "VRE LoadFactors",
             "VRE FLH",
             "Unit Commitment Database",

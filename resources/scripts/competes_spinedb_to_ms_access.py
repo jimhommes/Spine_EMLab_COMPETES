@@ -81,9 +81,11 @@ def export_to_mdb(path: str, filename: str,
         print('Finished Type 1 Mappings')
 
         print('Staging Type 2 Mappings...')
-        for (table_name, (id_parameter_name, index_parameter_name)) in tables_objects_type2.items():
+        for (table_name, value) in tables_objects_type2.items():
             print('Exporting table ' + table_name)
-            export_type2(cursor, table_name, id_parameter_name, index_parameter_name)
+            id_parameter_name = value[0]
+            index_parameter_names = value[1:]
+            export_type2(cursor, table_name, id_parameter_name, index_parameter_names)
         print('Finished Type 2 Mappings')
 
         print('Staging Relationships Type 1...')
@@ -138,7 +140,7 @@ def export_type1(cursor, table_name, id_parameter_name):
         cursor.execute(sql_query, values)
 
 
-def export_type2(cursor, table_name, id_parameter_name, index_parameter_name):
+def export_type2(cursor, table_name, id_parameter_name, index_parameter_names):
     """
     Type2 Mapping: SpineDB has an object with one parameter, which is a map. In this map, the first index is unique,
     and the second is the parameter names. {'Table Name': ('Object Column Name', 'Index Column Name)}
@@ -146,19 +148,34 @@ def export_type2(cursor, table_name, id_parameter_name, index_parameter_name):
     :param cursor: PYODBC Cursor
     :param table_name: Table Name
     :param id_parameter_name: Object ID Column Name
-    :param index_parameter_name: Index Column Name
-    :return:
+    :param index_parameter_names: Array of Index Column Names
     """
     for (_, id_parameter_value, _) in [i for i in db_competes_data['objects'] if i[0] == table_name]:
         value_map = next(i[3] for i in db_competes_data['object_parameter_values']
                          if i[0] == table_name and i[1] == id_parameter_value)
         for value_map_row in value_map.to_dict()['data']:
-            index = value_map_row[0]
-            param_values = [('[' + str(i[0]) + ']', i[1]) for i in value_map_row[1]['data']]
+            export_type2_recursive(cursor, table_name, id_parameter_name, id_parameter_value, index_parameter_names, [value_map_row[0]], value_map_row[1]['data'])
+
+
+def export_type2_recursive(cursor, table_name, id_parameter_name, id_parameter_value, index_parameter_names, index_parameter_values, data):
+    if len(data) > 0:
+        first_el = data[0]
+        if len(first_el) == 2 and type(first_el[1]) == dict and 'type' in first_el[1].keys() and first_el[1]['type'] == 'map':
+            # In this case, it MUST be another map
+            # Go one level deeper
+            for value_map_row in data:
+                export_type2_recursive(cursor, table_name, id_parameter_name, id_parameter_value,
+                                       index_parameter_names, index_parameter_values + [value_map_row[0]],
+                                       value_map_row[1]['data'])
+        else:
+            # Otherwise, treat as regular value and export it to MDB
+            param_values = [('[' + str(i[0]) + ']', i[1]) for i in data]
             sql_query = 'INSERT INTO [' + table_name + '] ([' + id_parameter_name + '],[' + \
-                            index_parameter_name + '],' + ','.join([i[0] for i in param_values]) + \
-                            ') VALUES (?,?,' + ','.join(list('?' * len(param_values))) + ');'
-            values = (id_parameter_value, index,) + tuple(i[1] for i in param_values)
+                        '],['.join(index_parameter_names) + '],' + ','.join([i[0] for i in param_values]) + \
+                        ') VALUES (?,' + ','.join(list('?' * len(index_parameter_values))) + ',' + ','.join(list('?' * len(param_values))) + ');'
+            # print(param_values)
+            # print(sql_query)
+            values = (id_parameter_value,) + tuple(index_parameter_values) + tuple(i[1] for i in param_values)
             cursor.execute(sql_query, values)
 
 
@@ -236,7 +253,7 @@ def export_fuelpriceyears(cursor):
     print('Exporting Fuelpriceyears...')
     table_name_spine = 'FuelpriceTrends'
     table_name_competes = 'Fuelpriceyears'
-    years = [2020, 2025, 2030, 2050]
+    years = [2020, 2025, 2030, 2035, 2040, 2045, 2050]
     months = ['[' + i[1] + ']' for i in db_competes_data['objects'] if i[0] == 'Months']
     countries = [i[1] for i in db_competes_data['objects'] if i[0] == 'Country']
     for (_, trend_name, _) in [i for i in db_competes_data['objects'] if i[0] == table_name_spine]:
@@ -292,7 +309,7 @@ try:
     print(object_mapping_type1)
 
     print('Reading type 2 mapping from config file')
-    object_mapping_type2 = {i[0]: (i[1], i[2]) for i in pandas.read_excel(config_url, 'Object Type 2').values}
+    object_mapping_type2 = {i[0]: tuple([j for j in i[1:] if type(j) == str]) for i in pandas.read_excel(config_url, 'Object Type 2').values}
     print(object_mapping_type2)
 
     print('Reading relationship type 1 mapping from config file')
@@ -308,7 +325,7 @@ try:
     print(pp_object_mapping_type1)
 
     print('Reading PP type 2 mapping from config file')
-    pp_object_mapping_type2 = {i[0]: (i[1], i[2]) for i in pandas.read_excel(config_url, 'PP Object Type 2').values}
+    pp_object_mapping_type2 = {i[0]: tuple([j for j in i[1:] if type(j) == str]) for i in pandas.read_excel(config_url, 'PP Object Type 2').values}
     print(pp_object_mapping_type2)
 
     print('Reading PP relationship type 1 mapping from config file')
