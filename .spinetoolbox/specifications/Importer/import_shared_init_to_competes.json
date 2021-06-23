@@ -567,7 +567,14 @@
                             {
                                 "map_type": "ObjectClass",
                                 "position": "table_name",
-                                "value": "VRE Technologies"
+                                "value": "VRE Technologies",
+                                "skip_columns": [
+                                    6,
+                                    7,
+                                    8,
+                                    9,
+                                    10
+                                ]
                             },
                             {
                                 "map_type": "Object",
@@ -627,7 +634,10 @@
                             {
                                 "map_type": "ObjectClass",
                                 "position": "table_name",
-                                "value": "VRE Capacities"
+                                "value": "VRE Capacities",
+                                "skip_columns": [
+                                    7
+                                ]
                             },
                             {
                                 "map_type": "Object",
@@ -639,7 +649,8 @@
                             },
                             {
                                 "map_type": "ParameterDefinition",
-                                "position": "table_name"
+                                "position": "table_name",
+                                "value": "VRE Capacities"
                             },
                             {
                                 "map_type": "Alternative",
@@ -860,7 +871,12 @@
                 "2": "float",
                 "3": "float",
                 "4": "float",
-                "5": "float"
+                "5": "float",
+                "6": "string",
+                "7": "string",
+                "8": "string",
+                "9": "string",
+                "10": "string"
             },
             "VRE Capacities": {
                 "0": "string",
@@ -869,7 +885,8 @@
                 "3": "float",
                 "4": "string",
                 "5": "string",
-                "6": "float"
+                "6": "float",
+                "7": "string"
             }
         },
         "table_row_types": {
