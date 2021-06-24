@@ -287,9 +287,20 @@ print('===== Starting COMPETES SpineDB to MS Access script =====')
 config_url = sys.argv[2]
 print('Config file path: ' + config_url)
 
+print('Reading current year..')
+f = open(sys.argv[3])
+current_competes_tick = int(f.read())
+
+print('Copying empty Excel sheet...')
+originalfiles = ['../../COMPETES/Results/Empty output files/Output_Dynamic_Gen&Trans_INSERTYEAR.xlsx']
+
+for originalfile in originalfiles:
+    shutil.copyfile(originalfile, originalfile.replace("INSERTYEAR", str(current_competes_tick)).replace('/Empty output files', ''))
+
 print('Copying empty databases...')
-originalfiles = sys.argv[3:]
+originalfiles = sys.argv[4:]
 targetfiles = [i.replace('empty_', '') for i in originalfiles]
+
 
 for originalfile in originalfiles:
     shutil.copyfile(originalfile, originalfile.replace("empty_", ""))
