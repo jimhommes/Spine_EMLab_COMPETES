@@ -7,6 +7,7 @@ Jim Hommes - 25-3-2021
 
 import sys
 import logging
+import os
 import time
 
 from modules.marketstabilityreserve import DetermineMarketStabilityReserveFlow
@@ -16,6 +17,8 @@ from modules.capacitymarket import *
 from modules.co2market import *
 
 # Initialize Logging
+if not os.path.isdir('logs'):
+    os.makedirs('logs')
 logging.basicConfig(filename='logs/' + str(round(time.time() * 1000)) + '-log.txt', level=logging.DEBUG)
 # Log to console? Uncomment next line
 # logging.getLogger().addHandler(logging.StreamHandler())
