@@ -49,6 +49,11 @@
                     "type": "path",
                     "relative": true,
                     "path": ".spinetoolbox/specifications/Tool/prepare_competes_output.json"
+                },
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/specifications/Tool/competes_to_competes_db.json"
                 }
             ],
             "Importer": [
@@ -81,6 +86,11 @@
                     "type": "path",
                     "relative": true,
                     "path": ".spinetoolbox/specifications/Importer/import_emlab_parameter_metadata.json"
+                },
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/specifications/Importer/import_competes_to_competes_db.json"
                 }
             ]
         },
@@ -267,16 +277,6 @@
             },
             {
                 "from": [
-                    "DB EMLAB to DB COMPETES",
-                    "bottom"
-                ],
-                "to": [
-                    "Prepare COMPETES",
-                    "left"
-                ]
-            },
-            {
-                "from": [
                     "DB COMPETES",
                     "right"
                 ],
@@ -293,16 +293,6 @@
                 "to": [
                     "COMPETES",
                     "left"
-                ]
-            },
-            {
-                "from": [
-                    "DB EMLAB ref",
-                    "left"
-                ],
-                "to": [
-                    "EMLAB Capacity Market",
-                    "bottom"
                 ]
             },
             {
@@ -337,16 +327,6 @@
             },
             {
                 "from": [
-                    "Import COMPETES Output to DB COMPETES",
-                    "right"
-                ],
-                "to": [
-                    "DB COMPETES ref",
-                    "left"
-                ]
-            },
-            {
-                "from": [
                     "Empty MS Access Files",
                     "right"
                 ],
@@ -357,17 +337,7 @@
             },
             {
                 "from": [
-                    "COMPETES",
-                    "right"
-                ],
-                "to": [
-                    "DB COMPETES to DB EMLAB",
-                    "bottom"
-                ]
-            },
-            {
-                "from": [
-                    "DB COMPETES to DB EMLAB",
+                    "COMPETES Output to EMLAB DB and COMPETES DB",
                     "right"
                 ],
                 "to": [
@@ -381,38 +351,8 @@
                     "left"
                 ],
                 "to": [
-                    "DB COMPETES to DB EMLAB",
+                    "COMPETES Output to EMLAB DB and COMPETES DB",
                     "right"
-                ]
-            },
-            {
-                "from": [
-                    "COMPETES",
-                    "right"
-                ],
-                "to": [
-                    "Prepare COMPETES Output",
-                    "left"
-                ]
-            },
-            {
-                "from": [
-                    "Prepare COMPETES Output",
-                    "right"
-                ],
-                "to": [
-                    "Import COMPETES Output to DB COMPETES",
-                    "left"
-                ]
-            },
-            {
-                "from": [
-                    "DB EMLAB ref",
-                    "left"
-                ],
-                "to": [
-                    "Prepare COMPETES Output",
-                    "left"
                 ]
             },
             {
@@ -444,6 +384,76 @@
                     "Prepare COMPETES",
                     "bottom"
                 ]
+            },
+            {
+                "from": [
+                    "DB EMLAB to DB COMPETES",
+                    "right"
+                ],
+                "to": [
+                    "Prepare COMPETES",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "DB COMPETES ref",
+                    "left"
+                ],
+                "to": [
+                    "COMPETES Output to EMLAB DB and COMPETES DB",
+                    "bottom"
+                ]
+            },
+            {
+                "from": [
+                    "COMPETES",
+                    "right"
+                ],
+                "to": [
+                    "COMPETES Output to EMLAB DB and COMPETES DB",
+                    "bottom"
+                ]
+            },
+            {
+                "from": [
+                    "DB EMLAB ref",
+                    "left"
+                ],
+                "to": [
+                    "EMLAB Capacity Market",
+                    "right"
+                ]
+            },
+            {
+                "from": [
+                    "COMPETES Output to EMLAB DB and COMPETES DB",
+                    "right"
+                ],
+                "to": [
+                    "Import COMPETES to COMPETES DB",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "Import COMPETES to COMPETES DB",
+                    "right"
+                ],
+                "to": [
+                    "DB COMPETES ref 1",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "COMPETES Output File",
+                    "left"
+                ],
+                "to": [
+                    "Import COMPETES to COMPETES DB",
+                    "bottom"
+                ]
             }
         ]
     },
@@ -451,8 +461,8 @@
         "DB EMLAB": {
             "type": "Data Store",
             "description": "",
-            "x": -381.75281777826655,
-            "y": -127.62369149940398,
+            "x": -281.4206441369668,
+            "y": -127.62369149940392,
             "url": {
                 "dialect": "sqlite",
                 "username": "",
@@ -470,8 +480,8 @@
         "EMLAB Init Data": {
             "type": "Data Connection",
             "description": "Loads all initialization values",
-            "x": -676.7257103746333,
-            "y": -170.39717429722813,
+            "x": -576.3935367333336,
+            "y": -170.39717429722808,
             "references": [
                 {
                     "type": "path",
@@ -483,8 +493,8 @@
         "Import EMLAB Init": {
             "type": "Importer",
             "description": "",
-            "x": -514.8615239266967,
-            "y": -170.69907704976185,
+            "x": -414.52935028539696,
+            "y": -170.6990770497618,
             "specification": "Import EMLAB Init",
             "cancel_on_error": true,
             "file_selection": [
@@ -497,8 +507,8 @@
         "SHARED Init Data": {
             "type": "Data Connection",
             "description": "",
-            "x": -674.9379767892914,
-            "y": -30.75615282433842,
+            "x": -574.6058031479917,
+            "y": -30.756152824338365,
             "references": [
                 {
                     "type": "path",
@@ -510,8 +520,8 @@
         "COMPETES Init Data": {
             "type": "Data Connection",
             "description": "",
-            "x": -674.8444240212823,
-            "y": 162.27750357703604,
+            "x": -574.5122503799826,
+            "y": 162.2775035770361,
             "references": [
                 {
                     "type": "path",
@@ -528,8 +538,8 @@
         "Import COMPETES Init": {
             "type": "Importer",
             "description": "",
-            "x": -513.9487183780501,
-            "y": 114.51037127885436,
+            "x": -413.61654473675037,
+            "y": 114.51037127885442,
             "specification": "Import COMPETES",
             "cancel_on_error": false,
             "file_selection": [
@@ -546,8 +556,8 @@
         "DB COMPETES": {
             "type": "Data Store",
             "description": "",
-            "x": -379.1329227391315,
-            "y": 113.57451227283761,
+            "x": -278.8007490978318,
+            "y": 113.57451227283767,
             "url": {
                 "dialect": "sqlite",
                 "username": "",
@@ -565,8 +575,8 @@
         "Import SHARED Init to COMPETES": {
             "type": "Importer",
             "description": "",
-            "x": -514.9620001825213,
-            "y": 19.863347303039482,
+            "x": -414.6298265412215,
+            "y": 19.86334730303954,
             "specification": "Import Shared Init to COMPETES",
             "cancel_on_error": false,
             "file_selection": [
@@ -579,8 +589,8 @@
         "Import SHARED Init to EMLAB": {
             "type": "Importer",
             "description": "",
-            "x": -515.4639060277602,
-            "y": -69.69280997726067,
+            "x": -415.1317323864605,
+            "y": -69.69280997726061,
             "specification": "Import Shared Init EMLAB",
             "cancel_on_error": false,
             "file_selection": [
@@ -593,8 +603,8 @@
         "Import COMPETES Init (PP)": {
             "type": "Importer",
             "description": "",
-            "x": -515.8912684175019,
-            "y": 210.3509796867975,
+            "x": -415.5590947762022,
+            "y": 210.35097968679756,
             "specification": "Import COMPETES (PP)",
             "cancel_on_error": false,
             "file_selection": [
@@ -611,8 +621,8 @@
         "EMLAB CO2 Market": {
             "type": "Tool",
             "description": "",
-            "x": -158.92620621727434,
-            "y": -127.23187252273135,
+            "x": -58.59403257597461,
+            "y": -127.2318725227313,
             "specification": "CO2 Market",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -633,8 +643,8 @@
         "Init EMLAB Clock": {
             "type": "Tool",
             "description": "",
-            "x": -264.45655687232147,
-            "y": -221.0815059999261,
+            "x": -164.12438323102174,
+            "y": -221.08150599992604,
             "specification": "Clock",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -651,8 +661,8 @@
         "DB EMLAB to DB COMPETES": {
             "type": "Tool",
             "description": "",
-            "x": -88.37804160232815,
-            "y": -9.681284932804171,
+            "x": 11.95413203897158,
+            "y": -9.681284932804115,
             "specification": "EMLAB to COMPETES",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -673,8 +683,8 @@
         "COMPETES": {
             "type": "Tool",
             "description": "",
-            "x": 121.00673575855785,
-            "y": 114.54792790659646,
+            "x": 266.6043048772532,
+            "y": 112.03318371340787,
             "specification": "COMPETES",
             "execute_in_work": false,
             "cmd_line_args": []
@@ -682,8 +692,8 @@
         "Prepare COMPETES": {
             "type": "Tool",
             "description": "",
-            "x": -12.066551395970407,
-            "y": 113.50829285070166,
+            "x": 66.89029660322588,
+            "y": 112.2509207541074,
             "specification": "COMPETES SpineDB to MS Access",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -708,8 +718,8 @@
         "DB EMLAB ref": {
             "type": "Data Store",
             "description": "",
-            "x": 379.51264517003915,
-            "y": -7.617871122159379,
+            "x": 562.2929631882981,
+            "y": -134.53372416075206,
             "url": {
                 "dialect": "sqlite",
                 "username": "",
@@ -727,8 +737,8 @@
         "EMLAB Capacity Market": {
             "type": "Tool",
             "description": "",
-            "x": 243.68367235413905,
-            "y": -131.84558034046046,
+            "x": 344.0158459954388,
+            "y": -131.8455803404604,
             "specification": "Capacity Market",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -749,8 +759,8 @@
         "Increment EMLAB Clock": {
             "type": "Tool",
             "description": "",
-            "x": 353.68505548448013,
-            "y": -218.84338524033222,
+            "x": 454.01722912577986,
+            "y": -218.84338524033217,
             "specification": "Clock",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -764,25 +774,11 @@
                 }
             ]
         },
-        "Import COMPETES Output to DB COMPETES": {
-            "type": "Importer",
-            "description": "",
-            "x": 481.65522317769967,
-            "y": 115.61950906041778,
-            "specification": "",
-            "cancel_on_error": false,
-            "file_selection": [
-                [
-                    "../../COMPETES/Results/current_Gen&Trans.xlsx",
-                    true
-                ]
-            ]
-        },
         "DB COMPETES ref": {
             "type": "Data Store",
             "description": "",
-            "x": 683.3444240212824,
-            "y": 115.61950906041778,
+            "x": 370.64430022137213,
+            "y": 112.61910514003846,
             "url": {
                 "dialect": "sqlite",
                 "username": "",
@@ -800,8 +796,8 @@
         "Empty MS Access Files": {
             "type": "Data Connection",
             "description": "",
-            "x": -87.91376867372628,
-            "y": 228.01149720105562,
+            "x": 12.418404967573451,
+            "y": 228.01149720105568,
             "references": [
                 {
                     "type": "path",
@@ -815,47 +811,11 @@
                 }
             ]
         },
-        "DB COMPETES to DB EMLAB": {
-            "type": "Tool",
-            "description": "",
-            "x": 167.2904763919234,
-            "y": -12.174078755020364,
-            "specification": "DB COMPETES to DB EMLAB",
-            "execute_in_work": false,
-            "cmd_line_args": [
-                {
-                    "type": "resource",
-                    "arg": "db_url@DB EMLAB ref"
-                },
-                {
-                    "type": "literal",
-                    "arg": "../../COMPETES/Results/"
-                },
-                {
-                    "type": "literal",
-                    "arg": "Output_Dynamic_Gen&Trans_?.xlsx"
-                }
-            ]
-        },
-        "Prepare COMPETES Output": {
-            "type": "Tool",
-            "description": "",
-            "x": 256.96068428188516,
-            "y": 114.79472994896994,
-            "specification": "Prepare COMPETES output",
-            "execute_in_work": false,
-            "cmd_line_args": [
-                {
-                    "type": "resource",
-                    "arg": "db_url@DB EMLAB ref"
-                }
-            ]
-        },
         "EMLAB Config File": {
             "type": "Data Connection",
             "description": "",
-            "x": 36.4781449609666,
-            "y": -224.01149720105565,
+            "x": 136.81031860226634,
+            "y": -224.0114972010556,
             "references": [
                 {
                     "type": "path",
@@ -867,13 +827,85 @@
         "COMPETES Config File": {
             "type": "Data Connection",
             "description": "",
-            "x": 63.283364103171266,
-            "y": 226.3368459917639,
+            "x": 163.615537744471,
+            "y": 226.33684599176397,
             "references": [
                 {
                     "type": "path",
                     "relative": true,
                     "path": "resources/configurations/COMPETES EU 2050-KIP config.xlsx"
+                }
+            ]
+        },
+        "COMPETES Output to EMLAB DB and COMPETES DB": {
+            "type": "Tool",
+            "description": "",
+            "x": 317.2272164458866,
+            "y": -7.9725303229822515,
+            "specification": "DB COMPETES to DB EMLAB",
+            "execute_in_work": false,
+            "cmd_line_args": [
+                {
+                    "type": "resource",
+                    "arg": "db_url@DB EMLAB ref"
+                },
+                {
+                    "type": "resource",
+                    "arg": "db_url@DB COMPETES ref"
+                },
+                {
+                    "type": "literal",
+                    "arg": "../../COMPETES/Results/"
+                },
+                {
+                    "type": "literal",
+                    "arg": "Output_Dynamic_Gen&Trans_?.xlsx"
+                }
+            ]
+        },
+        "DB COMPETES ref 1": {
+            "type": "Data Store",
+            "description": "",
+            "x": 655.481846162634,
+            "y": 27.56699353020425,
+            "url": {
+                "dialect": "sqlite",
+                "username": "",
+                "password": "",
+                "host": "",
+                "port": "",
+                "database": {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/items/db_competes/DB COMPETES.sqlite"
+                }
+            },
+            "cancel_on_error": false
+        },
+        "Import COMPETES to COMPETES DB": {
+            "type": "Importer",
+            "description": "",
+            "x": 472.7228890549838,
+            "y": 27.566993530204243,
+            "specification": "Import COMPETES to COMPETES DB",
+            "cancel_on_error": false,
+            "file_selection": [
+                [
+                    "COMPETES_Output_for_import.xlsx",
+                    true
+                ]
+            ]
+        },
+        "COMPETES Output File": {
+            "type": "Data Connection",
+            "description": "",
+            "x": 523.7728770738807,
+            "y": 125.582970526486,
+            "references": [
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": "COMPETES/Results/COMPETES_Output_for_import.xlsx"
                 }
             ]
         }
