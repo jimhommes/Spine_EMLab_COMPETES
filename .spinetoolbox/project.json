@@ -49,11 +49,6 @@
                     "type": "path",
                     "relative": true,
                     "path": ".spinetoolbox/specifications/Tool/prepare_competes_output.json"
-                },
-                {
-                    "type": "path",
-                    "relative": true,
-                    "path": ".spinetoolbox/specifications/Tool/competes_to_competes_db.json"
                 }
             ],
             "Importer": [
