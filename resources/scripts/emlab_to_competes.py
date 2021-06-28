@@ -54,44 +54,79 @@ try:
     db_competes.import_object_parameter_values([(object_class_name, str(current_competes_tick), i, mcp, '0') for i in parameters])
 
     if current_emlab_tick > 0:
-        print('Getting CapacityMarket clearing price...')
-        capacity_market_clearing_price = next(float(i[3]) for i in db_emlab_data['object_parameter_values'] if i[0] == 'MarketClearingPoints' and i[2] == 'Price' and i[4] == str(current_emlab_tick - 1))
-        print('Capacity Market Clearing Price found: ' + str(capacity_market_clearing_price))
+        print('Current EMLAB tick ' + str(current_emlab_tick) + ' > 0 so editing Fixed O&M and CAPEX')
+        capacity_market_ppdps = [i[1] for i in db_emlab_data['object_parameter_values'] if i[0] == 'PowerPlantDispatchPlans' and i[2] == 'Market' and i[3] == 'DutchCapacityMarket' and i[4] == str(current_emlab_tick - 1)]
+        capacity_market_accepted_ppdps = [i[1] for i in db_emlab_data['object_parameter_values'] if i[0] == 'PowerPlantDispatchPlans' and i[1] in capacity_market_ppdps and i[2] == 'AcceptedAmount' and float(i[3]) > 0]
+        capacity_market_participating_plants = [i[3] for i in db_emlab_data['object_parameter_values'] if i[0] == 'PowerPlantDispatchPlans' and i[1] in capacity_market_accepted_ppdps and i[2] == 'Plant']
+        capacity_market_participating_technologies = {i[3] for i in db_emlab_data['object_parameter_values'] if i[0] == 'PowerPlants' and i[1] in capacity_market_participating_plants and i[2] == 'TECHTYPENL'}
+        print('The participating technologies in the capacity market were: ' + str(capacity_market_participating_technologies))
 
-        print('Aggregating Capacity Market revenues per technology...')
-        technology_total_revenue = {}
-        for ppdp_object in [i[1] for i in db_emlab_data['objects'] if i[0] == 'PowerPlantDispatchPlans']:
-            values = {i[2]: i[3] for i in db_emlab_data['object_parameter_values'] if i[0] == 'PowerPlantDispatchPlans' and i[1] == ppdp_object and i[4] == str(current_emlab_tick-1)}
-            if 'Market' in values.keys() and values['Market'] == 'DutchCapacityMarket':
-                unit = values['Plant']
-                tech = next(i[3] for i in db_emlab_data['object_parameter_values'] if i[0] == 'PowerPlants' and i[1] == unit and i[2] == 'TECHTYPENL')
-                revenue = float(values['AcceptedAmount']) * capacity_market_clearing_price
-                try:
-                    technology_total_revenue[tech] += revenue
-                except KeyError:
-                    technology_total_revenue[tech] = revenue
+        previous_cm_market_clearing_price = 0
+        if current_emlab_tick > 1:
+            previous_cm_market_clearing_point = next(i[1] for i in db_emlab_data['object_parameter_values'] if i[0] == 'MarketClearingPoints' and i[2] == 'Market' and i[3] == 'DutchCapacityMarket' and i[4] == str(current_emlab_tick - 2))
+            previous_cm_market_clearing_price = next(i[3] for i in db_emlab_data['object_parameter_values'] if i[0] == 'MarketClearingPoints' and i[1] == previous_cm_market_clearing_point and i[2] == 'Price' and i[4] == str(current_emlab_tick - 2))
+            print('Current EMLab tick > 1, previous Capacity Market clearing price is ' + str(previous_cm_market_clearing_price))
+        else:
+            print('Current EMLab tick <= 1, previous CM clearing price set to 0')
 
-        print(technology_total_revenue)
-        print('Done')
+        current_cm_market_clearing_point = next(i[1] for i in db_emlab_data['object_parameter_values'] if i[0] == 'MarketClearingPoints' and i[2] == 'Market' and i[3] == 'DutchCapacityMarket' and i[4] == str(current_emlab_tick - 1))
+        current_cm_market_clearing_price = next(i[3] for i in db_emlab_data['object_parameter_values'] if i[0] == 'MarketClearingPoints' and i[1] == current_cm_market_clearing_point and i[2] == 'Price' and i[4] == str(current_emlab_tick - 1))
+        print('Current CM Market Clearing Price: ' + str(current_cm_market_clearing_price))
 
-        print('Staging revenues as CAPEX reductions...')
-        print('Part 1: Overnight costs')
-        for tech in technology_total_revenue.keys():
-            valuemap_per_fuel = next(i[3] for i in db_competes_data['object_parameter_values'] if i[0] == 'Overnight Cost (OC)' and i[1] == tech)
-            param_name = next(i[2] for i in db_competes_data['object_parameter_values'] if i[0] == 'Overnight Cost (OC)' and i[1] == tech)
-            print(tech)
-            for valuemap_per_year in valuemap_per_fuel.values:
-                i = valuemap_per_year.indexes.tolist().index(str(current_competes_tick))
-                print('Old value: ' + str(valuemap_per_year.values[i]))
-                valuemap_per_year.values[i] -= float(technology_total_revenue[tech])
-                print('New value: ' + str(valuemap_per_year.values[i]))
+        for participating_technology in capacity_market_participating_technologies:
+            print('Editing CAPEX and Fixed O&M for ' + str(participating_technology))
+            db_overnight_cost_map = next(i[3] for i in db_competes_data['object_parameter_values'] if i[0] == 'Overnight Cost (OC)' and i[1] == participating_technology)
+            db_initial_overnight_cost_map = next(i[3] for i in db_competes_data['object_parameter_values'] if i[0] == 'INIT Overnight Cost (OC)' and i[1] == participating_technology)
+            db_technology_combi_map = next(i[3] for i in db_competes_data['object_parameter_values'] if i[0] == 'Technologies' and i[1] == participating_technology)
+            for db_technology_map_key in db_technology_combi_map.indexes:
+                db_technology_map = db_technology_combi_map.get_value(db_technology_map_key)
+                fuel = ''
+                fixed_om = 0
+                for key in db_technology_map.indexes:
+                    if key == 'FUELNEW':
+                        fuel = db_technology_map.get_value(key)
+                    elif key == 'FIXED O&M':
+                        fixed_om = float(db_technology_map.get_value(key))
+                print('Technology FUEL ' + fuel + ' and Fixed O&M ' + str(fixed_om))
 
-            db_competes.import_data({'object_parameters': [('Overnight Cost (OC)', 'Overnight Cost (OC)')]})
-            db_competes.import_object_parameter_values([('Overnight Cost (OC)', tech, param_name, valuemap_per_fuel, 0)])
-        print('Done')
+                if fixed_om == 0:
+                    print('Fixed O&M is 0, so backtrack CAPEX difference from previous tick')
+                    print('Backtracking previous CAPEX reduction...')
+                    previous_capex = db_overnight_cost_map.get_value(fuel).get_value(str(current_competes_tick - 1))
+                    previous_original_capex = db_initial_overnight_cost_map.get_value(fuel).get_value(str(current_competes_tick - 1))
+
+                    # First backtrack original value of CAPEX and Fixed O&M
+                    if previous_capex + previous_cm_market_clearing_price > previous_original_capex:
+                        fixed_om = previous_capex + previous_cm_market_clearing_price - previous_original_capex
+                        print('Previous CAPEX ' + str(previous_capex) + ' with MCP ' + str(previous_cm_market_clearing_price) + ' exceeded original price ' + str(previous_original_capex) + ' so adjust Fixed O&M to ' + str(fixed_om))
+                else:
+                    print('Fixed O&M greater than 0, so add entire previous MCP')
+                    fixed_om += previous_cm_market_clearing_price
+
+                capex_map = db_overnight_cost_map.get_value(fuel)
+                if capex_map is not None:
+                    current_capex = capex_map.get_value(str(current_competes_tick))
+
+                    # Now subtract
+                    fixed_om -= current_cm_market_clearing_price
+                    if fixed_om < 0:
+                        current_capex += fixed_om   # Fixed_OM is negative
+                        fixed_om = 0
+
+                    print('New Fixed O&M: ' + str(fixed_om))
+                    print('New CAPEX: ' + str(current_capex))
+                    capex_map.set_value(str(current_competes_tick), float(current_capex))
+                    db_overnight_cost_map.set_value(fuel, capex_map)
+                    db_technology_map.set_value('FIXED O&M', float(fixed_om))
+                    db_technology_combi_map.set_value(db_technology_map_key, db_technology_map)
+
+                    db_competes.import_object_parameter_values([('Technologies', participating_technology, 'Technologies', db_technology_combi_map, '0'),
+                                                                ('Overnight Cost (OC)', participating_technology, 'Overnight Cost (OC)', db_overnight_cost_map, '0')])
+                else:
+                    print('Fuel ' + fuel + ' not in Overnight Cost (OC) table for tech ' + participating_technology)
 
     print('Committing...')
-    db_competes.commit('Committing CO2 Prices and Revenues. EMLab tick: ' + str(current_emlab_tick) +
+    db_competes.commit('Committing EMLAB to COMPETES script. EMLab tick: ' + str(current_emlab_tick) +
                        ', COMPETES tick: ' + str(current_competes_tick))
 
     db_competes.close_connection()
@@ -99,6 +134,7 @@ try:
     print('Done!')
 except Exception as e:
     print('Exception occurred: ' + str(e))
+    raise
 finally:
     print('Closing database connections...')
     db_emlab.close_connection()

@@ -230,7 +230,6 @@ class SpineDB(object):
             self._handle_errors([e])
             logging.warning(e)
 
-
     def export_object_class(self, object_class_to_export) -> dict:
         """
         :return:
