@@ -576,6 +576,44 @@
                         ]
                     }
                 }
+            ],
+            "RES PowerPlant SUM (COMPETES)": [
+                {
+                    "Mapping 1": {
+                        "mapping": [
+                            {
+                                "map_type": "ObjectClass",
+                                "position": "hidden",
+                                "value": "PowerPlants"
+                            },
+                            {
+                                "map_type": "Object",
+                                "position": 8
+                            },
+                            {
+                                "map_type": "ObjectMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterDefinition",
+                                "position": -1
+                            },
+                            {
+                                "map_type": "Alternative",
+                                "position": "hidden",
+                                "value": "0"
+                            },
+                            {
+                                "map_type": "ParameterValueMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterValue",
+                                "position": "hidden"
+                            }
+                        ]
+                    }
+                }
             ]
         },
         "table_options": {
@@ -597,7 +635,8 @@
             "GeometricTrends": {},
             "TargetInvestors": {},
             "CapacityMarkets": {},
-            "MarketStabilityReserve": {}
+            "MarketStabilityReserve": {},
+            "RES PowerPlant SUM (COMPETES)": {}
         },
         "table_types": {
             "IntermittentResourceProfiles": {
@@ -702,6 +741,32 @@
                 "2": "string",
                 "3": "string",
                 "4": "string"
+            },
+            "RES PowerPlant SUM (COMPETES)": {
+                "0": "string",
+                "1": "string",
+                "2": "string",
+                "3": "string",
+                "4": "string",
+                "5": "float",
+                "6": "string",
+                "7": "string",
+                "8": "string",
+                "9": "float",
+                "10": "string",
+                "11": "string",
+                "12": "float",
+                "13": "float",
+                "14": "float",
+                "15": "float",
+                "16": "float",
+                "17": "float",
+                "18": "float",
+                "19": "float",
+                "20": "float",
+                "21": "float",
+                "22": "float",
+                "23": "float"
             }
         },
         "table_row_types": {
@@ -744,6 +809,9 @@
             },
             "MarketStabilityReserve": {
                 "0": "string"
+            },
+            "RES PowerPlant SUM (COMPETES)": {
+                "0": "string"
             }
         },
         "selected_tables": [
@@ -757,7 +825,8 @@
             "IntermittentResourceProfiles",
             "MarketStabilityReserve",
             "NationalGovernments",
-            "StepTrends"
+            "StepTrends",
+            "RES PowerPlant SUM (COMPETES)"
         ],
         "source_type": "ExcelConnector"
     },
