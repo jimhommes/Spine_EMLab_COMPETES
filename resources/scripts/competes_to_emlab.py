@@ -96,9 +96,9 @@ try:
 
     print('Exporting VRE Investment Decisions to EMLAB and COMPETES...')
     print('Export to EMLAB')
-    for index, row in vre_investment_df.iterrows():
-        old_mw = next(row['parameter_value'] for row in db_emlab_powerplants if row['object_name'] == row['WindOn'] and row['parameter_name'] == 'MWNL')
-        db_emlab.import_object_parameter_values([('PowerPlants', row['WindOn'], 'MWNL', float(old_mw) + float(row['Initial']), '0')])
+    for index, vre_row in vre_investment_df.iterrows():
+        old_mw = next(row['parameter_value'] for row in db_emlab_powerplants if row['object_name'] == vre_row['WindOn'] and row['parameter_name'] == 'MWNL')
+        db_emlab.import_object_parameter_values([('PowerPlants', vre_row['WindOn'], 'MWNL', float(old_mw) + float(vre_row['Initial']), '0')])
     print('Done')
 
     print('Export to COMPETES')
