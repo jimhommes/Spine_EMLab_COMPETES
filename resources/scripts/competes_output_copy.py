@@ -22,6 +22,8 @@ try:
     print('Copying files...')
     copyfile('../../COMPETES/Results/Output_Dynamic_Gen&Trans_?.xlsx'.replace('?', str(current_competes_tick)),
              '../../COMPETES/Results/current_Gen&Trans.xlsx')
+    copyfile('../../COMPETES/Results/Output_UC_?.xlsx'.replace('?', str(current_competes_tick)),
+             '../../COMPETES/Results/current_UC.xlsx')
 
     print('Done')
 except Exception as e:

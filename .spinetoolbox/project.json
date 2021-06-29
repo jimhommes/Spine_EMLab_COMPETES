@@ -467,16 +467,6 @@
             },
             {
                 "from": [
-                    "COMPETES Output File",
-                    "left"
-                ],
-                "to": [
-                    "Import COMPETES to COMPETES DB",
-                    "right"
-                ]
-            },
-            {
-                "from": [
                     "DB COMPETES ref",
                     "left"
                 ],
@@ -513,6 +503,16 @@
                 "to": [
                     "COMPETES Dispatch",
                     "right"
+                ]
+            },
+            {
+                "from": [
+                    "COMPETES Output File",
+                    "left"
+                ],
+                "to": [
+                    "Import COMPETES to COMPETES DB",
+                    "bottom"
                 ]
             }
         ]
@@ -950,8 +950,8 @@
         "COMPETES Output File": {
             "type": "Data Connection",
             "description": "",
-            "x": 866.1628961619546,
-            "y": 145.5536053126221,
+            "x": 785.882977542363,
+            "y": 168.79252912355656,
             "references": [
                 {
                     "type": "path",
@@ -995,8 +995,8 @@
         "COMPETES Dispatch": {
             "type": "Tool",
             "description": "",
-            "x": 265.91188425581555,
-            "y": 123.61850193608443,
+            "x": 264.85556953713666,
+            "y": 123.61850193608441,
             "specification": "COMPETES",
             "execute_in_work": false,
             "cmd_line_args": [

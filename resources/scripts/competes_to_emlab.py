@@ -32,14 +32,15 @@ try:
     print('Current COMPETES tick: ' + str(current_competes_tick))
 
     path_to_competes_results = sys.argv[3]
-    file_name = sys.argv[4].replace('?', str(current_competes_tick))
+    file_name_gentrans = sys.argv[4].replace('?', str(current_competes_tick))
+    file_name_uc = sys.argv[5].replace('?', str(current_competes_tick))
 
     print('Loading sheets...')
-    hourly_nodal_prices_df = pandas.read_excel(path_to_competes_results + '/' + file_name, 'Hourly Nodal Prices')
-    unit_generation_df = pandas.read_excel(path_to_competes_results + '/' + file_name, 'NL Unit Generation', index_col=0, skiprows=1)
-    new_generation_capacity_df = pandas.read_excel(path_to_competes_results + '/' + file_name, 'New Generation Capacity', skiprows=2, usecols='A:D,G:X')
+    hourly_nodal_prices_df = pandas.read_excel(path_to_competes_results + '/' + file_name_gentrans, 'Hourly Nodal Prices')
+    unit_generation_df = pandas.read_excel(path_to_competes_results + '/' + file_name_gentrans, 'NL Unit Generation', index_col=0, skiprows=1)
+    new_generation_capacity_df = pandas.read_excel(path_to_competes_results + '/' + file_name_gentrans, 'New Generation Capacity', skiprows=2, usecols='A:D,G:X')
     new_generation_capacity_df = crop_dataframe_until_first_empty_row(new_generation_capacity_df)
-    vre_investment_df = pandas.read_excel(path_to_competes_results + '/' + file_name, 'VRE investment', skiprows=2, usecols='A:D')
+    vre_investment_df = pandas.read_excel(path_to_competes_results + '/' + file_name_gentrans, 'VRE investment', skiprows=2, usecols='A:D')
     vre_investment_df = crop_dataframe_until_first_empty_row(vre_investment_df)
     print('Done loading sheets')
 
