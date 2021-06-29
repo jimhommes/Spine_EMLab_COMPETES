@@ -312,3 +312,21 @@ class SpineDB(object):
                  'alternative': value_row.alternative_name}
                 for value_row
                 in self._db_map.query(subquery).filter(subquery.c.object_class_name in object_class_name_list).all()]
+
+    def query_object_parameter_values_by_object_class_and_object_name(self, object_class_name, object_name):
+        """
+        When not all data is required, this function can be used to query all parameter values for a certain
+        object class and object name. Handy for objects with only one value.
+
+        :param object_class_name: Name of the object class.
+        :param object_name: Name of the object.
+        :return: Dict with object_class_name, object_name, parameter_name, parameter_value and alternative
+        """
+        subquery = self._db_map.object_parameter_value_sq
+        return [{'object_class_name': value_row.object_class_name,
+                 'object_name': value_row.object_name,
+                 'parameter_name': value_row.parameter_name,
+                 'parameter_value': from_database(value_row.value, value_row.type),
+                 'alternative': value_row.alternative_name}
+                for value_row
+                in self._db_map.query(subquery).filter(subquery.c.object_class_name == object_class_name).filter(subquery.c.object_name == object_name).all()]
