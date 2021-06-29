@@ -6,7 +6,7 @@ This is necessary as COMPETES works with aggregates: EMLAB with statuses actual 
 Jim Hommes - 29-6-2021
 """
 import sys
-from spinedb import *
+from spinedb import SpineDB
 from helper_functions import get_current_ticks
 
 
