@@ -14,6 +14,7 @@ from spinedb_api.exception import (
 from spinedb_api import import_functions
 from spinedb_api import export_functions
 from spinedb_api.helpers import create_new_spine_database
+from spinedb_api.parameter_value import from_database
 
 
 def _handle_errors(errors: list):
@@ -290,7 +291,7 @@ class SpineDB(object):
         return [{'object_class_name': value_row.object_class_name,
                  'object_name': value_row.object_name,
                  'parameter_name': value_row.parameter_name,
-                 'parameter_value': value_row.value,
+                 'parameter_value': from_database(value_row.value, value_row.type),
                  'alternative': value_row.alternative_name}
                 for value_row
                 in self._db_map.query(subquery).filter(subquery.c.object_class_name == object_class_name).all()]
