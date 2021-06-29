@@ -5,25 +5,19 @@ as defined in Spine Toolbox.
 
 Jim Hommes - 21-6-2021
 """
-from spinedb import *
 import sys
 from shutil import copyfile
+from spinedb import SpineDB
+from helper_functions import get_current_ticks
 
 print('===== Starting COMPETES Output Preparation script =====')
 print('Loading Databases...')
 db_emlab = SpineDB(sys.argv[1])
 
 try:
-    db_emlab_data = db_emlab.export_data()
-    print('Done loading Databases.')
-
-    print('Loading current EM-Lab tick...')
-    current_emlab_tick = max(
-        [int(i[3]) for i in db_emlab_data['object_parameter_values'] if i[0] == i[1] == 'SystemClockTicks' and
-         i[2] == 'ticks'])
-    current_competes_tick = 2020 + round(current_emlab_tick / 5) * 5
-    print('Current EM-Lab tick is ' + str(current_emlab_tick) +
-          ', which translates to COMPETES tick ' + str(current_competes_tick))
+    current_emlab_tick, current_competes_tick, current_competes_tick_rounded = get_current_ticks(db_emlab, 2020)
+    print('Current EMLAB Tick: ' + str(current_emlab_tick))
+    print('Current COMPETES Tick: ' + str(current_competes_tick))
 
     print('Copying files...')
     copyfile('../../COMPETES/Results/Output_Dynamic_Gen&Trans_?.xlsx'.replace('?', str(current_competes_tick)),
