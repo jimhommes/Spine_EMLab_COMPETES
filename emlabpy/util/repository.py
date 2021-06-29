@@ -69,6 +69,8 @@ class Repository:
         return plant.capacity - ppdps_sum_accepted_amount
 
     def get_power_plant_electricity_spot_market_revenues_by_tick(self, power_plant: PowerPlant, time: int) -> float:
+        # Accepted Amount is in MW
+        # MCP Price is in Euro / MWh
         return sum([float(
             i.accepted_amount * self.get_market_clearing_point_for_market_and_time(i.bidding_market, time).price
         )
@@ -79,8 +81,11 @@ class Repository:
                     i.plant == power_plant])
 
     def get_power_plant_costs_by_tick(self, power_plant: PowerPlant, time: int) -> float:
+        # MC is Euro / MW
         mc = power_plant.calculate_marginal_cost_excl_co2_market_cost(self, time)
-        foc = power_plant.get_actual_fixed_operating_cost() / 8760  # TODO: Fix right timing
+        # FOC is ?? TODO check
+        foc = power_plant.get_actual_fixed_operating_cost()
+        # total capacity is in MWh
         total_capacity = self.get_total_accepted_amounts_by_power_plant_and_tick(power_plant, time)
         return foc + mc * total_capacity
 
@@ -94,8 +99,10 @@ class Repository:
 
     def get_power_plant_emissions_by_tick(self, time: int) -> Dict[str, float]:
         res = {}
-        for power_plant in self.power_plants.values():
+        for power_plant in [i for i in self.power_plants.values() if i.status == self.power_plant_status_operational]:
+            # Total Capacity is in MWh
             total_capacity = self.get_total_accepted_amounts_by_power_plant_and_tick(power_plant, time)
+            # Emission intensity is in ton CO2 / MWh
             emission_intensity = power_plant.calculate_emission_intensity(self)
             res[power_plant.name] = total_capacity * emission_intensity
         return res

@@ -54,10 +54,13 @@ class PowerPlant(ImportObject):
     def calculate_emission_intensity(self, reps):
         emission = 0
         for substance_in_fuel_mix in reps.get_substances_in_fuel_mix_by_plant(self):
-            amount_per_mw = 3600 * substance_in_fuel_mix.share / (self.efficiency *
+            # Energy density is in GJ / ton, amount per mw is in ton fuel / MWh
+            amount_per_mw = 3.6 * substance_in_fuel_mix.share / (self.efficiency *
                                                                   substance_in_fuel_mix.substance.energy_density)
+            # CO2 Density is a fraction (so fuel is 41% co2 for example)
             co2_density = substance_in_fuel_mix.substance.co2_density * (1 - float(
                 self.technology.co2_capture_efficiency))
+            # Returned value is ton CO2 / MWh
             emission_for_this_fuel = amount_per_mw * co2_density
             emission += emission_for_this_fuel
         return emission
@@ -78,8 +81,9 @@ class PowerPlant(ImportObject):
     def calculate_marginal_fuel_cost_per_mw_by_tick(self, reps, time):
         fc = 0
         for substance_in_fuel_mix in reps.get_substances_in_fuel_mix_by_plant(self):
-            amount_per_mw = 3600 * substance_in_fuel_mix.share / (self.efficiency *
-                                                                  substance_in_fuel_mix.substance.energy_density)
+            # Energy Density is GJ / ton
+            amount_per_mw = 3.6 * substance_in_fuel_mix.share / (self.efficiency * substance_in_fuel_mix.substance.energy_density)
+            # Fuel price is Euro / ton
             fuel_price = substance_in_fuel_mix.substance.get_price_for_tick(time)
             fc += amount_per_mw * fuel_price
         return fc
@@ -202,8 +206,8 @@ class SubstanceInFuelMix(ImportObject):
         self.share = 1
 
     def add_parameter_value(self, reps, parameter_name: str, parameter_value, alternative: str):
-        if parameter_name == 'FUEL1':
-            self.substances = [reps.substances[i] for i in parameter_value.to_dict()['data']]
+        if parameter_name == 'FUELNEW':
+            self.substances.append(parameter_value)
 
 
 class PowerPlantDispatchPlan(ImportObject):

@@ -24,19 +24,19 @@ class CO2MarketDetermineCO2Price(MarketModule):
             if self.reps.current_tick == 0:
                 # If first tick, COMPETES has not run yet. Set to CO2 substance cost
                 # co2price = self.reps.substances['co2'].get_price_for_tick(0)
-                co2price = 40
-            #     TODO: What to do with the first CO2 price?
+                co2price = 25
             else:
                 # If not first tick, base CO2 Price of profits/emissions last year
 
                 # If implemented, take MarketStabilityReserve into account
                 msr = self.reps.get_market_stability_reserve_for_market(market)
+                # CO2Cap is in EU ETS - 1 for 1 ton CO2
                 if msr is not None:
-                    co2_cap = self.reps.get_government().co2_cap_trend.get_value(self.reps.current_tick - 1) / 8760 - \
+                    co2_cap = self.reps.get_government().co2_cap_trend.get_value(self.reps.current_tick - 1) - \
                               self.reps.get_allowances_in_circulation(self.reps.zones[market.parameters['zone']], self.reps.current_tick)\
                               + msr.flow
                 else:
-                    co2_cap = self.reps.get_government().co2_cap_trend.get_value(self.reps.current_tick - 1) / 8760 - \
+                    co2_cap = self.reps.get_government().co2_cap_trend.get_value(self.reps.current_tick - 1) - \
                               self.reps.get_allowances_in_circulation(self.reps.zones[market.parameters['zone']], self.reps.current_tick)
 
                 # Get profits, emissions and calculate WTP
@@ -53,7 +53,6 @@ class CO2MarketDetermineCO2Price(MarketModule):
                 total_emissions = 0
                 for (power_plant_name, wtp) in sorted(willingness_to_pay_per_plant.items(),
                                                       key=lambda item: item[1], reverse=True):
-                    plant = self.reps.power_plants[power_plant_name]
                     if co2_cap >= total_emissions + emissions_per_plant[power_plant_name]:
                         total_emissions += emissions_per_plant[power_plant_name]
                         co2price = wtp

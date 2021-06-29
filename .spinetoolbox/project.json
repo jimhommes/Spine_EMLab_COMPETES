@@ -521,8 +521,8 @@
         "DB EMLAB": {
             "type": "Data Store",
             "description": "",
-            "x": -346.238206248836,
-            "y": -118.72210407483803,
+            "x": -343.7092706928664,
+            "y": -118.72210407483806,
             "url": {
                 "dialect": "sqlite",
                 "username": "",
@@ -891,8 +891,8 @@
         "COMPETES Output to EMLAB DB and COMPETES DB": {
             "type": "Tool",
             "description": "",
-            "x": 482.16272568186275,
-            "y": 0.43217710518955244,
+            "x": 433.5098633414686,
+            "y": 2.643670847934745,
             "specification": "DB COMPETES to DB EMLAB",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -911,6 +911,10 @@
                 {
                     "type": "literal",
                     "arg": "Output_Dynamic_Gen&Trans_?.xlsx"
+                },
+                {
+                    "type": "literal",
+                    "arg": "Output_UC_?.xlsx"
                 }
             ]
         },
