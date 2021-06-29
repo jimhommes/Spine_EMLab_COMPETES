@@ -1,3 +1,9 @@
+"""
+This file contains some helper functions for the scripts in resources/scripts.
+An example that all of them use is to read the current year from the EMLAB SpineDB.
+
+Jim Hommes - 29-6-2021
+"""
 from spinedb import *
 
 
