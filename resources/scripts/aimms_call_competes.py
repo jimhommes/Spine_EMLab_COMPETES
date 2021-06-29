@@ -7,13 +7,19 @@ Created on Fri Apr 23 10:37:40 2021
 
 import requests
 import time
+import sys
+from spinedb import SpineDB
+from helper_functions import get_current_ticks
 
 print('===== Starting COMPETES Execution =====')
-f = open('currentyear.txt')
-current_year = f.read()
-print('Running for year ' + current_year)
+print('Read current year from SpineDB...')
+db_emlab = SpineDB(sys.argv[1])
+try:
+    current_emlab_tick, current_competes_tick, current_competes_tick_rounded = get_current_ticks(db_emlab, 2020)
+finally:
+    db_emlab.close_connection()
 
-result = requests.post('http://localhost:60117/api/v1/tasks/examplespine?InputYear=' + current_year)
+result = requests.post('http://localhost:60117/api/v1/tasks/examplespine?InputYear=' + str(current_competes_tick))
 print('Code: ' + str(result.status_code))
 print('Body: ' + result.text)
 request_id = result.json()['id']

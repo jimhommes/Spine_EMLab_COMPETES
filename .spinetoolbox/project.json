@@ -474,6 +474,26 @@
                     "Prepare COMPETES",
                     "left"
                 ]
+            },
+            {
+                "from": [
+                    "DB EMLAB",
+                    "right"
+                ],
+                "to": [
+                    "Prepare COMPETES",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "DB EMLAB ref",
+                    "left"
+                ],
+                "to": [
+                    "COMPETES",
+                    "right"
+                ]
             }
         ]
     },
@@ -540,8 +560,8 @@
         "COMPETES Init Data": {
             "type": "Data Connection",
             "description": "",
-            "x": -638.3158273155155,
-            "y": 171.179091001602,
+            "x": -636.2878569628432,
+            "y": 217.8224091130643,
             "references": [
                 {
                     "type": "path",
@@ -703,7 +723,12 @@
             "y": 122.37999343469183,
             "specification": "COMPETES",
             "execute_in_work": false,
-            "cmd_line_args": []
+            "cmd_line_args": [
+                {
+                    "type": "resource",
+                    "arg": "db_url@DB EMLAB ref"
+                }
+            ]
         },
         "Prepare COMPETES": {
             "type": "Tool",
@@ -719,11 +744,11 @@
                 },
                 {
                     "type": "resource",
-                    "arg": "COMPETES EU 2050-KIP config.xlsx"
+                    "arg": "db_url@DB EMLAB"
                 },
                 {
-                    "type": "literal",
-                    "arg": "../../COMPETES/currentyear.txt"
+                    "type": "resource",
+                    "arg": "COMPETES EU 2050-KIP config.xlsx"
                 },
                 {
                     "type": "resource",
