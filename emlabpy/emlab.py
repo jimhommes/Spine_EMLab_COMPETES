@@ -21,7 +21,7 @@ if not os.path.isdir('logs'):
     os.makedirs('logs')
 logging.basicConfig(filename='logs/' + str(round(time.time() * 1000)) + '-log.txt', level=logging.DEBUG)
 # Log to console? Uncomment next line
-# logging.getLogger().addHandler(logging.StreamHandler())
+logging.getLogger().addHandler(logging.StreamHandler())
 
 logging.info('Starting EM-Lab Run')
 

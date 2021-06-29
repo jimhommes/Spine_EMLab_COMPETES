@@ -40,8 +40,6 @@ class SpineDBReaderWriter:
                                         key=lambda item: int(parameter_priorities.loc[parameter_priorities['object_class_name'] == item[0], 'priority'].iat[0])
                                         if not parameter_priorities.loc[parameter_priorities['object_class_name'] == item[0], 'priority'].empty else 0, reverse=True)
 
-        print(sorted_parameter_names)
-
         # Import all object parameter values in one go
         for (object_class_name, parameter_name, _, _, _) in sorted_parameter_names:
             for (_, object_name, _) in [i for i in db_data['objects'] if i[0] == object_class_name]:

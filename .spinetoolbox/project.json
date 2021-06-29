@@ -939,7 +939,7 @@
             "x": -87.88080026998804,
             "y": -240.1747777630664,
             "specification": "Preprocessing DB EMLAB",
-            "execute_in_work": true,
+            "execute_in_work": false,
             "cmd_line_args": [
                 {
                     "type": "resource",
