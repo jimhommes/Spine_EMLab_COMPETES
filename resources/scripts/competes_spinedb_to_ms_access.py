@@ -60,6 +60,8 @@ def export_to_mdb(path: str, filename: str,
     :return:
     """
     print('Initializing connection to ' + filename)
+    conn = None
+    cursor = None
     try:
         con_string = r'DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=' + path + filename + ';'
         conn = pyodbc.connect(con_string)
@@ -108,9 +110,13 @@ def export_to_mdb(path: str, filename: str,
     except pyodbc.Error as e:
         print("Error in Connection", e)
     finally:
-        cursor.close()
-        conn.close()
+        if cursor is not None:
+            cursor.close()
+
+        if conn is not None:
+            conn.close()
         print('Done')
+        raise
 
 
 def export_type1(cursor, table_name, id_parameter_name):
