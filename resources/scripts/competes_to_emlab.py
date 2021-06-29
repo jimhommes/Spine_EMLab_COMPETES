@@ -4,10 +4,11 @@ It handles the MarketClearingPoint from the Hourly Nodal Prices and the unit gen
 
 Jim Hommes - 10-6-2021
 """
-from spinedb import *
 import sys
 import pandas
 from datetime import datetime
+from spinedb import SpineDB
+from helper_functions import get_current_ticks
 
 
 def crop_dataframe_until_first_empty_row(df):
@@ -22,17 +23,13 @@ print('===== Starting COMPETES Output Interpretation script =====')
 print('Loading Databases...')
 db_emlab = SpineDB(sys.argv[1])
 db_competes = SpineDB(sys.argv[2])
-try:
-    db_emlab_data = db_emlab.export_data()
-    print('Done loading Databases.')
 
-    print('Loading current EM-Lab tick...')
-    current_emlab_tick = max(
-        [int(i[3]) for i in db_emlab_data['object_parameter_values'] if i[0] == i[1] == 'SystemClockTicks' and
-         i[2] == 'ticks'])
-    current_competes_tick = 2020 + round(current_emlab_tick / 5) * 5
-    print('Current EM-Lab tick is ' + str(current_emlab_tick) +
-          ', which translates to COMPETES tick ' + str(current_competes_tick))
+try:
+    current_emlab_tick, current_competes_tick, current_competes_tick_rounded = get_current_ticks(db_emlab, 2020)
+    db_emlab_powerplants = db_emlab.query_object_parameter_values_by_object_class('PowerPlants')
+    print('Done loading Databases.')
+    print('Current EM-Lab tick: ' + str(current_emlab_tick))
+    print('Current COMPETES tick: ' + str(current_competes_tick))
 
     path_to_competes_results = sys.argv[3]
     file_name = sys.argv[4].replace('?', str(current_competes_tick))
@@ -70,7 +67,7 @@ try:
         accepted = sum(unit_generation_df[power_plant].values)
         ppdp_name = 'PowerPlantDispatchPlan ' + str(datetime.now())
         ppdp_objects_to_import.append(('PowerPlantDispatchPlans', ppdp_name))
-        owner = next(i[3] for i in db_emlab_data['object_parameter_values'] if i[0] == 'PowerPlants' and i[1] == power_plant and i[2] == 'FirmNL')
+        owner = next(row['parameter_value'] for row in db_emlab_powerplants if row['object_name'] == power_plant and row['parameter_name'] == 'FirmNL')
         status = 'Accepted' if accepted > 0 else 'Failed'
         values = [('AcceptedAmount', accepted), ('Capacity', accepted), ('EnergyProducer', owner), ('Market', 'DutchElectricitySpotMarket'), ('Plant', power_plant), ('Status', status), ('Price', hourly_nodal_prices_nl_avg)]
         ppdp_values_to_import = ppdp_values_to_import + [('PowerPlantDispatchPlans', ppdp_name, i[0], i[1], str(current_emlab_tick)) for i in values]
@@ -99,7 +96,7 @@ try:
     print('Exporting VRE Investment Decisions to EMLAB and COMPETES...')
     print('Export to EMLAB')
     for index, row in vre_investment_df.iterrows():
-        old_mw = next(i[3] for i in db_emlab_data['object_parameter_values'] if i[0] == 'PowerPlants' and i[1] == row['WindOn'] and i[2] == 'MWNL')
+        old_mw = next(row['parameter_value'] for row in db_emlab_powerplants if row['object_name'] == row['WindOn'] and row['parameter_name'] == 'MWNL')
         db_emlab.import_object_parameter_values([('PowerPlants', row['WindOn'], 'MWNL', float(old_mw) + float(row['Initial']), '0')])
     print('Done')
 
