@@ -164,6 +164,10 @@ def export_type2(cursor, table_name, id_parameter_name, index_parameter_names):
 
 
 def export_type2_recursive(cursor, table_name, id_parameter_name, id_parameter_value, index_parameter_names, index_parameter_values, data):
+    """
+    This function assists the export_type2 function and should not be used on it's own.
+    In order to explore the SpineDB Map inside of other SpineDB Map structure this is set up as a recursive function.
+    """
     if len(data) > 0:
         first_el = data[0]
         if len(first_el) == 2 and type(first_el[1]) == dict and 'type' in first_el[1].keys() and first_el[1]['type'] == 'map':
@@ -179,8 +183,6 @@ def export_type2_recursive(cursor, table_name, id_parameter_name, id_parameter_v
             sql_query = 'INSERT INTO [' + table_name + '] ([' + id_parameter_name + '],[' + \
                         '],['.join(index_parameter_names) + '],' + ','.join([i[0] for i in param_values]) + \
                         ') VALUES (?,' + ','.join(list('?' * len(index_parameter_values))) + ',' + ','.join(list('?' * len(param_values))) + ');'
-            # print(param_values)
-            # print(sql_query)
             values = (id_parameter_value,) + tuple(index_parameter_values) + tuple(i[1] for i in param_values)
             cursor.execute(sql_query, values)
 
