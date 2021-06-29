@@ -297,7 +297,8 @@ config_url = sys.argv[3]
 print('Config file path: ' + config_url)
 
 print('Copying empty Excel sheet...')
-originalfiles = ['../../COMPETES/Results/Empty output files/Output_Dynamic_Gen&Trans_INSERTYEAR.xlsx']
+originalfiles = ['../../COMPETES/Results/Empty output files/Output_Dynamic_Gen&Trans_INSERTYEAR.xlsx',
+                 '../../COMPETES/Results/Empty output files/Output_UC_INSERTOUTPUTYEAR.xlsx']
 
 print('Reading current tick...')
 db_emlab = SpineDB(sys.argv[2])
@@ -307,7 +308,7 @@ finally:
     db_emlab.close_connection()
 
 for originalfile in originalfiles:
-    shutil.copyfile(originalfile, originalfile.replace("INSERTYEAR", str(current_competes_tick)).replace('/Empty output files', ''))
+    shutil.copyfile(originalfile, originalfile.replace("INSERTYEAR", str(current_competes_tick)).replace("INSERTOUTPUTYEAR", str(current_competes_tick)).replace('/Empty output files', ''))
 
 print('Copying empty databases...')
 originalfiles = sys.argv[4:]
