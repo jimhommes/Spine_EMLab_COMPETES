@@ -10,6 +10,7 @@ import sys
 import numpy as np
 import pandas
 from spinedb import SpineDB
+from helper_functions import get_current_ticks
 
 
 class TriangularTrend:
@@ -109,6 +110,7 @@ def export_to_mdb(path: str, filename: str,
         cursor.commit()
     except pyodbc.Error as e:
         print("Error in Connection", e)
+        raise
     finally:
         if cursor is not None:
             cursor.close()
@@ -116,7 +118,6 @@ def export_to_mdb(path: str, filename: str,
         if conn is not None:
             conn.close()
         print('Done')
-        raise
 
 
 def export_type1(cursor, table_name, id_parameter_name):
@@ -292,15 +293,18 @@ def export_nset(cursor):
 
 print('===== Starting COMPETES SpineDB to MS Access script =====')
 
-config_url = sys.argv[2]
+config_url = sys.argv[3]
 print('Config file path: ' + config_url)
-
-print('Reading current year..')
-f = open(sys.argv[3])
-current_competes_tick = int(f.read())
 
 print('Copying empty Excel sheet...')
 originalfiles = ['../../COMPETES/Results/Empty output files/Output_Dynamic_Gen&Trans_INSERTYEAR.xlsx']
+
+print('Reading current tick...')
+db_emlab = SpineDB(sys.argv[2])
+try:
+    current_emlab_tick, current_competes_tick, current_competes_tick_rounded = get_current_ticks(db_emlab, 2020)
+finally:
+    db_emlab.close_connection()
 
 for originalfile in originalfiles:
     shutil.copyfile(originalfile, originalfile.replace("INSERTYEAR", str(current_competes_tick)).replace('/Empty output files', ''))
@@ -314,7 +318,7 @@ for originalfile in originalfiles:
     shutil.copyfile(originalfile, originalfile.replace("empty_", ""))
 print('Done copying empty databases')
 
-print('Connecting and exporting SpineDB...')
+print('Connecting and exporting COMPETES SpineDB...')
 db_competes = SpineDB(sys.argv[1])
 try:
     db_competes_data = db_competes.export_data()
