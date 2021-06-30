@@ -40,12 +40,13 @@ class SpineDBReaderWriter:
                                         key=lambda item: int(parameter_priorities.loc[parameter_priorities['object_class_name'] == item[0], 'priority'].iat[0])
                                         if not parameter_priorities.loc[parameter_priorities['object_class_name'] == item[0], 'priority'].empty else 0, reverse=True)
 
+
         # Import all object parameter values in one go
         for (object_class_name, parameter_name, _, _, _) in sorted_parameter_names:
             for (_, object_name, _) in [i for i in db_data['objects'] if i[0] == object_class_name]:
                 try:
                     db_line = next(i for i in sorted_object_parameter_values
-                                   if i[1] == object_name and i[2] == parameter_name)
+                                   if i[0] == object_class_name and i[1] == object_name and i[2] == parameter_name)
                     add_parameter_value_to_repository_based_on_object_class_name(reps, db_line)
                 except StopIteration:
                     logging.warning('No value found for class: ' + object_class_name +
@@ -163,10 +164,10 @@ def add_parameter_value_to_repository(reps: Repository, db_line: list, to_dict: 
     parameter_name = db_line[2]
     parameter_value = db_line[3]
     parameter_alt = db_line[4]
-    logging.info('Adding parameter value: {object_name: ' + str(object_name)
-                 + ', parameter_name: ' + str(parameter_name)
-                 + ', parameter_value: ' + str(parameter_value)
-                 + ', parameter_alt: ' + str(parameter_alt) + '}')
+    # logging.info('Adding parameter value: {object_name: ' + str(object_name)
+    #              + ', parameter_name: ' + str(parameter_name)
+    #              + ', parameter_value: ' + str(parameter_value)
+    #              + ', parameter_alt: ' + str(parameter_alt) + '}')
     if object_name not in to_dict.keys():
         to_dict[object_name] = class_to_create(object_name)
 
@@ -249,6 +250,7 @@ def add_parameter_value_to_repository_based_on_object_class_name(reps, db_line):
     elif object_class_name == 'MarketStabilityReserve':
         add_parameter_value_to_repository(reps, db_line, reps.market_stability_reserves, MarketStabilityReserve)
     elif object_class_name == 'PowerGeneratingTechnologyFuel':
+        print(object_class_name)
         add_parameter_value_to_repository(reps, db_line, reps.power_plants_fuel_mix, SubstanceInFuelMix)
     else:
         logging.info('Object Class not defined: ' + object_class_name)

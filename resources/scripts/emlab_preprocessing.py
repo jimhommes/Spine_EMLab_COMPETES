@@ -32,12 +32,11 @@ try:
                 try:
                     new_substance_name = next(fm_row['parameter_value'] for fm_row in db_emlab_fuelmap if fm_row['object_name'] == row['parameter_value']).get_value(old_substance_name)
                     db_emlab.import_object_parameter_values([('PowerGeneratingTechnologyFuel', row['object_name'], 'FUELNEW', new_substance_name, '0')])
-                except StopIteration:
+                except StopIteration:   # Not all technologies are in the FuelMap
                     print('Tech not found in FuelMap: ' + row['parameter_value'])
 
     print('Setting correct powerplant statuses...')
     powerplant_statuses = {row['object_name']: row['parameter_value'] for row in db_emlab_powerplants if row['object_class_name'] == 'PowerPlants' and row['parameter_name'] == 'STATUSNL'}
-    print(powerplant_statuses)
 
     # Check if build year >= current_competes_tick
     for row in [i for i in db_emlab_powerplants if i['object_class_name'] == 'PowerPlants' and i['parameter_name'] == 'ON-STREAMNL']:
@@ -81,7 +80,6 @@ try:
                 mw_waste_sum += next(row['parameter_value'] for row in db_emlab_powerplants if row['object_class_name'] == 'PowerPlants' and row['object_name'] == plant and row['parameter_name'] == 'MWNL')
 
     print('End:')
-    print(powerplant_statuses)
 
     print('Setting up for DB import...')
     db_emlab.import_object_parameter_values([('PowerPlants', 'NED BIOMASS Standalone SUM', 'MWNL', mw_biomass_sum, '0'),
