@@ -521,7 +521,7 @@
         "DB EMLAB": {
             "type": "Data Store",
             "description": "",
-            "x": -343.7092706928664,
+            "x": -454.56823009480513,
             "y": -118.72210407483806,
             "url": {
                 "dialect": "sqlite",
@@ -540,8 +540,8 @@
         "EMLAB Init Data": {
             "type": "Data Connection",
             "description": "Loads all initialization values",
-            "x": -641.2110988452027,
-            "y": -161.4955868726622,
+            "x": -752.0700582471414,
+            "y": -162.650346359517,
             "references": [
                 {
                     "type": "path",
@@ -553,7 +553,7 @@
         "Import EMLAB Init": {
             "type": "Importer",
             "description": "",
-            "x": -479.3469123972661,
+            "x": -590.2058717992048,
             "y": -161.7974896251959,
             "specification": "Import EMLAB Init",
             "cancel_on_error": true,
@@ -567,8 +567,8 @@
         "SHARED Init Data": {
             "type": "Data Connection",
             "description": "",
-            "x": -639.4233652598608,
-            "y": -21.854565399772476,
+            "x": -750.2823246617994,
+            "y": -23.009324886627226,
             "references": [
                 {
                     "type": "path",
@@ -580,7 +580,7 @@
         "COMPETES Init Data": {
             "type": "Data Connection",
             "description": "",
-            "x": -637.3018421391794,
+            "x": -748.1608015411181,
             "y": 217.8224091130643,
             "references": [
                 {
@@ -598,7 +598,7 @@
         "Import COMPETES Init": {
             "type": "Importer",
             "description": "",
-            "x": -478.43410684861954,
+            "x": -589.2930662505582,
             "y": 123.41195870342031,
             "specification": "Import COMPETES",
             "cancel_on_error": false,
@@ -616,7 +616,7 @@
         "DB COMPETES": {
             "type": "Data Store",
             "description": "",
-            "x": -343.61831120970095,
+            "x": -454.47727061163965,
             "y": 122.47609969740355,
             "url": {
                 "dialect": "sqlite",
@@ -635,7 +635,7 @@
         "Import SHARED Init to COMPETES": {
             "type": "Importer",
             "description": "",
-            "x": -479.4473886530907,
+            "x": -590.3063480550294,
             "y": 28.76493472760543,
             "specification": "Import Shared Init to COMPETES",
             "cancel_on_error": false,
@@ -649,7 +649,7 @@
         "Import SHARED Init to EMLAB": {
             "type": "Importer",
             "description": "",
-            "x": -479.94929449832966,
+            "x": -590.8082539002684,
             "y": -60.79122255269472,
             "specification": "Import Shared Init EMLAB",
             "cancel_on_error": false,
@@ -663,7 +663,7 @@
         "Import COMPETES Init (PP)": {
             "type": "Importer",
             "description": "",
-            "x": -480.37665688807135,
+            "x": -591.2356162900101,
             "y": 219.25256711136345,
             "specification": "Import COMPETES (PP)",
             "cancel_on_error": false,
@@ -681,7 +681,7 @@
         "EMLAB CO2 Market": {
             "type": "Tool",
             "description": "",
-            "x": -87.28103726989197,
+            "x": -198.13999667183066,
             "y": -118.33028509816539,
             "specification": "CO2 Market",
             "execute_in_work": false,
@@ -703,7 +703,7 @@
         "Init EMLAB Clock": {
             "type": "Tool",
             "description": "",
-            "x": -266.25901267563194,
+            "x": -377.11797207757064,
             "y": -232.35130632278774,
             "specification": "Clock",
             "execute_in_work": false,
@@ -721,7 +721,7 @@
         "DB EMLAB to DB COMPETES": {
             "type": "Tool",
             "description": "",
-            "x": -62.979986149924095,
+            "x": -173.8389455518628,
             "y": -2.224919804956299,
             "specification": "EMLAB to COMPETES",
             "execute_in_work": false,
@@ -739,7 +739,7 @@
         "Prepare COMPETES": {
             "type": "Tool",
             "description": "",
-            "x": -37.42243867019323,
+            "x": -148.28139807213194,
             "y": 124.56254161473561,
             "specification": "COMPETES SpineDB to MS Access",
             "execute_in_work": false,
@@ -769,7 +769,7 @@
         "DB EMLAB ref": {
             "type": "Data Store",
             "description": "",
-            "x": 664.1101478981292,
+            "x": 553.2511884961905,
             "y": -117.3895564135755,
             "url": {
                 "dialect": "sqlite",
@@ -788,7 +788,7 @@
         "EMLAB Capacity Market": {
             "type": "Tool",
             "description": "",
-            "x": 508.9513552314148,
+            "x": 398.0923958294761,
             "y": -114.70141259328385,
             "specification": "Capacity Market",
             "execute_in_work": false,
@@ -810,7 +810,7 @@
         "Increment EMLAB Clock": {
             "type": "Tool",
             "description": "",
-            "x": 561.6607207149473,
+            "x": 450.80176131300857,
             "y": -228.88864959672586,
             "specification": "Clock",
             "execute_in_work": false,
@@ -828,7 +828,7 @@
         "DB COMPETES ref": {
             "type": "Data Store",
             "description": "",
-            "x": 574.1140932268235,
+            "x": 463.25513382488475,
             "y": 124.62376156817469,
             "url": {
                 "dialect": "sqlite",
@@ -847,7 +847,7 @@
         "Empty MS Access Files": {
             "type": "Data Connection",
             "description": "",
-            "x": -128.78615402356127,
+            "x": -239.64511342549997,
             "y": 236.35130632278774,
             "references": [
                 {
@@ -865,7 +865,7 @@
         "EMLAB Config File": {
             "type": "Data Connection",
             "description": "",
-            "x": 108.50664967358259,
+            "x": -2.3523097283561185,
             "y": -146.66215836740216,
             "references": [
                 {
@@ -878,7 +878,7 @@
         "COMPETES Config File": {
             "type": "Data Connection",
             "description": "",
-            "x": 50.20070960006146,
+            "x": -60.65824980187725,
             "y": 234.15603095129913,
             "references": [
                 {
@@ -891,7 +891,7 @@
         "COMPETES Output to EMLAB DB and COMPETES DB": {
             "type": "Tool",
             "description": "",
-            "x": 433.5098633414686,
+            "x": 322.6509039395299,
             "y": 2.643670847934745,
             "specification": "DB COMPETES to DB EMLAB",
             "execute_in_work": false,
@@ -921,7 +921,7 @@
         "DB COMPETES ref 1": {
             "type": "Data Store",
             "description": "",
-            "x": 861.5197609430569,
+            "x": 750.6608015411182,
             "y": 58.2151211836367,
             "url": {
                 "dialect": "sqlite",
@@ -940,7 +940,7 @@
         "Import COMPETES to COMPETES DB": {
             "type": "Importer",
             "description": "",
-            "x": 760.0108427570257,
+            "x": 649.151883355087,
             "y": 40.82695669115644,
             "specification": "Import COMPETES to COMPETES DB",
             "cancel_on_error": false,
@@ -954,7 +954,7 @@
         "COMPETES Output File": {
             "type": "Data Connection",
             "description": "",
-            "x": 785.882977542363,
+            "x": 675.0240181404243,
             "y": 168.79252912355656,
             "references": [
                 {
@@ -967,7 +967,7 @@
         "Preprocessing DB EMLAB": {
             "type": "Tool",
             "description": "",
-            "x": -113.46356449053141,
+            "x": -224.32252389247012,
             "y": -230.71153790266777,
             "specification": "Preprocessing DB EMLAB",
             "execute_in_work": false,
@@ -981,7 +981,7 @@
         "COMPETES Investment": {
             "type": "Tool",
             "description": "",
-            "x": 413.6853540632936,
+            "x": 302.82639466135487,
             "y": 123.26810862701834,
             "specification": "COMPETES",
             "execute_in_work": false,
@@ -999,7 +999,7 @@
         "COMPETES Dispatch": {
             "type": "Tool",
             "description": "",
-            "x": 264.85556953713666,
+            "x": 153.99661013519795,
             "y": 123.61850193608441,
             "specification": "COMPETES",
             "execute_in_work": false,

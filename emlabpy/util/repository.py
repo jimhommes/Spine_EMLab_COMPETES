@@ -190,11 +190,14 @@ class Repository:
             return None
 
     # SubstanceInFuelMix
-    def get_substances_in_fuel_mix_by_plant(self, plant: PowerPlant) -> List[SubstanceInFuelMix]:
+    def get_substances_in_fuel_mix_by_plant(self, plant: PowerPlant) -> Optional[SubstanceInFuelMix]:
         if plant.technology.name in self.power_plants_fuel_mix.keys():
             return self.power_plants_fuel_mix[plant.technology.name]
         else:
-            return []
+            print(plant.name)
+            print(plant.technology)
+            print(self.power_plants_fuel_mix.keys())
+            return None
 
     # MarketClearingPoints
     def get_market_clearing_point_for_market_and_time(self, market: Market, time: int) -> Optional[MarketClearingPoint]:
@@ -243,6 +246,7 @@ class Repository:
             return next(i for i in self.power_generating_technologies.values()
                         if i.techtype == techtype and i.fuel == fuel)
         except StopIteration:
+            logging.warning('PowerGeneratingTechnology not found for ' + techtype + ' and ' + fuel)
             return None
 
     # PowerGridNode
