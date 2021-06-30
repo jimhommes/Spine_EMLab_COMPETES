@@ -4,6 +4,7 @@ This file contains all classes directly related to energy. PowerPlants, fuels, t
 Jim Hommes - 13-5-2021
 """
 from domain.import_object import *
+import logging
 
 
 class PowerPlant(ImportObject):
@@ -53,12 +54,13 @@ class PowerPlant(ImportObject):
 
     def calculate_emission_intensity(self, reps):
         emission = 0
-        for substance_in_fuel_mix in reps.get_substances_in_fuel_mix_by_plant(self):
+        substance_in_fuel_mix_object = reps.get_substances_in_fuel_mix_by_plant(self)
+        for substance_in_fuel_mix in substance_in_fuel_mix_object.substances:
             # Energy density is in GJ / ton, amount per mw is in ton fuel / MWh
-            amount_per_mw = 3.6 * substance_in_fuel_mix.share / (self.efficiency *
-                                                                  substance_in_fuel_mix.substance.energy_density)
+            amount_per_mw = 3.6 * substance_in_fuel_mix_object.share / (self.efficiency *
+                                                                  substance_in_fuel_mix.energy_density)
             # CO2 Density is a fraction (so fuel is 41% co2 for example)
-            co2_density = substance_in_fuel_mix.substance.co2_density * (1 - float(
+            co2_density = substance_in_fuel_mix.co2_density * (1 - float(
                 self.technology.co2_capture_efficiency))
             # Returned value is ton CO2 / MWh
             emission_for_this_fuel = amount_per_mw * co2_density
@@ -180,7 +182,7 @@ class Substance(ImportObject):
     def __init__(self, name):
         super().__init__(name)
         self.co2_density = 0
-        self.energy_density = 0
+        self.energy_density = 1
         self.quality = 0
         self.trend = None
 
@@ -207,7 +209,14 @@ class SubstanceInFuelMix(ImportObject):
 
     def add_parameter_value(self, reps, parameter_name: str, parameter_value, alternative: str):
         if parameter_name == 'FUELNEW':
-            self.substances.append(parameter_value)
+            if parameter_value in reps.substances.keys():
+                self.substances.append(reps.substances[parameter_value])
+            else:
+                logging.warning('Substance not found: ' + parameter_value + ' in SubstanceInFuelMix ' + self.name + ', creating fresh Substance')
+                new_substance = Substance(parameter_value)
+                reps.substances[parameter_value] = new_substance
+                self.substances.append(new_substance)
+            self.share = 1 / len(self.substances)
 
 
 class PowerPlantDispatchPlan(ImportObject):
