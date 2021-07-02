@@ -53,12 +53,14 @@ try:
         if current_emlab_tick > 1:
             previous_cm_market_clearing_point = next(row['object_name'] for row in db_emlab_marketclearingpoints if row['parameter_name'] == 'Market' and row['parameter_value'] == 'DutchCapacityMarket' and row['alternative'] == str(current_emlab_tick - 2))
             previous_cm_market_clearing_price = next(row['parameter_value'] for row in db_emlab_marketclearingpoints if row['object_name'] == previous_cm_market_clearing_point and row['parameter_name'] == 'Price')
+            previous_cm_market_clearing_price = previous_cm_market_clearing_price / 1000    # EMLAB is in Euro / MWh - COMPETES is in Euro / kWh
             print('Current EMLab tick > 1, previous Capacity Market clearing price is ' + str(previous_cm_market_clearing_price))
         else:
             print('Current EMLab tick <= 1, previous CM clearing price set to 0')
 
         current_cm_market_clearing_point = next(row['object_name'] for row in db_emlab_marketclearingpoints if row['parameter_name'] == 'Market' and row['parameter_value'] == 'DutchCapacityMarket' and row['alternative'] == str(current_emlab_tick - 1))
         current_cm_market_clearing_price = next(row['parameter_value'] for row in db_emlab_marketclearingpoints if row['parameter_name'] == current_cm_market_clearing_point and row['parameter_name'] == 'Price')
+        current_cm_market_clearing_price = current_cm_market_clearing_price / 1000      # EMLAB is in Euro / MWh - COMPETES is in Euro / kWh
         print('Current CM Market Clearing Price: ' + str(current_cm_market_clearing_price))
 
         for participating_technology in capacity_market_participating_technologies:
