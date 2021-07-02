@@ -84,11 +84,8 @@ class PowerPlant(ImportObject):
         fc = 0
         substance_in_fuel_mix_object = reps.get_substances_in_fuel_mix_by_plant(self)
         for substance_in_fuel_mix in substance_in_fuel_mix_object.substances:
-            # Energy Density is GJ / ton
-            amount_per_mw = 3.6 * substance_in_fuel_mix_object.share / (self.efficiency * substance_in_fuel_mix.energy_density)
-            # Fuel price is Euro / ton
-            fuel_price = substance_in_fuel_mix.get_price_for_tick(time)
-            fc += amount_per_mw * fuel_price
+            # Fuel price is Euro / MWh
+            fc += substance_in_fuel_mix_object.share * substance_in_fuel_mix.get_price_for_tick(time)
         return fc
 
     def calculate_co2_tax_marginal_cost(self, reps):
