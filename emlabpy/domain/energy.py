@@ -38,9 +38,6 @@ class PowerPlant(ImportObject):
                                                                                             self.fuelstr)
         elif parameter_name == 'BUSNL':
             self.location = reps.power_grid_nodes[parameter_value]
-        elif parameter_name == 'Age':   # TODO
-            self.age = int(parameter_value)
-            self.construction_start_time = -1 * int(parameter_value)
         elif parameter_name == 'FirmNL':
             self.owner = reps.energy_producers[parameter_value]
         elif parameter_name == 'MWNL':
@@ -51,6 +48,9 @@ class PowerPlant(ImportObject):
             self.banked_allowances[int(alternative)] = int(parameter_value)
         elif parameter_name == 'STATUSNL':
             self.status = parameter_value
+        elif parameter_name == 'ON-STREAMNL':
+            self.construction_start_time = int(parameter_value) - 2020
+            self.age = reps.current_tick - self.construction_start_time
 
     def calculate_emission_intensity(self, reps):
         emission = 0
