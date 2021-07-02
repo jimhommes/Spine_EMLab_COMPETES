@@ -194,9 +194,6 @@ class Repository:
         if plant.technology.name in self.power_plants_fuel_mix.keys():
             return self.power_plants_fuel_mix[plant.technology.name]
         else:
-            print(plant.name)
-            print(plant.technology)
-            print(self.power_plants_fuel_mix.keys())
             return None
 
     # MarketClearingPoints

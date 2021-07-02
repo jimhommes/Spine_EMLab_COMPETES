@@ -25,7 +25,7 @@ print('Current COMPETES Tick: ' + str(current_competes_tick))
 
 try:
     print('Setting correct PowerGeneratingTechnologyFuel names...')
-    if current_emlab_tick == 1:
+    if current_emlab_tick == 0:
         for row in db_emlab_technologies:
             if row['parameter_name'] == 'FUELTYPENEW':
                 old_substance_name = next(i['parameter_value'] for i in db_emlab_technologies if i['object_name'] == row['object_name'] and i['parameter_name'] == 'FUELNEW')
