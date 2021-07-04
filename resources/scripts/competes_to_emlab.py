@@ -27,6 +27,7 @@ db_competes = SpineDB(sys.argv[2])
 try:
     current_emlab_tick, current_competes_tick, current_competes_tick_rounded = get_current_ticks(db_emlab, 2020)
     db_emlab_powerplants = db_emlab.query_object_parameter_values_by_object_class('PowerPlants')
+    db_competes_powerplants = db_competes.query_object_parameter_values_by_object_classes(['Installed Capacity Abroad', 'Installed Capacity-RES Abroad', 'NL Installed Capacity (+heat)', 'NL Installed Capacity-RES (+he'])
     print('Done loading Databases.')
     print('Current EM-Lab tick: ' + str(current_emlab_tick))
     print('Current COMPETES tick: ' + str(current_competes_tick))
@@ -40,6 +41,8 @@ try:
     unit_generation_df = pandas.read_excel(path_to_competes_results + '/' + file_name_gentrans, 'NL Unit Generation', index_col=0, skiprows=1)
     new_generation_capacity_df = pandas.read_excel(path_to_competes_results + '/' + file_name_gentrans, 'New Generation Capacity', skiprows=2, usecols='A:D,G:X')
     new_generation_capacity_df = crop_dataframe_until_first_empty_row(new_generation_capacity_df)
+    decommissioning_df = pandas.read_excel(path_to_competes_results + '/' + file_name_gentrans, 'Decommissioning', skiprows=2, usecols='A:C')
+    decommissioning_df = crop_dataframe_until_first_empty_row(decommissioning_df)
     vre_investment_df = pandas.read_excel(path_to_competes_results + '/' + file_name_gentrans, 'VRE investment', skiprows=2, usecols='A:D')
     vre_investment_df = crop_dataframe_until_first_empty_row(vre_investment_df)
     print('Done loading sheets')
@@ -100,7 +103,16 @@ try:
     print('Export to EMLAB')
     for index, vre_row in vre_investment_df.iterrows():
         old_mw = next(row['parameter_value'] for row in db_emlab_powerplants if row['object_name'] == vre_row['WindOn'] and row['parameter_name'] == 'MWNL')
-        db_emlab.import_object_parameter_values([('PowerPlants', vre_row['WindOn'], 'MWNL', float(old_mw) + float(vre_row['Initial']), '0')])
+        db_emlab.import_object_parameter_values([('PowerPlants', vre_row['WindOn'], 'MWNL', float(old_mw) + float(vre_row['Initial']), str(current_emlab_tick + 1))])
+    print('Done')
+
+    print('Exporting Decommissioning to EMLAB and COMPETES...')
+    for index, row in decommissioning_df.iterrows():
+        power_plant_name_decom_version = next(i['object_name'] for i in db_competes_powerplants if row['unit'] in i['object_name'] and '(D)' in i['object_name'])
+        db_competes.import_object_parameter_values([('PowerPlants', power_plant_name_decom_version, 'ON-STREAMNL', current_competes_tick, str(current_emlab_tick))])
+        if row['node'] == 'NED':
+            # If node is NED, export to EMLAB
+            db_emlab.import_object_parameter_values([('PowerPlants', power_plant_name_decom_version, 'ON-STREAMNL', current_competes_tick, str(current_emlab_tick))])
     print('Done')
 
     print('Export to COMPETES')
