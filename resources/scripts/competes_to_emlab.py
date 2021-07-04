@@ -27,6 +27,7 @@ db_competes = SpineDB(sys.argv[2])
 try:
     current_emlab_tick, current_competes_tick, current_competes_tick_rounded = get_current_ticks(db_emlab, 2020)
     db_emlab_powerplants = db_emlab.query_object_parameter_values_by_object_class('PowerPlants')
+    db_emlab_ppdps = db_emlab.query_object_parameter_values_by_object_class('PowerPlantDispatchPlans')
     db_competes_powerplants = db_competes.query_object_parameter_values_by_object_classes(['Installed Capacity Abroad', 'Installed Capacity-RES Abroad', 'NL Installed Capacity (+heat)', 'NL Installed Capacity-RES (+he'])
     print('Done loading Databases.')
     print('Current EM-Lab tick: ' + str(current_emlab_tick))
@@ -68,11 +69,15 @@ try:
     ppdp_values_to_import = []
     for power_plant in unit_generation_df.columns:
         print('Staging PPDP for ' + str(power_plant))
+        try:
+            ppdp_name = next(i['object_name'] for i in db_emlab_ppdps if i['parameter_name'] == 'Plant' and i['parameter_value'] == power_plant and i['alternative'] == str(current_emlab_tick))
+        except StopIteration:
+            ppdp_name = 'PowerPlantDispatchPlan ' + str(datetime.now())
+            ppdp_objects_to_import.append(('PowerPlantDispatchPlans', ppdp_name))
+
         accepted = sum(unit_generation_df[power_plant].values)
         hourly_nodal_prices_nl_where_plant_generated = [i for i in zip(unit_generation_df[power_plant].values, hourly_nodal_prices_nl) if i[0] > 0]
         ppdp_price = sum([float(i[0]) * float(i[1]) for i in hourly_nodal_prices_nl_where_plant_generated]) / accepted if accepted > 0 else 0
-        ppdp_name = 'PowerPlantDispatchPlan ' + str(datetime.now())
-        ppdp_objects_to_import.append(('PowerPlantDispatchPlans', ppdp_name))
         owner = next(row['parameter_value'] for row in db_emlab_powerplants if row['object_name'] == power_plant and row['parameter_name'] == 'FirmNL')
         status = 'Accepted' if accepted > 0 else 'Failed'
         values = [('AcceptedAmount', accepted), ('Capacity', accepted), ('EnergyProducer', owner), ('Market', 'DutchElectricitySpotMarket'), ('Plant', power_plant), ('Status', status), ('Price', ppdp_price)]
