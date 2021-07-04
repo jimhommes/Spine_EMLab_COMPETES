@@ -311,7 +311,7 @@ class SpineDB(object):
                  'parameter_value': value_row.value,
                  'alternative': value_row.alternative_name}
                 for value_row
-                in self._db_map.query(subquery).filter(subquery.c.object_class_name in object_class_name_list).all()]
+                in self._db_map.query(subquery).filter(subquery.c.object_class_name.in_(object_class_name_list)).all()]
 
     def query_object_parameter_values_by_object_class_and_object_name(self, object_class_name, object_name):
         """
