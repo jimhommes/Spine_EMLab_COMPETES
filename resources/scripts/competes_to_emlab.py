@@ -66,11 +66,13 @@ try:
     for power_plant in unit_generation_df.columns:
         print('Staging PPDP for ' + str(power_plant))
         accepted = sum(unit_generation_df[power_plant].values)
+        hourly_nodal_prices_nl_where_plant_generated = [i for i in zip(unit_generation_df[power_plant].values, hourly_nodal_prices_nl) if i[0] > 0]
+        ppdp_price = sum([float(i[0]) * float(i[1]) for i in hourly_nodal_prices_nl_where_plant_generated]) / accepted if accepted > 0 else 0
         ppdp_name = 'PowerPlantDispatchPlan ' + str(datetime.now())
         ppdp_objects_to_import.append(('PowerPlantDispatchPlans', ppdp_name))
         owner = next(row['parameter_value'] for row in db_emlab_powerplants if row['object_name'] == power_plant and row['parameter_name'] == 'FirmNL')
         status = 'Accepted' if accepted > 0 else 'Failed'
-        values = [('AcceptedAmount', accepted), ('Capacity', accepted), ('EnergyProducer', owner), ('Market', 'DutchElectricitySpotMarket'), ('Plant', power_plant), ('Status', status), ('Price', hourly_nodal_prices_nl_avg)]
+        values = [('AcceptedAmount', accepted), ('Capacity', accepted), ('EnergyProducer', owner), ('Market', 'DutchElectricitySpotMarket'), ('Plant', power_plant), ('Status', status), ('Price', ppdp_price)]
         ppdp_values_to_import = ppdp_values_to_import + [('PowerPlantDispatchPlans', ppdp_name, i[0], i[1], str(current_emlab_tick)) for i in values]
     db_emlab.import_objects(ppdp_objects_to_import)
     db_emlab.import_object_parameter_values(ppdp_values_to_import)

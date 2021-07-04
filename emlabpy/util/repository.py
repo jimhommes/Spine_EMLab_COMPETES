@@ -57,6 +57,7 @@ class Repository:
     Repository functions:
     All functions to get/create/set/update elements and values, possibly under criteria. Sorted on elements.
     """
+
     # PowerPlants
     def get_operational_power_plants_by_owner(self, owner: EnergyProducer) -> List[PowerPlant]:
         return [i for i in self.power_plants.values()
@@ -71,10 +72,8 @@ class Repository:
     def get_power_plant_electricity_spot_market_revenues_by_tick(self, power_plant: PowerPlant, time: int) -> float:
         # Accepted Amount is in MW
         # MCP Price is in Euro / MWh
-        return sum([float(
-            i.accepted_amount * self.get_market_clearing_point_for_market_and_time(i.bidding_market, time).price
-        )
-            for i in self.get_power_plant_dispatch_plans_by_plant_and_tick(power_plant, time)])
+        return sum([float(i.accepted_amount * i.price)
+                    for i in self.get_power_plant_dispatch_plans_by_plant_and_tick(power_plant, time)])
 
     def get_total_accepted_amounts_by_power_plant_and_tick(self, power_plant: PowerPlant, time: int) -> float:
         return sum([i.accepted_amount for i in self.power_plant_dispatch_plans.values() if i.tick == time and
@@ -157,7 +156,8 @@ class Repository:
     # Markets
     def get_electricity_spot_market_for_plant(self, plant: PowerPlant) -> Optional[ElectricitySpotMarket]:
         try:
-            return next(i for i in self.electricity_spot_markets.values() if i.parameters['zone'] == plant.location.parameters['Country'])
+            return next(i for i in self.electricity_spot_markets.values() if
+                        i.parameters['zone'] == plant.location.parameters['Country'])
         except StopIteration:
             return None
 
