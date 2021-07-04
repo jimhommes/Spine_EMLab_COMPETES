@@ -33,6 +33,9 @@ try:
     print('Current EM-Lab tick: ' + str(current_emlab_tick))
     print('Current COMPETES tick: ' + str(current_competes_tick))
 
+    print('Staging next alternative...')
+    db_emlab.import_alternatives([str(current_emlab_tick + 1)])
+
     path_to_competes_results = sys.argv[3]
     file_name_gentrans = sys.argv[4].replace('?', str(current_competes_tick))
     file_name_uc = sys.argv[5].replace('?', str(current_competes_tick))
@@ -113,11 +116,15 @@ try:
 
     print('Exporting Decommissioning to EMLAB and COMPETES...')
     for index, row in decommissioning_df.iterrows():
-        power_plant_name_decom_version = next(i['object_name'] for i in db_competes_powerplants if row['unit'] in i['object_name'] and '(D)' in i['object_name'])
-        db_competes.import_object_parameter_values([('PowerPlants', power_plant_name_decom_version, 'ON-STREAMNL', current_competes_tick, str(current_emlab_tick))])
-        if row['node'] == 'NED':
-            # If node is NED, export to EMLAB
-            db_emlab.import_object_parameter_values([('PowerPlants', power_plant_name_decom_version, 'ON-STREAMNL', current_competes_tick, str(current_emlab_tick))])
+        try:
+            power_plant_name_decom_version_row = next(i for i in db_competes_powerplants if row['unit'] in i['object_name'] and '(D)' in i['object_name'])
+            power_plant_name_decom_version = power_plant_name_decom_version_row['object_name']
+            db_competes.import_object_parameter_values([(power_plant_name_decom_version_row['object_class_name'], power_plant_name_decom_version, 'ON-STREAMNL', current_competes_tick, str(current_emlab_tick))])
+            if row['node'] == 'NED':
+                # If node is NED, export to EMLAB
+                db_emlab.import_object_parameter_values([('PowerPlants', power_plant_name_decom_version, 'ON-STREAMNL', current_competes_tick, str(current_emlab_tick))])
+        except StopIteration:
+            print('No DECOM version found for plant ' + row['unit'])
     print('Done')
 
     print('Export to COMPETES')
