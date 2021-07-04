@@ -37,14 +37,9 @@ class CapacityMarketSubmitBids(MarketModule):
                 clearing_point_price = self.reps.get_market_clearing_point_price_for_market_and_time(
                     emarket, self.reps.current_tick)
                 planned_dispatch = self.reps.get_total_accepted_amounts_by_power_plant_and_tick(powerplant, self.reps.current_tick)
-                expected_electricity_revenues = planned_dispatch * clearing_point_price
-                # if clearing_point_price >= mc:
-                #     expected_electricity_revenues += (clearing_point_price - mc) * \
-                #                                      powerplant.get_actual_nominal_capacity() * \
-                #                                      powerplant_load_factor * 8760
-
-                # capacity = self.reps.get_available_power_plant_capacity_at_tick(powerplant, self.reps.current_tick)
-                # TODO: Full capacity is bid, correct??
+                expected_electricity_revenues = 0
+                if clearing_point_price >= mc:
+                    expected_electricity_revenues = planned_dispatch * clearing_point_price
 
                 net_revenues = expected_electricity_revenues - fixed_on_m_cost
                 price_to_bid = 0
