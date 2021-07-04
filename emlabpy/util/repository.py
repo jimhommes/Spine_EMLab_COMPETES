@@ -107,6 +107,13 @@ class Repository:
         return res
 
     # PowerPlantDispatchPlans
+    def get_power_plant_dispatch_plan_price_by_plant_and_time(self, plant: PowerPlant, time: int) -> float:
+        try:
+            return next(i.price for i in self.power_plant_dispatch_plans.values() if i.plant == plant and i.tick == time)
+        except StopIteration:
+            logging.warning('No PPDP Price found for plant ' + plant.name + ' and at time ' + str(time))
+            return 0
+
     def get_sorted_power_plant_dispatch_plans_by_market_and_time(self, market: Market, time: int) -> \
             List[PowerPlantDispatchPlan]:
         return sorted([i for i in self.power_plant_dispatch_plans.values()
