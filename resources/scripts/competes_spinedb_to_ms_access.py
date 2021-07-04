@@ -2,6 +2,12 @@
 This script handles all preparations necessary for the execution of COMPETES.
 This entails translating the COMPETES SpineDB to MS Access databases.
 
+Arg1: URL to COMPETES SpineDB
+Arg2: URL to EMLAB SpineDB
+Arg3: URL of COMPETES configuration with mappings
+Arg4: URL of empty COMPETES MDB
+Arg5: URL of empty COMPETES PowerPlants MDB
+
 Jim Hommes - 1-6-2021
 """
 import pyodbc

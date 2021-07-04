@@ -3,6 +3,8 @@ This script prepares the COMPETES output files for import by Spine Toolbox.
 This means that the most recent output file from COMPETES/Results will be copied to a output file without year,
 as defined in Spine Toolbox.
 
+Arg1: URL to EMLAB SpineDB
+
 Jim Hommes - 21-6-2021
 """
 import sys

@@ -2,7 +2,14 @@
 """
 Created on Fri Apr 23 10:37:40 2021
 
+This script is responsible for running COMPETES by connecting through the DataExchange library that AIMMS offers.
+In AIMMS, StartHTTPService has to be running. This means AIMMS is ready to receive REST requests.
+
+Arg1: path to EMLAB SpineDB
+Arg2: AIMMS Service Name given to Procedure that runs COMPETES
+
 @author: hernandezsernar
+@author: Jim Hommes
 """
 
 import requests
