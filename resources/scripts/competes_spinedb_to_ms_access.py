@@ -27,6 +27,7 @@ class TriangularTrend:
     Because of the random nature of this trend, values are saved in self.values so that once generated, the value \
     does not change.
     """
+
     def __init__(self, top, maxx, minn):
         self.top = top
         self.max = maxx
@@ -34,7 +35,7 @@ class TriangularTrend:
 
     def get_values(self, start, start_time, end_time):
         res_values = [start]
-        for i in range(end_time-start_time):
+        for i in range(end_time - start_time):
             last_value = res_values[-1]
             random_number = np.random.triangular(-1, 0, 1)
             if random_number < 0:
@@ -167,17 +168,20 @@ def export_type2(cursor, table_name, id_parameter_name, index_parameter_names):
         value_map = next(i[3] for i in db_competes_data['object_parameter_values']
                          if i[0] == table_name and i[1] == id_parameter_value)
         for value_map_row in value_map.to_dict()['data']:
-            export_type2_recursive(cursor, table_name, id_parameter_name, id_parameter_value, index_parameter_names, [value_map_row[0]], value_map_row[1]['data'])
+            export_type2_recursive(cursor, table_name, id_parameter_name, id_parameter_value, index_parameter_names,
+                                   [value_map_row[0]], value_map_row[1]['data'])
 
 
-def export_type2_recursive(cursor, table_name, id_parameter_name, id_parameter_value, index_parameter_names, index_parameter_values, data):
+def export_type2_recursive(cursor, table_name, id_parameter_name, id_parameter_value, index_parameter_names,
+                           index_parameter_values, data):
     """
     This function assists the export_type2 function and should not be used on it's own.
     In order to explore the SpineDB Map inside of other SpineDB Map structure this is set up as a recursive function.
     """
     if len(data) > 0:
         first_el = data[0]
-        if len(first_el) == 2 and type(first_el[1]) == dict and 'type' in first_el[1].keys() and first_el[1]['type'] == 'map':
+        if len(first_el) == 2 and type(first_el[1]) == dict and 'type' in first_el[1].keys() and first_el[1][
+            'type'] == 'map':
             # In this case, it MUST be another map
             # Go one level deeper
             for value_map_row in data:
@@ -189,7 +193,8 @@ def export_type2_recursive(cursor, table_name, id_parameter_name, id_parameter_v
             param_values = [('[' + str(i[0]) + ']', i[1]) for i in data]
             sql_query = 'INSERT INTO [' + table_name + '] ([' + id_parameter_name + '],[' + \
                         '],['.join(index_parameter_names) + '],' + ','.join([i[0] for i in param_values]) + \
-                        ') VALUES (?,' + ','.join(list('?' * len(index_parameter_values))) + ',' + ','.join(list('?' * len(param_values))) + ');'
+                        ') VALUES (?,' + ','.join(list('?' * len(index_parameter_values))) + ',' + ','.join(
+                list('?' * len(param_values))) + ');'
             values = (id_parameter_value,) + tuple(index_parameter_values) + tuple(i[1] for i in param_values)
             cursor.execute(sql_query, values)
 
@@ -211,8 +216,8 @@ def export_relationships_type1(cursor, table, object1_param_name, object2_param_
                         in db_competes_data['relationship_parameter_values']
                         if itable == table and iobject_list == object_parameter_name_value_list]
         sql_query = 'INSERT INTO [' + table + '] ([' + object1_param_name + '],[' + \
-                        object2_param_name + '],' + ','.join([i[0] for i in param_values]) + \
-                        ') VALUES (?,?,' + ','.join(list('?' * len(param_values))) + ');'
+                    object2_param_name + '],' + ','.join([i[0] for i in param_values]) + \
+                    ') VALUES (?,?,' + ','.join(list('?' * len(param_values))) + ');'
         values = tuple(object_parameter_name_value_list) + tuple(i[1] for i in param_values)
         cursor.execute(sql_query, values)
 
@@ -236,9 +241,9 @@ def export_relationships_type2(cursor, table, object1_param_name, object2_param_
             index = value_map_row[0]
             param_values = [('[' + str(i[0]) + ']', i[1]) for i in value_map_row[1]['data']]
             sql_query = 'INSERT INTO [' + table + '] ([' + object1_param_name + '],[' + \
-                            object2_param_name + '],[' + index_param_name + '],' + \
-                            ','.join([i[0] for i in param_values]) + ') VALUES (?,?,?,' + \
-                            ','.join(list('?' * len(param_values))) + ');'
+                        object2_param_name + '],[' + index_param_name + '],' + \
+                        ','.join([i[0] for i in param_values]) + ') VALUES (?,?,?,' + \
+                        ','.join(list('?' * len(param_values))) + ');'
             values = (object1, object2, index,) + tuple(i[1] for i in param_values)
             cursor.execute(sql_query, values)
 
@@ -261,9 +266,8 @@ def export_co2_prices(cursor):
 def export_fuelpriceyears(cursor):
     """
     Separate function because of the required execution of the "trends" to print numbers into MS Access.
-	The price is multiplied by 3.142 because of the conversion of MWh to MMBtu
+    The price is multiplied by 3.142 because of the conversion of MWh to MMBtu:param cursor: PYODBC
 
-    :param cursor: PYODBC
     :return:
     """
     print('Exporting Fuelpriceyears...')
@@ -282,7 +286,8 @@ def export_fuelpriceyears(cursor):
             prices = trend_obj.get_values(param_values['Start'], years[0], years[-1])
             for country in countries:
                 print("Exporting for year " + str(year) + ' and country ' + country)
-                sql_query = 'INSERT INTO [' + table_name_competes + '] ([Fuelname], [Country], [Year], ' + ', '.join(months) + ') VALUES (' + ','.join(['?']*15) + ');'
+                sql_query = 'INSERT INTO [' + table_name_competes + '] ([Fuelname], [Country], [Year], ' + ', '.join(
+                    months) + ') VALUES (' + ','.join(['?'] * 15) + ');'
                 cursor.execute(sql_query, (fuelname, country, year,) + (prices[year - 2020] * 3.142,) * 12)
 
 
@@ -315,12 +320,14 @@ finally:
     db_emlab.close_connection()
 
 for originalfile in originalfiles:
-    shutil.copyfile(originalfile, originalfile.replace("INSERTYEAR", str(current_competes_tick)).replace("INSERTOUTPUTYEAR", str(current_competes_tick)).replace('/Empty output files', ''))
+    shutil.copyfile(originalfile,
+                    originalfile.replace("INSERTYEAR", str(current_competes_tick)).replace("INSERTOUTPUTYEAR",
+                                                                                           str(current_competes_tick)).replace(
+                        '/Empty output files', ''))
 
 print('Copying empty databases...')
 originalfiles = sys.argv[4:]
 targetfiles = [i.replace('empty_', '') for i in originalfiles]
-
 
 for originalfile in originalfiles:
     shutil.copyfile(originalfile, originalfile.replace("empty_", ""))
@@ -340,15 +347,18 @@ try:
     print(object_mapping_type1)
 
     print('Reading type 2 mapping from config file')
-    object_mapping_type2 = {i[0]: tuple([j for j in i[1:] if type(j) == str]) for i in pandas.read_excel(config_url, 'Object Type 2').values}
+    object_mapping_type2 = {i[0]: tuple([j for j in i[1:] if type(j) == str]) for i in
+                            pandas.read_excel(config_url, 'Object Type 2').values}
     print(object_mapping_type2)
 
     print('Reading relationship type 1 mapping from config file')
-    relationship_mapping_type1 = {i[0]: (i[1], i[2]) for i in pandas.read_excel(config_url, 'Relationship Type 1').values}
+    relationship_mapping_type1 = {i[0]: (i[1], i[2]) for i in
+                                  pandas.read_excel(config_url, 'Relationship Type 1').values}
     print(relationship_mapping_type1)
 
     print('Reading relationship type 2 mapping from config file')
-    relationship_mapping_type2 = {i[0]: (i[1], i[2], i[3]) for i in pandas.read_excel(config_url, 'Relationship Type 2').values}
+    relationship_mapping_type2 = {i[0]: (i[1], i[2], i[3]) for i in
+                                  pandas.read_excel(config_url, 'Relationship Type 2').values}
     print(relationship_mapping_type2)
 
     print('Reading PP type 1 mapping from config file')
@@ -356,15 +366,18 @@ try:
     print(pp_object_mapping_type1)
 
     print('Reading PP type 2 mapping from config file')
-    pp_object_mapping_type2 = {i[0]: tuple([j for j in i[1:] if type(j) == str]) for i in pandas.read_excel(config_url, 'PP Object Type 2').values}
+    pp_object_mapping_type2 = {i[0]: tuple([j for j in i[1:] if type(j) == str]) for i in
+                               pandas.read_excel(config_url, 'PP Object Type 2').values}
     print(pp_object_mapping_type2)
 
     print('Reading PP relationship type 1 mapping from config file')
-    pp_relationship_mapping_type1 = {i[0]: (i[1], i[2]) for i in pandas.read_excel(config_url, 'PP Relationship Type 1').values}
+    pp_relationship_mapping_type1 = {i[0]: (i[1], i[2]) for i in
+                                     pandas.read_excel(config_url, 'PP Relationship Type 1').values}
     print(pp_relationship_mapping_type1)
 
     print('Reading PP relationship type 2 mapping from config file')
-    pp_relationship_mapping_type2 = {i[0]: (i[1], i[2], i[3]) for i in pandas.read_excel(config_url, 'PP Relationship Type 2').values}
+    pp_relationship_mapping_type2 = {i[0]: (i[1], i[2], i[3]) for i in
+                                     pandas.read_excel(config_url, 'PP Relationship Type 2').values}
     print(pp_relationship_mapping_type2)
 
     export_to_mdb(path_to_data, 'COMPETES EU 2050-KIP.mdb',
@@ -379,4 +392,3 @@ finally:
     print('Closing database connection...')
     db_competes.close_connection()
     print('===== End of COMPETES SpineDB to MS Access script =====')
-

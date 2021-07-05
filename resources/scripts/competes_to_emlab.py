@@ -268,7 +268,6 @@ def export_all_competes_results():
     This is the main export function
     """
 
-    print('===== Starting COMPETES Output Interpretation script =====')
     print('Establishing Database Connections...')
     db_emlab = SpineDB(sys.argv[1])
     db_competes = SpineDB(sys.argv[2])
@@ -318,7 +317,8 @@ def export_all_competes_results():
         print('Closing database connection...')
         db_emlab.close_connection()
         db_competes.close_connection()
-        print('===== End of COMPETES Output Interpretation script =====')
 
 
+print('===== Starting COMPETES Output Interpretation script =====')
 export_all_competes_results()
+print('===== End of COMPETES Output Interpretation script =====')
