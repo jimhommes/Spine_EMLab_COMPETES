@@ -967,8 +967,8 @@
         "Preprocessing DB EMLAB": {
             "type": "Tool",
             "description": "",
-            "x": -226.6320428661796,
-            "y": -230.71153790266777,
+            "x": -224.3225238924701,
+            "y": -230.71153790266774,
             "specification": "Preprocessing DB EMLAB",
             "execute_in_work": false,
             "cmd_line_args": [
