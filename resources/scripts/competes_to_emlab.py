@@ -13,6 +13,7 @@ Jim Hommes - 10-6-2021
 """
 import sys
 import pandas
+import numpy as np
 from datetime import datetime
 from spinedb import SpineDB
 from helper_functions import get_current_ticks
@@ -55,7 +56,10 @@ def read_excel_sheets(path_to_competes_results, file_name_gentrans):
                                            skiprows=2, usecols='A:C')
     vre_investment_df = pandas.read_excel(path_to_competes_results + '/' + file_name_gentrans, 'VRE investment',
                                           skiprows=2, usecols='A:D')
-    return hourly_nodal_prices_df, unit_generation_df, new_generation_capacity_df, decommissioning_df, vre_investment_df
+    hourly_nl_balance_df = pandas.read_excel(path_to_competes_results + '/' + file_name_gentrans, 'Hourly NL Balance',
+                                             skiprows=1)
+    return hourly_nodal_prices_df, unit_generation_df, new_generation_capacity_df, decommissioning_df, \
+           vre_investment_df, hourly_nl_balance_df
 
 
 def prepare_competes_importer(vre_investment_df, current_competes_tick, path_to_competes_results):
@@ -184,7 +188,6 @@ def export_power_plant_dispatch_plans_to_emlab(db_emlab, current_emlab_tick, uni
     :param db_emlab_powerplants: Queried Powerplants from EMLab
     """
     print('Exporting PowerPlantDispatchPlans into EMLAB')
-    unit_generation_df = unit_generation_df.transpose()
     ppdp_objects_to_import = []
     ppdp_values_to_import = []
     for power_plant in unit_generation_df.columns:
@@ -298,12 +301,18 @@ def export_all_competes_results():
         file_name_uc = sys.argv[5].replace('?', str(current_competes_tick))
 
         print('Loading sheets...')
-        hourly_nodal_prices_df, unit_generation_df, new_generation_capacity_df, decommissioning_df, vre_investment_df \
-            = read_excel_sheets(path_to_competes_results, file_name_gentrans)
+        hourly_nodal_prices_df, unit_generation_df, new_generation_capacity_df, decommissioning_df, vre_investment_df, \
+            hourly_nl_balance_df = read_excel_sheets(path_to_competes_results, file_name_gentrans)
 
         new_generation_capacity_df = crop_dataframe_until_first_empty_row(new_generation_capacity_df)
         vre_investment_df = crop_dataframe_until_first_empty_row(vre_investment_df)
         decommissioning_df = crop_dataframe_until_first_empty_row(decommissioning_df)
+
+        # VRE Plants are added to unit_generation sheet
+        hourly_nl_balance_df = hourly_nl_balance_df.rename(columns={'Sun': 'SunPV', 'Wind Onshore': 'WindOn',
+                                                                    'Wind Offshore': 'WindOff'})
+        unit_generation_df = unit_generation_df.transpose().join(
+            hourly_nl_balance_df[['SunPV', 'WindOn', 'WindOff']]).replace(np.nan, 0)
         print('Done loading sheets')
 
         hourly_nodal_prices_nl = get_hourly_nodal_prices(hourly_nodal_prices_df)
