@@ -788,8 +788,8 @@
         "EMLAB Capacity Market": {
             "type": "Tool",
             "description": "",
-            "x": 398.0923958294761,
-            "y": -114.70141259328385,
+            "x": 398.09239582947606,
+            "y": -115.8561720801386,
             "specification": "Capacity Market",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -891,8 +891,8 @@
         "COMPETES Output to EMLAB DB and COMPETES DB": {
             "type": "Tool",
             "description": "",
-            "x": 322.6509039395299,
-            "y": 2.643670847934745,
+            "x": 329.57946086065834,
+            "y": 2.6436708479347466,
             "specification": "DB COMPETES to DB EMLAB",
             "execute_in_work": false,
             "cmd_line_args": [

@@ -12,5 +12,6 @@
     ],
     "cmdline_args": [],
     "execute_in_work": false,
-    "includes_main_path": "../../../resources/scripts"
+    "includes_main_path": "../../../resources/scripts",
+    "execution_settings": null
 }
