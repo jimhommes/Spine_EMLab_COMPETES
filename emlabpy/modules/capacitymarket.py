@@ -75,12 +75,12 @@ class CapacityMarketClearing(MarketModule):
 
             # Set the clearing price through the merit order
             for ppdp in sorted_ppdp:
-                if total_supply + ppdp.amount <= peak_load:
+                if ppdp.price <= sdc.get_price_at_volume(total_supply + ppdp.amount):
                     total_supply += ppdp.amount
-                    clearing_price = sdc.get_price_at_volume(total_supply)
+                    clearing_price = ppdp.price
                     self.reps.set_power_plant_dispatch_plan_production(
                         ppdp, self.reps.power_plant_dispatch_plan_status_accepted, ppdp.amount)
-                elif total_supply < peak_load:
+                elif clearing_price < sdc.get_price_at_volume(total_supply):
                     clearing_price = sdc.get_price_at_volume(total_supply)
                     self.reps.set_power_plant_dispatch_plan_production(
                         ppdp, self.reps.power_plant_dispatch_plan_status_partly_accepted, peak_load - total_supply)
