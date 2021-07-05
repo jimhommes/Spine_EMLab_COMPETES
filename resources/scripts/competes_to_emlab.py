@@ -32,8 +32,9 @@ def query_databases(db_emlab, db_competes):
     db_competes_powerplants = db_competes.query_object_parameter_values_by_object_classes(
         ['Installed Capacity Abroad', 'Installed Capacity-RES Abroad', 'NL Installed Capacity (+heat)',
          'NL Installed Capacity-RES (+he'])
+    db_emlab_mcps = db_emlab.query_object_parameter_values_by_object_class('MarketClearingPoints')
     print('Done')
-    return db_emlab_powerplants, db_emlab_ppdps, db_competes_powerplants
+    return db_emlab_powerplants, db_emlab_ppdps, db_competes_powerplants, db_emlab_mcps
 
 
 def read_excel_sheets(path_to_competes_results, file_name_gentrans):
@@ -226,10 +227,11 @@ def get_hourly_nodal_prices(hourly_nodal_prices_df):
     return hourly_nodal_prices_df['NED'][1:].values
 
 
-def export_market_clearing_points_to_emlab(db_emlab, current_emlab_tick, hourly_nodal_prices_nl):
+def export_market_clearing_points_to_emlab(db_emlab, current_emlab_tick, hourly_nodal_prices_nl, db_emlab_mcps):
     """
     This function exports the MCP of the Electricity Spot Market to EM-Lab. This is the average price of all the hours.
 
+    :param db_emlab_mcps: MCPs as queried of SpineDB EMLab
     :param db_emlab: SpineDB
     :param current_emlab_tick: int
     :param hourly_nodal_prices_nl: Hourly Nodal prices object from get_hourly_nodal_prices
@@ -238,8 +240,15 @@ def export_market_clearing_points_to_emlab(db_emlab, current_emlab_tick, hourly_
     hourly_nodal_prices_nl_avg = sum(hourly_nodal_prices_nl) / len(hourly_nodal_prices_nl)
     print('Average hourly nodal prices: ' + str(hourly_nodal_prices_nl_avg))
 
+    print('Checking if MCP already exists for this run')
+    try:
+        newobject_mcp_name = next(i['object_name'] for i in db_emlab_mcps
+                                  if i['parameter_name'] == 'Market'
+                                  and i['parameter_value'] == 'DutchElectricitySpotMarket')
+    except StopIteration:
+        newobject_mcp_name = 'MarketClearingPoint ' + str(datetime.now())
+
     print('Staging...')
-    newobject_mcp_name = 'MarketClearingPoint ' + str(datetime.now())
     values = [('Market', 'DutchElectricitySpotMarket'), ('Price', hourly_nodal_prices_nl_avg)]
     db_emlab.import_objects([('MarketClearingPoints', newobject_mcp_name)])
     db_emlab.import_object_parameter_values(
@@ -278,7 +287,8 @@ def export_all_competes_results():
         print('Current EM-Lab tick: ' + str(current_emlab_tick))
         print('Current COMPETES tick: ' + str(current_competes_tick))
 
-        db_emlab_powerplants, db_emlab_ppdps, db_competes_powerplants = query_databases(db_emlab, db_competes)
+        db_emlab_powerplants, db_emlab_ppdps, db_competes_powerplants, db_emlab_mcps = query_databases(db_emlab,
+                                                                                                       db_competes)
 
         print('Staging next SpineDB alternative...')
         db_emlab.import_alternatives([str(current_emlab_tick + 1)])
@@ -297,7 +307,7 @@ def export_all_competes_results():
         print('Done loading sheets')
 
         hourly_nodal_prices_nl = get_hourly_nodal_prices(hourly_nodal_prices_df)
-        export_market_clearing_points_to_emlab(db_emlab, current_emlab_tick, hourly_nodal_prices_nl)
+        export_market_clearing_points_to_emlab(db_emlab, current_emlab_tick, hourly_nodal_prices_nl, db_emlab_mcps)
         export_power_plant_dispatch_plans_to_emlab(db_emlab, current_emlab_tick, unit_generation_df, db_emlab_ppdps,
                                                    hourly_nodal_prices_nl, db_emlab_powerplants)
         export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, new_generation_capacity_df)
