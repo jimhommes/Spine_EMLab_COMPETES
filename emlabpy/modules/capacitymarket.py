@@ -38,9 +38,7 @@ class CapacityMarketSubmitBids(MarketModule):
                     powerplant, self.reps.current_tick)
                 planned_dispatch = self.reps.get_total_accepted_amounts_by_power_plant_and_tick(powerplant,
                                                                                                 self.reps.current_tick)
-                expected_electricity_revenues = 0
-                if clearing_point_price >= mc:
-                    expected_electricity_revenues = planned_dispatch * clearing_point_price
+                expected_electricity_revenues = planned_dispatch * (clearing_point_price - mc)
 
                 net_revenues = expected_electricity_revenues - fixed_on_m_cost
                 price_to_bid = 0
@@ -70,6 +68,7 @@ class CapacityMarketClearing(MarketModule):
             sdc = market.get_sloping_demand_curve(peak_load)
             sorted_ppdp = self.reps.get_sorted_power_plant_dispatch_plans_by_market_and_time(market,
                                                                                              self.reps.current_tick)
+
             clearing_price = 0
             total_supply = 0
 
@@ -80,7 +79,7 @@ class CapacityMarketClearing(MarketModule):
                     clearing_price = ppdp.price
                     self.reps.set_power_plant_dispatch_plan_production(
                         ppdp, self.reps.power_plant_dispatch_plan_status_accepted, ppdp.amount)
-                elif clearing_price < sdc.get_price_at_volume(total_supply):
+                elif ppdp.price < sdc.get_price_at_volume(total_supply):
                     clearing_price = sdc.get_price_at_volume(total_supply)
                     self.reps.set_power_plant_dispatch_plan_production(
                         ppdp, self.reps.power_plant_dispatch_plan_status_partly_accepted, peak_load - total_supply)

@@ -98,7 +98,7 @@
                             },
                             {
                                 "map_type": "ParameterDefinition",
-                                "position": -1
+                                "position": "header"
                             },
                             {
                                 "map_type": "Alternative",
@@ -486,7 +486,7 @@
                             },
                             {
                                 "map_type": "ParameterDefinition",
-                                "position": -1
+                                "position": "header"
                             },
                             {
                                 "map_type": "Alternative",
@@ -535,7 +535,7 @@
                             },
                             {
                                 "map_type": "ParameterDefinition",
-                                "position": -1
+                                "position": "header"
                             },
                             {
                                 "map_type": "Alternative",
@@ -549,6 +549,43 @@
                             {
                                 "map_type": "ParameterValue",
                                 "position": "hidden"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "GeometricTrends": {
+                        "mapping": [
+                            {
+                                "map_type": "ObjectClass",
+                                "position": "hidden",
+                                "value": "GeometricTrends"
+                            },
+                            {
+                                "map_type": "Object",
+                                "position": 11
+                            },
+                            {
+                                "map_type": "ObjectMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterDefinition",
+                                "position": "hidden",
+                                "value": "start"
+                            },
+                            {
+                                "map_type": "Alternative",
+                                "position": "hidden",
+                                "value": "0"
+                            },
+                            {
+                                "map_type": "ParameterValueMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterValue",
+                                "position": 7
                             }
                         ]
                     }
@@ -586,7 +623,6 @@
                                     0,
                                     2,
                                     3,
-                                    4,
                                     5,
                                     11
                                 ]
@@ -763,6 +799,43 @@
                             {
                                 "map_type": "ParameterValue",
                                 "position": 1
+                            }
+                        ]
+                    }
+                },
+                {
+                    "GeometricTrends startvalues": {
+                        "mapping": [
+                            {
+                                "map_type": "ObjectClass",
+                                "position": "hidden",
+                                "value": "GeometricTrends"
+                            },
+                            {
+                                "map_type": "Object",
+                                "position": 8
+                            },
+                            {
+                                "map_type": "ObjectMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterDefinition",
+                                "position": "hidden",
+                                "value": "start"
+                            },
+                            {
+                                "map_type": "Alternative",
+                                "position": "hidden",
+                                "value": "0"
+                            },
+                            {
+                                "map_type": "ParameterValueMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterValue",
+                                "position": 3
                             }
                         ]
                     }
@@ -1055,7 +1128,9 @@
         "table_options": {
             "BusCountry": {},
             "Country": {},
-            "Economic Lifetime": {},
+            "Economic Lifetime": {
+                "header": true
+            },
             "FuelGen": {},
             "FuelMap": {},
             "FuelpriceTrends": {
@@ -1067,7 +1142,7 @@
             "NL Installed Capacity (+heat)": {},
             "NL Installed Capacity-RES (+he": {},
             "Technologies": {
-                "header": false
+                "header": true
             },
             "Techtype": {
                 "row": 0,
@@ -1204,8 +1279,8 @@
                 "0": "string",
                 "1": "string",
                 "2": "string",
-                "3": "string",
-                "4": "string",
+                "3": "float",
+                "4": "float",
                 "5": "string",
                 "6": "string",
                 "7": "string",

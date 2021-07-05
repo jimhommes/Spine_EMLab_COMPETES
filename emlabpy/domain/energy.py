@@ -5,6 +5,7 @@ Jim Hommes - 13-5-2021
 """
 from domain.import_object import *
 import logging
+import random
 
 
 class PowerPlant(ImportObject):
@@ -31,11 +32,17 @@ class PowerPlant(ImportObject):
             if self.fuelstr != '':
                 self.technology = reps.get_power_generating_technology_by_techtype_and_fuel(self.techtypestr,
                                                                                             self.fuelstr)
+                self.construction_start_time = - (self.technology.expected_leadtime +
+                                                  self.technology.expected_permittime +
+                                                  round(random.random() * self.technology.expected_lifetime)) + 2
         elif parameter_name == 'FUELNL':
             self.fuelstr = parameter_value
             if self.techtypestr != '':
                 self.technology = reps.get_power_generating_technology_by_techtype_and_fuel(self.techtypestr,
                                                                                             self.fuelstr)
+                self.construction_start_time = - (self.technology.expected_leadtime +
+                                                  self.technology.expected_permittime +
+                                                  round(random.random() * self.technology.expected_lifetime)) + 2
         elif parameter_name == 'BUSNL':
             self.location = reps.power_grid_nodes[parameter_value]
         elif parameter_name == 'FirmNL':
@@ -49,8 +56,7 @@ class PowerPlant(ImportObject):
         elif parameter_name == 'STATUSNL':
             self.status = parameter_value
         elif parameter_name == 'ON-STREAMNL':
-            self.construction_start_time = int(parameter_value) - 2020
-            self.age = reps.current_tick - self.construction_start_time
+            self.age = reps.current_tick - int(parameter_value) + 2020
 
     def calculate_emission_intensity(self, reps):
         emission = 0
@@ -68,10 +74,12 @@ class PowerPlant(ImportObject):
         return emission
 
     def get_actual_fixed_operating_cost(self):
-        return self.technology.get_fixed_operating_cost(self.construction_start_time +
-                                                        int(self.technology.expected_leadtime) +
-                                                        int(self.technology.expected_permittime)) \
-               * self.get_actual_nominal_capacity()
+        per_mw = self.technology.get_fixed_operating_cost(self.construction_start_time +
+                                                          int(self.technology.expected_leadtime) +
+                                                          int(self.technology.expected_permittime))
+        capacity = self.get_actual_nominal_capacity()
+
+        return per_mw * capacity
 
     def get_actual_nominal_capacity(self):
         return self.capacity
@@ -155,7 +163,7 @@ class PowerGeneratingTechnology(ImportObject):
             self.expected_permittime = int(parameter_value)
         elif parameter_name == 'expectedLeadtime':
             self.expected_leadtime = int(parameter_value)
-        elif parameter_name == 'Lifetime':  # TODO
+        elif parameter_name == 'LifeTime(Years)':
             self.expected_lifetime = int(parameter_value)
         # elif parameter_name == 'fixedOperatingCostModifierAfterLifetime':
         #     self.fixed_operating_cost_modifier_after_lifetime = float(parameter_value)
