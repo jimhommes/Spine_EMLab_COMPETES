@@ -266,8 +266,9 @@ def export_co2_prices(cursor):
 def export_fuelpriceyears(cursor):
     """
     Separate function because of the required execution of the "trends" to print numbers into MS Access.
-    The price is multiplied by 3.142 because of the conversion of MWh to MMBtu:param cursor: PYODBC
+    The price is multiplied by 3.6 because of the conversion of MWh to GJ.
 
+    :param cursor: PYODBC
     :return:
     """
     print('Exporting Fuelpriceyears...')
@@ -288,7 +289,7 @@ def export_fuelpriceyears(cursor):
                 print("Exporting for year " + str(year) + ' and country ' + country)
                 sql_query = 'INSERT INTO [' + table_name_competes + '] ([Fuelname], [Country], [Year], ' + ', '.join(
                     months) + ') VALUES (' + ','.join(['?'] * 15) + ');'
-                cursor.execute(sql_query, (fuelname, country, year,) + (prices[year - 2020] * 3.142,) * 12)
+                cursor.execute(sql_query, (fuelname, country, year,) + (prices[year - 2020] * 3.6,) * 12)
 
 
 def export_nset(cursor):

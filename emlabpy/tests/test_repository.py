@@ -201,7 +201,7 @@ class TestRepository:
         profit_plant4 = reps.get_power_plant_electricity_spot_market_revenues_by_tick(plant4, 0) - reps.get_power_plant_costs_by_tick(plant4, 0)
         profit_plant5 = reps.get_power_plant_electricity_spot_market_revenues_by_tick(plant5, 0) - reps.get_power_plant_costs_by_tick(plant5, 0)
 
-        assert reps.get_power_plant_electricity_spot_market_profits_by_tick(0) == \
+        assert reps.get_power_plant_operational_profits_by_tick(0) == \
                {plant1.name: profit_plant1,
                 plant2.name: profit_plant2,
                 plant3.name: profit_plant3,
