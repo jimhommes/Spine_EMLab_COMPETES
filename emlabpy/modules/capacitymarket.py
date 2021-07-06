@@ -34,8 +34,8 @@ class CapacityMarketSubmitBids(MarketModule):
                 fixed_on_m_cost = powerplant.get_actual_fixed_operating_cost()
 
                 # Determine revenues from ElectricitySpotMarket
-                clearing_point_price = self.reps.get_power_plant_dispatch_plan_price_by_plant_and_time(
-                    powerplant, self.reps.current_tick)
+                clearing_point_price = self.reps.get_power_plant_dispatch_plan_price_by_plant_and_time_and_market(
+                    powerplant, self.reps.current_tick, emarket)
                 planned_dispatch = self.reps.get_total_accepted_amounts_by_power_plant_and_tick(powerplant,
                                                                                                 self.reps.current_tick)
                 expected_electricity_revenues = planned_dispatch * (clearing_point_price - mc)
@@ -82,8 +82,9 @@ class CapacityMarketClearing(MarketModule):
                 elif ppdp.price < sdc.get_price_at_volume(total_supply):
                     clearing_price = ppdp.price
                     self.reps.set_power_plant_dispatch_plan_production(
-                        ppdp, self.reps.power_plant_dispatch_plan_status_partly_accepted, peak_load - total_supply)
-                    total_supply = peak_load
+                        ppdp, self.reps.power_plant_dispatch_plan_status_partly_accepted,
+                        sdc.get_volume_at_price(clearing_price) - total_supply)
+                    total_supply += sdc.get_volume_at_price(clearing_price)
                 else:
                     self.reps.set_power_plant_dispatch_plan_production(
                         ppdp, self.reps.power_plant_dispatch_plan_status_failed, 0)

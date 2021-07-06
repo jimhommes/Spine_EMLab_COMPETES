@@ -78,6 +78,15 @@ class SlopingDemandCurve:
         elif self.um_volume < volume:
             return 0
 
+    def get_volume_at_price(self, price):
+        m = self.price_cap / (self.um_volume - self.lm_volume)
+        if price >= self.price_cap:
+            return None
+        elif price == 0:
+            return None
+        else:
+            return ((self.price_cap - price) / m) + self.lm_volume
+
 
 class MarketStabilityReserve(ImportObject):
     """
