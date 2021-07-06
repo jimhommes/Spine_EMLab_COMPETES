@@ -5,6 +5,7 @@ Jim Hommes - 13-4-2021
 """
 from modules.marketmodule import MarketModule
 from util.repository import Repository
+import math
 
 
 class CO2MarketDetermineCO2Price(MarketModule):
@@ -48,13 +49,17 @@ class CO2MarketDetermineCO2Price(MarketModule):
                     in profits_per_plant.items()
                 }
 
+                print(sum(emissions_per_plant.values()))
+
                 # Determine CO2 Price based on the WTP merit order
                 co2price = max(willingness_to_pay_per_plant.values())
                 total_emissions = 0
-                for (power_plant_name, wtp) in sorted(willingness_to_pay_per_plant.items(),
-                                                      key=lambda item: item[1], reverse=True):
-                    if co2_cap >= total_emissions + emissions_per_plant[power_plant_name]:
-                        total_emissions += emissions_per_plant[power_plant_name]
+                sorted_wtp = sorted(willingness_to_pay_per_plant.items(),
+                                    key=lambda item: item[1], reverse=True)
+                for (power_plant_name, wtp) in sorted_wtp:
+                    emissions_per_plant_rounded = math.ceil(emissions_per_plant[power_plant_name])
+                    if co2_cap >= total_emissions + emissions_per_plant_rounded:
+                        total_emissions += emissions_per_plant_rounded
                         co2price = wtp
                     else:
                         break

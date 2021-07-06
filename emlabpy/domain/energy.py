@@ -3,6 +3,7 @@ This file contains all classes directly related to energy. PowerPlants, fuels, t
 
 Jim Hommes - 13-5-2021
 """
+from domain.actors import EnergyProducer
 from domain.import_object import *
 import logging
 import random
@@ -46,7 +47,12 @@ class PowerPlant(ImportObject):
         elif parameter_name == 'BUSNL':
             self.location = reps.power_grid_nodes[parameter_value]
         elif parameter_name == 'FirmNL':
-            self.owner = reps.energy_producers[parameter_value]
+            try:
+                self.owner = reps.energy_producers[parameter_value]
+            except KeyError:
+                logging.warning('PowerPlant: EnergyProducer not found: ' + parameter_value)
+                reps.energy_producers[parameter_value] = EnergyProducer(parameter_value)
+                self.owner = reps.energy_producers[parameter_value]
         elif parameter_name == 'MWNL':
             self.capacity = int(parameter_value)
         elif parameter_name == 'EfficiencyNL':
@@ -62,14 +68,12 @@ class PowerPlant(ImportObject):
         emission = 0
         substance_in_fuel_mix_object = reps.get_substances_in_fuel_mix_by_plant(self)
         for substance_in_fuel_mix in substance_in_fuel_mix_object.substances:
-            # Energy density is in GJ / ton, amount per mw is in ton fuel / MWh
-            amount_per_mw = 3.6 * substance_in_fuel_mix_object.share / (self.efficiency *
-                                                                  substance_in_fuel_mix.energy_density)
-            # CO2 Density is a fraction (so fuel is 41% co2 for example)
+            # CO2 Density is a ton CO2 / MWh
             co2_density = substance_in_fuel_mix.co2_density * (1 - float(
                 self.technology.co2_capture_efficiency))
+
             # Returned value is ton CO2 / MWh
-            emission_for_this_fuel = amount_per_mw * co2_density
+            emission_for_this_fuel = substance_in_fuel_mix_object.share * co2_density
             emission += emission_for_this_fuel
         return emission
 

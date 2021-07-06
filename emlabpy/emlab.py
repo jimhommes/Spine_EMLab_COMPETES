@@ -84,8 +84,8 @@ try:    # Try statement to always close DB properly
         logging.info('Start Run CO2 Market')
         market_stability_reserve.act_and_commit(reps.current_tick)
         co2_market_determine_co2_price.act_and_commit(reps.current_tick)
-        payment_and_bank_co2.act_and_commit(reps.current_tick)
-        use_co2_allowances.act_and_commit(reps.current_tick)
+        # payment_and_bank_co2.act_and_commit(reps.current_tick)
+        # use_co2_allowances.act_and_commit(reps.current_tick)
         logging.info('End Run CO2 Market')
     logging.info('End Run Modules')
 except Exception as e:
