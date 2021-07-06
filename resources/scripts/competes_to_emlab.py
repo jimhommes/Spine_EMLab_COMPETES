@@ -148,7 +148,7 @@ def export_vre_investment_decisions_to_emlab(db_emlab, current_emlab_tick, vre_i
     print('Done exporting VRE Investment Decisions to EMLAB')
 
 
-def export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, new_generation_capacity_df):
+def export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, current_emlab_tick, new_generation_capacity_df):
     """
     This function exports all Investment decisions.
 
@@ -173,7 +173,8 @@ def export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, new
             db_emlab.import_objects([('PowerPlants', plant_name)])
             param_values = [(col.replace("EU", "NL"), value) for (col, value) in param_values]
             db_emlab.import_object_parameter_values(
-                [('PowerPlants', plant_name, param_index, param_value) for (param_index, param_value) in param_values])
+                [('PowerPlants', plant_name, param_index, param_value, str(current_emlab_tick + 1))
+                 for (param_index, param_value) in param_values])
         print('Done')
     print('Done exporting Investment Decisions to EMLAB and COMPETES')
 
@@ -324,7 +325,8 @@ def export_all_competes_results():
         export_market_clearing_points_to_emlab(db_emlab, current_emlab_tick, hourly_nodal_prices_nl, db_emlab_mcps)
         export_power_plant_dispatch_plans_to_emlab(db_emlab, current_emlab_tick, unit_generation_df, db_emlab_ppdps,
                                                    hourly_nodal_prices_nl, db_emlab_powerplants)
-        export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, new_generation_capacity_df)
+        export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, current_emlab_tick,
+                                                          new_generation_capacity_df)
         export_decommissioning_decisions_to_emlab_and_competes(db_competes, db_emlab, db_competes_powerplants,
                                                                decommissioning_df, current_competes_tick,
                                                                current_emlab_tick)
