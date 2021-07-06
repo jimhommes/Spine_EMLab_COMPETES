@@ -171,7 +171,8 @@ def export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, cur
         print('If NED export to EMLAB')
         if row['Node'] == 'NED' and float(row['MWEU']) > 0:
             db_emlab.import_objects([('PowerPlants', plant_name)])
-            param_values = [(col.replace("EU", "NL"), value) for (col, value) in param_values]
+            param_values = [(col.replace("TECHTYPEU", "TECHTYPENL").replace("EU", "NL"), value)
+                            for (col, value) in param_values]
             db_emlab.import_object_parameter_values(
                 [('PowerPlants', plant_name, param_index, param_value, str(current_emlab_tick + 1))
                  for (param_index, param_value) in param_values])
