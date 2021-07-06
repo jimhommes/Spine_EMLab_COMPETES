@@ -80,7 +80,7 @@ class CapacityMarketClearing(MarketModule):
                     self.reps.set_power_plant_dispatch_plan_production(
                         ppdp, self.reps.power_plant_dispatch_plan_status_accepted, ppdp.amount)
                 elif ppdp.price < sdc.get_price_at_volume(total_supply):
-                    clearing_price = sdc.get_price_at_volume(total_supply)
+                    clearing_price = ppdp.price
                     self.reps.set_power_plant_dispatch_plan_production(
                         ppdp, self.reps.power_plant_dispatch_plan_status_partly_accepted, peak_load - total_supply)
                     total_supply = peak_load
