@@ -178,14 +178,14 @@ class TestRepository:
         ppdp2.tick = 123
         reps.power_plant_dispatch_plans[ppdp1.name] = ppdp1
         reps.power_plant_dispatch_plans[ppdp2.name] = ppdp2
-        assert reps.get_total_accepted_amounts_by_power_plant_and_tick(plant, 123) == 100 + 200
+        assert reps.get_total_accepted_amounts_by_power_plant_and_tick_and_market(plant, 123) == 100 + 200
 
     def test_get_power_plant_costs_by_tick(self, reps: Repository):
         fuel_cost = 5000000 / (0.33 * 3800000000)
         fixed_operating_cost = pow(1 + 0.05, -37 + 2 + 5) * 71870 * 485
-        accepted_capacity = reps.get_total_accepted_amounts_by_power_plant_and_tick(reps.power_plants['Power Plant 1'],
-                                                                                    0)
-        assert round(reps.get_power_plant_costs_by_tick(reps.power_plants['Power Plant 1'], 0), 3) == \
+        accepted_capacity = reps.get_total_accepted_amounts_by_power_plant_and_tick_and_market(reps.power_plants['Power Plant 1'],
+                                                                                               0)
+        assert round(reps.get_power_plant_costs_by_tick_and_market(reps.power_plants['Power Plant 1'], 0), 3) == \
                round(fixed_operating_cost + fuel_cost * accepted_capacity, 3)
 
     def test_get_power_plant_profits_by_tick(self, reps: Repository):
@@ -195,13 +195,13 @@ class TestRepository:
         plant4 = reps.power_plants['Power Plant 4']
         plant5 = reps.power_plants['Power Plant 5']
 
-        profit_plant1 = reps.get_power_plant_electricity_spot_market_revenues_by_tick(plant1, 0) - reps.get_power_plant_costs_by_tick(plant1, 0)
-        profit_plant2 = reps.get_power_plant_electricity_spot_market_revenues_by_tick(plant2, 0) - reps.get_power_plant_costs_by_tick(plant2, 0)
-        profit_plant3 = reps.get_power_plant_electricity_spot_market_revenues_by_tick(plant3, 0) - reps.get_power_plant_costs_by_tick(plant3, 0)
-        profit_plant4 = reps.get_power_plant_electricity_spot_market_revenues_by_tick(plant4, 0) - reps.get_power_plant_costs_by_tick(plant4, 0)
-        profit_plant5 = reps.get_power_plant_electricity_spot_market_revenues_by_tick(plant5, 0) - reps.get_power_plant_costs_by_tick(plant5, 0)
+        profit_plant1 = reps.get_power_plant_electricity_spot_market_revenues_by_tick(plant1, 0) - reps.get_power_plant_costs_by_tick_and_market(plant1, 0)
+        profit_plant2 = reps.get_power_plant_electricity_spot_market_revenues_by_tick(plant2, 0) - reps.get_power_plant_costs_by_tick_and_market(plant2, 0)
+        profit_plant3 = reps.get_power_plant_electricity_spot_market_revenues_by_tick(plant3, 0) - reps.get_power_plant_costs_by_tick_and_market(plant3, 0)
+        profit_plant4 = reps.get_power_plant_electricity_spot_market_revenues_by_tick(plant4, 0) - reps.get_power_plant_costs_by_tick_and_market(plant4, 0)
+        profit_plant5 = reps.get_power_plant_electricity_spot_market_revenues_by_tick(plant5, 0) - reps.get_power_plant_costs_by_tick_and_market(plant5, 0)
 
-        assert reps.get_power_plant_operational_profits_by_tick(0) == \
+        assert reps.get_power_plant_operational_profits_by_tick_and_market(0) == \
                {plant1.name: profit_plant1,
                 plant2.name: profit_plant2,
                 plant3.name: profit_plant3,
@@ -216,19 +216,19 @@ class TestRepository:
         plant5 = reps.power_plants['Power Plant 5']
 
         emission1 = plant1.get_load_factor_for_production(
-            reps.get_total_accepted_amounts_by_power_plant_and_tick(plant1, 0)
+            reps.get_total_accepted_amounts_by_power_plant_and_tick_and_market(plant1, 0)
         ) * plant1.calculate_emission_intensity(reps)
         emission2 = plant2.get_load_factor_for_production(
-            reps.get_total_accepted_amounts_by_power_plant_and_tick(plant2, 0)
+            reps.get_total_accepted_amounts_by_power_plant_and_tick_and_market(plant2, 0)
         ) * plant2.calculate_emission_intensity(reps)
         emission3 = plant3.get_load_factor_for_production(
-            reps.get_total_accepted_amounts_by_power_plant_and_tick(plant3, 0)
+            reps.get_total_accepted_amounts_by_power_plant_and_tick_and_market(plant3, 0)
         ) * plant3.calculate_emission_intensity(reps)
         emission4 = plant4.get_load_factor_for_production(
-            reps.get_total_accepted_amounts_by_power_plant_and_tick(plant4, 0)
+            reps.get_total_accepted_amounts_by_power_plant_and_tick_and_market(plant4, 0)
         ) * plant4.calculate_emission_intensity(reps)
         emission5 = plant5.get_load_factor_for_production(
-            reps.get_total_accepted_amounts_by_power_plant_and_tick(plant5, 0)
+            reps.get_total_accepted_amounts_by_power_plant_and_tick_and_market(plant5, 0)
         ) * plant5.calculate_emission_intensity(reps)
 
         assert reps.get_power_plant_emissions_by_tick(0) == {

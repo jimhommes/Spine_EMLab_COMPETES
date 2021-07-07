@@ -41,12 +41,12 @@ class CO2MarketDetermineCO2Price(MarketModule):
                               self.reps.get_allowances_in_circulation(self.reps.zones[market.parameters['zone']], self.reps.current_tick)
 
                 # Get profits, emissions and calculate WTP
-                profits_per_plant = self.reps.get_power_plant_operational_profits_by_tick(
-                    self.reps.current_tick - 1)
+                profits_per_plant = self.reps.get_power_plant_operational_profits_by_tick_and_market(
+                    self.reps.current_tick - 1, self.reps.electricity_spot_markets['DutchElectricitySpotMarket'])
                 emissions_per_plant = self.reps.get_power_plant_emissions_by_tick(self.reps.current_tick - 1)
                 willingness_to_pay_per_plant = {
-                    key: value / emissions_per_plant[key] if emissions_per_plant[key] != 0 else value for (key, value)
-                    in profits_per_plant.items()
+                    key: value / emissions_per_plant[key] for (key, value)
+                    in profits_per_plant.items() if emissions_per_plant[key] != 0
                 }
 
                 print(sum(emissions_per_plant.values()))

@@ -132,6 +132,12 @@ def replace_power_generating_technology_fuel_names(db_emlab, db_emlab_fuelmap, c
     print('Done setting correct PowerGeneratingTechnologyFuel names')
 
 
+def hotfix_disable_double_vre_plants(db_emlab, current_emlab_tick):
+    object_names = ['NED SUN PV 2020', 'NED WIND OFFSHORE 2020', 'NED WIND ONSHORE 2020']
+    db_emlab.import_object_parameter_values([('PowerPlants', i, 'STATUSNL', 'DECOM', str(current_emlab_tick))
+                                             for i in object_names])
+
+
 def execute_all_preprocessing():
     """
     This function executes all steps of this script.
@@ -153,6 +159,7 @@ def execute_all_preprocessing():
         replace_power_generating_technology_fuel_names(db_emlab, db_emlab_fuelmap, current_emlab_tick,
                                                        db_emlab_technologies)
         set_correct_power_plant_statuses(db_emlab, db_emlab_powerplants, current_competes_tick)
+        hotfix_disable_double_vre_plants(db_emlab, current_emlab_tick)
 
         print('Committing...')
         db_emlab.commit('DB EMLAB Preprocessing tick ' + str(current_competes_tick))

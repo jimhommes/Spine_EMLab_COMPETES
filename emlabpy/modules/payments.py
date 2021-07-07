@@ -24,8 +24,8 @@ class PayAndBankCO2Allowances(DefaultModule):
             market = self.reps.get_co2_market_for_plant(power_plant)
             mcp = self.reps.get_market_clearing_point_for_market_and_time(market, self.reps.current_tick)
 
-            total_capacity = self.reps.get_total_accepted_amounts_by_power_plant_and_tick(power_plant,
-                                                                                          self.reps.current_tick)
+            total_capacity = self.reps.get_total_accepted_amounts_by_power_plant_and_tick_and_market(power_plant,
+                                                                                                     self.reps.current_tick)
             emission_intensity = power_plant.calculate_emission_intensity(self.reps)
             emissions = total_capacity * emission_intensity
 
@@ -52,8 +52,8 @@ class UseCO2Allowances(DefaultModule):
 
     def act(self):
         for power_plant in self.reps.power_plants.values():
-            total_capacity = self.reps.get_total_accepted_amounts_by_power_plant_and_tick(power_plant,
-                                                                                          self.reps.current_tick)
+            total_capacity = self.reps.get_total_accepted_amounts_by_power_plant_and_tick_and_market(power_plant,
+                                                                                                     self.reps.current_tick)
             emission_intensity = power_plant.calculate_emission_intensity(self.reps)
             power_plant.banked_allowances[self.reps.current_tick] -= total_capacity * emission_intensity
             self.reps.dbrw.stage_co2_allowances(power_plant, power_plant.banked_allowances[self.reps.current_tick],

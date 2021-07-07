@@ -148,7 +148,8 @@ def export_vre_investment_decisions_to_emlab(db_emlab, current_emlab_tick, vre_i
     print('Done exporting VRE Investment Decisions to EMLAB')
 
 
-def export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, current_emlab_tick, new_generation_capacity_df):
+def export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, current_emlab_tick,
+                                                      new_generation_capacity_df, current_competes_tick):
     """
     This function exports all Investment decisions.
 
@@ -172,7 +173,9 @@ def export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, cur
         if row['Node'] == 'NED' and float(row['MWEU']) > 0:
             db_emlab.import_objects([('PowerPlants', plant_name)])
             param_values = [(col.replace("TECHTYPEU", "TECHTYPENL").replace("EU", "NL"), value)
-                            for (col, value) in param_values]
+                            for (col, value) in param_values if col != 'STATUSNL' and col != 'ON-STREAMNL']
+            param_values.append(('STATUSNL', 'DECOM'))  # Always Decom, in EMLAB_Preprocessing it will be set correctly
+            param_values.append(('ON-STREAMNL', current_competes_tick))     # Year in the sheet is random and wrong
             db_emlab.import_object_parameter_values(
                 [('PowerPlants', plant_name, param_index, param_value, str(current_emlab_tick + 1))
                  for (param_index, param_value) in param_values])
@@ -208,18 +211,21 @@ def export_power_plant_dispatch_plans_to_emlab(db_emlab, current_emlab_tick, uni
             ppdp_objects_to_import.append(('PowerPlantDispatchPlans', ppdp_name))
 
         accepted = sum(unit_generation_df[power_plant].values)
-        hourly_nodal_prices_nl_where_plant_generated = [i for i in zip(unit_generation_df[power_plant].values,
-                                                                       hourly_nodal_prices_nl) if i[0] > 0]
-        ppdp_price = sum([float(i[0]) * float(i[1]) for i in
-                          hourly_nodal_prices_nl_where_plant_generated]) / accepted if accepted > 0 else 0
-        owner = next(row['parameter_value'] for row in db_emlab_powerplants if
-                     row['object_name'] == power_plant and row['parameter_name'] == 'FirmNL')
-        status = 'Accepted' if accepted > 0 else 'Failed'
-        values = [('AcceptedAmount', accepted), ('Capacity', accepted), ('EnergyProducer', owner),
-                  ('Market', 'DutchElectricitySpotMarket'), ('Plant', power_plant), ('Status', status),
-                  ('Price', ppdp_price)]
-        ppdp_values_to_import = ppdp_values_to_import + [
-            ('PowerPlantDispatchPlans', ppdp_name, i[0], i[1], str(current_emlab_tick)) for i in values]
+        if accepted > 0:
+            hourly_nodal_prices_nl_where_plant_generated = [i for i in zip(unit_generation_df[power_plant].values,
+                                                                           hourly_nodal_prices_nl) if i[0] > 0]
+            ppdp_price = sum([float(i[0]) * float(i[1]) for i in
+                              hourly_nodal_prices_nl_where_plant_generated]) / accepted if accepted > 0 else 0
+            owner = next(row['parameter_value'] for row in db_emlab_powerplants if
+                         row['object_name'] == power_plant and row['parameter_name'] == 'FirmNL')
+            status = 'Accepted' if accepted > 0 else 'Failed'
+            values = [('AcceptedAmount', accepted), ('Capacity', accepted), ('EnergyProducer', owner),
+                      ('Market', 'DutchElectricitySpotMarket'), ('Plant', power_plant), ('Status', status),
+                      ('Price', ppdp_price)]
+            ppdp_values_to_import = ppdp_values_to_import + [
+                ('PowerPlantDispatchPlans', ppdp_name, i[0], i[1], str(current_emlab_tick)) for i in values]
+        else:
+            print('Accepted amount == 0, not importing')
     db_emlab.import_objects(ppdp_objects_to_import)
     db_emlab.import_object_parameter_values(ppdp_values_to_import)
     print('Done exporting PowerPlantDispatchPlans to EMLAB')
@@ -327,7 +333,7 @@ def export_all_competes_results():
         export_power_plant_dispatch_plans_to_emlab(db_emlab, current_emlab_tick, unit_generation_df, db_emlab_ppdps,
                                                    hourly_nodal_prices_nl, db_emlab_powerplants)
         export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, current_emlab_tick,
-                                                          new_generation_capacity_df)
+                                                          new_generation_capacity_df, current_competes_tick)
         export_decommissioning_decisions_to_emlab_and_competes(db_competes, db_emlab, db_competes_powerplants,
                                                                decommissioning_df, current_competes_tick,
                                                                current_emlab_tick)

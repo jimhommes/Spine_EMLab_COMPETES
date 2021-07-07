@@ -36,8 +36,9 @@ class CapacityMarketSubmitBids(MarketModule):
                 # Determine revenues from ElectricitySpotMarket
                 clearing_point_price = self.reps.get_power_plant_dispatch_plan_price_by_plant_and_time_and_market(
                     powerplant, self.reps.current_tick, emarket)
-                planned_dispatch = self.reps.get_total_accepted_amounts_by_power_plant_and_tick(powerplant,
-                                                                                                self.reps.current_tick)
+                planned_dispatch = self.reps.get_total_accepted_amounts_by_power_plant_and_tick_and_market(powerplant,
+                                                                                                           self.reps.current_tick,
+                                                                                                           emarket)
                 expected_electricity_revenues = planned_dispatch * (clearing_point_price - mc)
 
                 net_revenues = expected_electricity_revenues - fixed_on_m_cost

@@ -73,7 +73,7 @@ class PowerPlant(ImportObject):
                 self.technology.co2_capture_efficiency))
 
             # Returned value is ton CO2 / MWh
-            emission_for_this_fuel = substance_in_fuel_mix_object.share * co2_density
+            emission_for_this_fuel = substance_in_fuel_mix_object.share * co2_density / self.efficiency
             emission += emission_for_this_fuel
         return emission
 

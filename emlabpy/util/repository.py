@@ -75,36 +75,40 @@ class Repository:
         return sum([float(i.accepted_amount * i.price)
                     for i in self.get_power_plant_dispatch_plans_by_plant_and_tick(power_plant, time)])
 
-    def get_total_accepted_amounts_by_power_plant_and_tick(self, power_plant: PowerPlant, time: int) -> float:
+    def get_total_accepted_amounts_by_power_plant_and_tick_and_market(self, power_plant: PowerPlant, time: int, market: Market) -> float:
         return sum([i.accepted_amount for i in self.power_plant_dispatch_plans.values() if i.tick == time and
-                    i.plant == power_plant])
+                    i.plant == power_plant and i.bidding_market == market])
 
-    def get_power_plant_costs_by_tick(self, power_plant: PowerPlant, time: int) -> float:
+    def get_power_plant_costs_by_tick_and_market(self, power_plant: PowerPlant, time: int, market: Market) -> float:
         # MC is Euro / MW
         mc = power_plant.calculate_marginal_cost_excl_co2_market_cost(self, time)
         # FOC is Euro
         foc = power_plant.get_actual_fixed_operating_cost()
         # total capacity is in MWh
-        total_capacity = self.get_total_accepted_amounts_by_power_plant_and_tick(power_plant, time)
+        total_capacity = self.get_total_accepted_amounts_by_power_plant_and_tick_and_market(power_plant, time, market)
         return foc + mc * total_capacity
 
-    def get_power_plant_operational_profits_by_tick(self, time: int) -> Dict[str, float]:
+    def get_power_plant_operational_profits_by_tick_and_market(self, time: int, market: Market) -> Dict[str, float]:
         res = {}
         for power_plant in [i for i in self.power_plants.values() if i.status == self.power_plant_status_operational]:
             revenues = self.get_power_plant_electricity_spot_market_revenues_by_tick(power_plant, time)
             mc = power_plant.calculate_marginal_cost_excl_co2_market_cost(self, time)
-            total_capacity = self.get_total_accepted_amounts_by_power_plant_and_tick(power_plant, time)
+            total_capacity = self.get_total_accepted_amounts_by_power_plant_and_tick_and_market(power_plant, time, market)
             res[power_plant.name] = revenues - mc * total_capacity
         return res
 
     def get_power_plant_emissions_by_tick(self, time: int) -> Dict[str, float]:
         res = {}
+        total_cap_sum = 0
         for power_plant in [i for i in self.power_plants.values() if i.status == self.power_plant_status_operational]:
             # Total Capacity is in MWh
-            total_capacity = self.get_total_accepted_amounts_by_power_plant_and_tick(power_plant, time)
+            total_capacity = self.get_total_accepted_amounts_by_power_plant_and_tick_and_market(power_plant, time,
+                                                                                                self.electricity_spot_markets['DutchElectricitySpotMarket'])
             # Emission intensity is in ton CO2 / MWh
             emission_intensity = power_plant.calculate_emission_intensity(self)
+            total_cap_sum += total_capacity
             res[power_plant.name] = total_capacity * emission_intensity
+        print(total_cap_sum)
         return res
 
     # PowerPlantDispatchPlans
