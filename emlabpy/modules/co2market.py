@@ -27,23 +27,25 @@ class CO2MarketDetermineCO2Price(MarketModule):
                 # co2price = self.reps.substances['co2'].get_price_for_tick(0)
                 co2price = 25
             else:
+                amount_of_years_to_look_back = 5
+
                 # If not first tick, base CO2 Price of profits/emissions last year
 
                 # If implemented, take MarketStabilityReserve into account
                 msr = self.reps.get_market_stability_reserve_for_market(market)
                 # CO2Cap is in EU ETS - 1 for 1 ton CO2
                 if msr is not None:
-                    co2_cap = self.reps.get_government().co2_cap_trend.get_value(self.reps.current_tick - 1) - \
+                    co2_cap = self.reps.get_government().co2_cap_trend.get_value(self.reps.current_tick - amount_of_years_to_look_back) - \
                               self.reps.get_allowances_in_circulation(self.reps.zones[market.parameters['zone']], self.reps.current_tick)\
                               + msr.flow
                 else:
-                    co2_cap = self.reps.get_government().co2_cap_trend.get_value(self.reps.current_tick - 1) - \
+                    co2_cap = self.reps.get_government().co2_cap_trend.get_value(self.reps.current_tick - amount_of_years_to_look_back) - \
                               self.reps.get_allowances_in_circulation(self.reps.zones[market.parameters['zone']], self.reps.current_tick)
 
                 # Get profits, emissions and calculate WTP
                 profits_per_plant = self.reps.get_power_plant_operational_profits_by_tick_and_market(
-                    self.reps.current_tick - 1, self.reps.electricity_spot_markets['DutchElectricitySpotMarket'])
-                emissions_per_plant = self.reps.get_power_plant_emissions_by_tick(self.reps.current_tick - 1)
+                    self.reps.current_tick - amount_of_years_to_look_back, self.reps.electricity_spot_markets['DutchElectricitySpotMarket'])
+                emissions_per_plant = self.reps.get_power_plant_emissions_by_tick(self.reps.current_tick - amount_of_years_to_look_back)
                 willingness_to_pay_per_plant = {
                     key: value / emissions_per_plant[key] for (key, value)
                     in profits_per_plant.items() if emissions_per_plant[key] != 0

@@ -27,8 +27,11 @@ if len(sys.argv) >= 2:
     if sys.argv[2] == 'increment_clock':
         print('Incrementing Clock (tick +1)')
         db_data = db.export_data()
-        new_tick = 1 + max([int(i[3]) for i in db_data['object_parameter_values'] if i[0] == i[1] == object_name
-                            and i[2] == object_parameter_value_name])
+
+        step = 5
+
+        new_tick = step + max([int(i[3]) for i in db_data['object_parameter_values'] if i[0] == i[1] == object_name
+                               and i[2] == object_parameter_value_name])
         db.import_alternatives([str(new_tick)])
         db.import_object_parameter_values([(object_name, object_name, object_parameter_value_name, new_tick,
                                             str(new_tick))])
