@@ -161,6 +161,7 @@ def export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, cur
     for index, row in new_generation_capacity_df.iterrows():
         print('Export to COMPETES')
         param_values = [i for i in row[4:].items() if i[0] != 'UNITEU']
+        param_values = [(i[0], 0) if np.isnan(i[1]) else i for i in param_values if np.isnan(i[1])]
         plant_name = row['UNITEU']
         print('New plant ' + plant_name + ' with parameters ' + str(param_values))
         db_competes.import_objects([('Installed Capacity Abroad', plant_name)])
