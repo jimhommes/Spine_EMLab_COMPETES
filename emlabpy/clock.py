@@ -28,7 +28,7 @@ if len(sys.argv) >= 2:
         print('Incrementing Clock (tick +1)')
         db_data = db.export_data()
 
-        step = 5
+        step = 10
 
         new_tick = step + max([int(i[3]) for i in db_data['object_parameter_values'] if i[0] == i[1] == object_name
                                and i[2] == object_parameter_value_name])

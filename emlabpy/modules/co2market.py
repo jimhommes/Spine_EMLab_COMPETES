@@ -27,7 +27,7 @@ class CO2MarketDetermineCO2Price(MarketModule):
                 # co2price = self.reps.substances['co2'].get_price_for_tick(0)
                 co2price = 25
             else:
-                amount_of_years_to_look_back = 5
+                amount_of_years_to_look_back = 10
 
                 # If not first tick, base CO2 Price of profits/emissions last year
 

@@ -143,9 +143,9 @@ def export_capacity_market_revenues_for_technology(db_competes, participating_te
                                                                                             previous_cm_market_clearing_price,
                                                                                             step)
 
-            capex_map = db_overnight_cost_map[0]['parameter_value'].get_value(fuel)
+            capex_map = db_overnight_cost_map.get_value(fuel)
             export_fixed_om_and_capex_to_competes(db_competes, db_technology_map_key, capex_map, current_competes_tick,
-                                                  current_cm_market_clearing_price, fixed_om, db_overnight_cost_map[0]['parameter_value'],
+                                                  current_cm_market_clearing_price, fixed_om, db_overnight_cost_map,
                                                   db_technology_map, db_technology_combi_map, participating_technology,
                                                   fuel)
     else:
@@ -363,7 +363,7 @@ def execute_export_to_competes():
         db_emlab_powerplants = db_emlab.query_object_parameter_values_by_object_class('PowerPlants')
         print('Done querying Databases')
 
-        step = 5
+        step = 10
         current_emlab_tick, current_competes_tick, current_competes_tick_rounded = get_current_ticks(db_emlab, 2020)
         print('Current EMLAB Tick: ' + str(current_emlab_tick))
         print('Current COMPETES Tick: ' + str(current_competes_tick))

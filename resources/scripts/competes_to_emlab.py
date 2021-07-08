@@ -161,7 +161,7 @@ def export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, cur
     for index, row in new_generation_capacity_df.iterrows():
         print('Export to COMPETES')
         param_values = [i for i in row[4:].items() if i[0] != 'UNITEU']
-        param_values = [(i[0], 0) if np.isnan(i[1]) else i for i in param_values if np.isnan(i[1])]
+        param_values = [(i[0], 0) if pandas.isnull(i[1]) else i for i in param_values]
         plant_name = row['UNITEU']
         print('New plant ' + plant_name + ' with parameters ' + str(param_values))
         db_competes.import_objects([('Installed Capacity Abroad', plant_name)])
@@ -174,9 +174,10 @@ def export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, cur
         if row['Node'] == 'NED' and float(row['MWEU']) > 0:
             db_emlab.import_objects([('PowerPlants', plant_name)])
             param_values = [(col.replace("TECHTYPEU", "TECHTYPENL").replace("EU", "NL"), value)
-                            for (col, value) in param_values if col != 'STATUSNL' and col != 'ON-STREAMNL']
-            param_values.append(('STATUSNL', 'DECOM'))  # Always Decom, in EMLAB_Preprocessing it will be set correctly
-            param_values.append(('ON-STREAMNL', current_competes_tick))     # Year in the sheet is random and wrong
+                            for (col, value) in param_values if not (col == 'STATUSEU' or col == 'ON-STREAMEU')]
+            param_values.insert(0, ('STATUSNL', 'DECOM'))  # Always Decom, in EMLAB_Preprocessing it will be set correctly
+            param_values.insert(0, ('ON-STREAMNL', current_competes_tick))     # Year in the sheet is random and wrong
+            print(param_values)
             db_emlab.import_object_parameter_values(
                 [('PowerPlants', plant_name, param_index, param_value, str(current_emlab_tick + step))
                  for (param_index, param_value) in param_values])
@@ -326,7 +327,7 @@ def export_all_competes_results():
                                                                                                        db_competes)
 
         print('Staging next SpineDB alternative...')
-        step = 5
+        step = 10
         db_emlab.import_alternatives([str(current_emlab_tick + step)])
 
         path_to_competes_results = sys.argv[3]
