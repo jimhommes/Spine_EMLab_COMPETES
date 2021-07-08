@@ -46,6 +46,8 @@ class Repository:
         self.governments = dict()
         self.market_stability_reserves = dict()
 
+        self.exports = dict()
+
         self.power_plant_dispatch_plan_status_accepted = 'Accepted'
         self.power_plant_dispatch_plan_status_failed = 'Failed'
         self.power_plant_dispatch_plan_status_partly_accepted = 'Partly Accepted'

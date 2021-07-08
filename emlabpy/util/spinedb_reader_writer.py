@@ -251,5 +251,7 @@ def add_parameter_value_to_repository_based_on_object_class_name(reps, db_line):
         add_parameter_value_to_repository(reps, db_line, reps.market_stability_reserves, MarketStabilityReserve)
     elif object_class_name == 'PowerGeneratingTechnologyFuel':
         add_parameter_value_to_repository(reps, db_line, reps.power_plants_fuel_mix, SubstanceInFuelMix)
+    elif object_class_name == 'Exports':
+        add_parameter_value_to_repository(reps, db_line, reps.exports, ExportsCO2TonnesCurrentTick)
     else:
         logging.info('Object Class not defined: ' + object_class_name)

@@ -51,6 +51,10 @@ class CO2MarketDetermineCO2Price(MarketModule):
 
                 print(sum(emissions_per_plant.values()))
 
+                co2_from_exports = 0
+                if 'Exports' in self.reps.exports.keys():
+                    co2_from_exports = self.reps.exports['Exports'].amount_of_co2
+
                 # Determine CO2 Price based on the WTP merit order
                 co2price = max(willingness_to_pay_per_plant.values())
                 total_emissions = 0
@@ -58,7 +62,7 @@ class CO2MarketDetermineCO2Price(MarketModule):
                                     key=lambda item: item[1], reverse=True)
                 for (power_plant_name, wtp) in sorted_wtp:
                     emissions_per_plant_rounded = math.ceil(emissions_per_plant[power_plant_name])
-                    if co2_cap >= total_emissions + emissions_per_plant_rounded:
+                    if co2_cap - co2_from_exports >= total_emissions + emissions_per_plant_rounded:
                         total_emissions += emissions_per_plant_rounded
                         co2price = wtp
                     else:

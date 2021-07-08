@@ -288,6 +288,24 @@ def crop_dataframe_until_first_empty_row(df):
         return df
 
 
+def export_total_sum_exports_to_emlab(db_emlab, hourly_nl_balance_df, current_emlab_tick):
+    """
+    Export the amount of CO2 tons caused by exports. Estimation: 0.287 is average ton / MWh and 0.47 is average
+    efficiency.
+
+    :param db_emlab:
+    :param hourly_nl_balance_df:
+    :param current_emlab_tick:
+    :return:
+    """
+    db_emlab.import_object_classes(['Exports'])
+    db_emlab.import_objects([('Exports', 'Exports')])
+    db_emlab.import_data({'object_parameters': [['Exports', 'Exports']]})
+    db_emlab.import_object_parameter_values([('Exports', 'Exports', 'Exports',
+                                              sum(hourly_nl_balance_df['Exports']) * 0.287 / 0.47,
+                                              str(current_emlab_tick))])
+
+
 def export_all_competes_results():
     """
     This is the main export function
@@ -338,6 +356,7 @@ def export_all_competes_results():
                                                                decommissioning_df, current_competes_tick,
                                                                current_emlab_tick)
         prepare_competes_importer(vre_investment_df, current_competes_tick, path_to_competes_results)
+        export_total_sum_exports_to_emlab(db_emlab, hourly_nl_balance_df, current_emlab_tick)
 
         print('Committing...')
         db_emlab.commit('Imported from COMPETES run ' + str(current_competes_tick))
