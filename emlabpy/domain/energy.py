@@ -33,17 +33,17 @@ class PowerPlant(ImportObject):
             if self.fuelstr != '':
                 self.technology = reps.get_power_generating_technology_by_techtype_and_fuel(self.techtypestr,
                                                                                             self.fuelstr)
-                self.construction_start_time = - (self.technology.expected_leadtime +
-                                                  self.technology.expected_permittime +
-                                                  round(random.random() * self.technology.expected_lifetime)) + 2
+                # self.construction_start_time = - (self.technology.expected_leadtime +
+                #                                   self.technology.expected_permittime +
+                #                                   round(random.random() * self.technology.expected_lifetime)) + 2
         elif parameter_name == 'FUELNL':
             self.fuelstr = parameter_value
             if self.techtypestr != '':
                 self.technology = reps.get_power_generating_technology_by_techtype_and_fuel(self.techtypestr,
                                                                                             self.fuelstr)
-                self.construction_start_time = - (self.technology.expected_leadtime +
-                                                  self.technology.expected_permittime +
-                                                  round(random.random() * self.technology.expected_lifetime)) + 2
+                # self.construction_start_time = - (self.technology.expected_leadtime +
+                #                                   self.technology.expected_permittime +
+                #                                   round(random.random() * self.technology.expected_lifetime)) + 2
         elif parameter_name == 'BUSNL':
             self.location = reps.power_grid_nodes[parameter_value]
         elif parameter_name == 'FirmNL':
@@ -97,7 +97,7 @@ class PowerPlant(ImportObject):
         substance_in_fuel_mix_object = reps.get_substances_in_fuel_mix_by_plant(self)
         for substance_in_fuel_mix in substance_in_fuel_mix_object.substances:
             # Fuel price is Euro / MWh
-            fc += substance_in_fuel_mix_object.share * substance_in_fuel_mix.get_price_for_tick(time)
+            fc += substance_in_fuel_mix_object.share * substance_in_fuel_mix.get_price_for_tick(time) / self.efficiency
         return fc
 
     def calculate_co2_tax_marginal_cost(self, reps):

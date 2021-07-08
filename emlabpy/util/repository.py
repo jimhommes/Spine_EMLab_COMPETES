@@ -109,6 +109,7 @@ class Repository:
             # Emission intensity is in ton CO2 / MWh
             emission_intensity = power_plant.calculate_emission_intensity(self)
             total_cap_sum += total_capacity
+            # banking_correction = 2  # Because of banking more ETS will be claimed.
             res[power_plant.name] = total_capacity * emission_intensity
         print(total_cap_sum)
         return res

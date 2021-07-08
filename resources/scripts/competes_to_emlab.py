@@ -48,11 +48,11 @@ def read_excel_sheets(path_to_competes_results, file_name_gentrans, file_name_uc
     :return: The pandas dataframes of the read Excel sheets
     """
     # Unit Commitment
-    hourly_nodal_prices_df = pandas.read_excel(path_to_competes_results + '/' + file_name_uc,
+    hourly_nodal_prices_df = pandas.read_excel(path_to_competes_results + '/' + file_name_gentrans,
                                                'Hourly Nodal Prices')
-    unit_generation_df = pandas.read_excel(path_to_competes_results + '/' + file_name_uc, 'NL Unit Generation',
+    unit_generation_df = pandas.read_excel(path_to_competes_results + '/' + file_name_gentrans, 'NL Unit Generation',
                                            index_col=0, skiprows=1)
-    hourly_nl_balance_df = pandas.read_excel(path_to_competes_results + '/' + file_name_uc, 'Hourly NL Balance',
+    hourly_nl_balance_df = pandas.read_excel(path_to_competes_results + '/' + file_name_gentrans, 'Hourly NL Balance',
                                              skiprows=1)
 
     # Investment and Decom decisions
@@ -302,7 +302,7 @@ def export_total_sum_exports_to_emlab(db_emlab, hourly_nl_balance_df, current_em
     db_emlab.import_objects([('Exports', 'Exports')])
     db_emlab.import_data({'object_parameters': [['Exports', 'Exports']]})
     db_emlab.import_object_parameter_values([('Exports', 'Exports', 'Exports',
-                                              sum(hourly_nl_balance_df['Exports']) * 0.287 / 0.47,
+                                              hourly_nl_balance_df['Exports'].sum() * 0.287 / 0.47,
                                               str(current_emlab_tick))])
 
 
@@ -348,6 +348,7 @@ def export_all_competes_results():
         print('Done loading sheets')
 
         hourly_nodal_prices_nl = get_hourly_nodal_prices(hourly_nodal_prices_df)
+        hourly_nodal_prices_nl = [i if i < 250 else 250 for i in hourly_nodal_prices_nl]    # Limit nodal prices to 250
         export_market_clearing_points_to_emlab(db_emlab, current_emlab_tick, hourly_nodal_prices_nl, db_emlab_mcps)
         export_power_plant_dispatch_plans_to_emlab(db_emlab, current_emlab_tick, unit_generation_df, db_emlab_ppdps,
                                                    hourly_nodal_prices_nl, db_emlab_powerplants)

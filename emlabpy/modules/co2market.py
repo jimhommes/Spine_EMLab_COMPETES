@@ -51,11 +51,11 @@ class CO2MarketDetermineCO2Price(MarketModule):
                     in profits_per_plant.items() if emissions_per_plant[key] != 0
                 }
 
-                print(sum(emissions_per_plant.values()))
+                print(sum(emissions_per_plant.values()) * 2 * 1.57)
 
                 co2_from_exports = 0
                 if 'Exports' in self.reps.exports.keys():
-                    co2_from_exports = self.reps.exports['Exports'].amount_of_co2
+                    co2_from_exports = self.reps.exports['Exports'].amount_of_co2 * 2   # *2 for Banking compensation
 
                 # Determine CO2 Price based on the WTP merit order
                 co2price = max(willingness_to_pay_per_plant.values())
@@ -64,11 +64,12 @@ class CO2MarketDetermineCO2Price(MarketModule):
                                     key=lambda item: item[1], reverse=True)
                 for (power_plant_name, wtp) in sorted_wtp:
                     emissions_per_plant_rounded = math.ceil(emissions_per_plant[power_plant_name])
-                    if co2_cap - co2_from_exports >= total_emissions + emissions_per_plant_rounded:
-                        total_emissions += emissions_per_plant_rounded
+                    if co2_cap - co2_from_exports >= total_emissions + 2 * 1.57 * emissions_per_plant_rounded:
+                        total_emissions += emissions_per_plant_rounded * 2 * 1.57
                         co2price = wtp
                     else:
                         break
+                print(co2price)
 
             # Check if CO2Price is below the Government's min CO2 price
             co2price = self.floor_co2price(co2price)

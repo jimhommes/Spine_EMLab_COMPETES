@@ -472,36 +472,6 @@
             },
             {
                 "from": [
-                    "Prepare COMPETES",
-                    "right"
-                ],
-                "to": [
-                    "COMPETES Dispatch",
-                    "left"
-                ]
-            },
-            {
-                "from": [
-                    "COMPETES Dispatch",
-                    "right"
-                ],
-                "to": [
-                    "COMPETES Investment",
-                    "left"
-                ]
-            },
-            {
-                "from": [
-                    "DB EMLAB ref",
-                    "left"
-                ],
-                "to": [
-                    "COMPETES Dispatch",
-                    "right"
-                ]
-            },
-            {
-                "from": [
                     "COMPETES Output File",
                     "left"
                 ],
@@ -527,6 +497,16 @@
                 ],
                 "to": [
                     "Execute Sleep and Click",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "Prepare COMPETES",
+                    "right"
+                ],
+                "to": [
+                    "COMPETES Investment",
                     "left"
                 ]
             }
@@ -595,8 +575,8 @@
         "COMPETES Init Data": {
             "type": "Data Connection",
             "description": "",
-            "x": -749.8929407714003,
-            "y": 259.60801499544027,
+            "x": -748.7357154304203,
+            "y": 258.4507896544603,
             "references": [
                 {
                     "type": "path",
@@ -996,7 +976,7 @@
         "COMPETES Investment": {
             "type": "Tool",
             "description": "",
-            "x": 301.09425543107267,
+            "x": 298.7798047491127,
             "y": 165.05371450939433,
             "specification": "COMPETES",
             "execute_in_work": false,
@@ -1008,24 +988,6 @@
                 {
                     "type": "literal",
                     "arg": "spine_run_gentrans"
-                }
-            ]
-        },
-        "COMPETES Dispatch": {
-            "type": "Tool",
-            "description": "",
-            "x": 152.26447090491575,
-            "y": 165.4041078184604,
-            "specification": "COMPETES",
-            "execute_in_work": false,
-            "cmd_line_args": [
-                {
-                    "type": "resource",
-                    "arg": "db_url@DB EMLAB ref"
-                },
-                {
-                    "type": "literal",
-                    "arg": "spine_run_uc"
                 }
             ]
         },
