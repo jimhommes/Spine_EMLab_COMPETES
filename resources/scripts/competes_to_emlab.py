@@ -126,7 +126,7 @@ def export_decommissioning_decisions_to_emlab_and_competes(db_competes, db_emlab
 
 
 def export_vre_investment_decisions_to_emlab(db_emlab, current_emlab_tick, vre_investment_df,
-                                             db_emlab_powerplants):
+                                             db_emlab_powerplants, step):
     """
     This function exports all VRE Investment decisions. For COMPETES the Importer block in Spine is used.
     See function prepare_competes_importer.
@@ -143,13 +143,13 @@ def export_vre_investment_decisions_to_emlab(db_emlab, current_emlab_tick, vre_i
                       row['object_name'] == vre_row['WindOn'] and row['parameter_name'] == 'MWNL')
         db_emlab.import_object_parameter_values([('PowerPlants', vre_row['WindOn'], 'MWNL',
                                                   float(old_mw) + float(vre_row['Initial']),
-                                                  str(current_emlab_tick + 1))])
+                                                  str(current_emlab_tick + step))])
     print('Done')
     print('Done exporting VRE Investment Decisions to EMLAB')
 
 
 def export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, current_emlab_tick,
-                                                      new_generation_capacity_df, current_competes_tick):
+                                                      new_generation_capacity_df, current_competes_tick, step):
     """
     This function exports all Investment decisions.
 
@@ -177,7 +177,7 @@ def export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, cur
             param_values.append(('STATUSNL', 'DECOM'))  # Always Decom, in EMLAB_Preprocessing it will be set correctly
             param_values.append(('ON-STREAMNL', current_competes_tick))     # Year in the sheet is random and wrong
             db_emlab.import_object_parameter_values(
-                [('PowerPlants', plant_name, param_index, param_value, str(current_emlab_tick + 1))
+                [('PowerPlants', plant_name, param_index, param_value, str(current_emlab_tick + step))
                  for (param_index, param_value) in param_values])
         print('Done')
     print('Done exporting Investment Decisions to EMLAB and COMPETES')
@@ -325,7 +325,8 @@ def export_all_competes_results():
                                                                                                        db_competes)
 
         print('Staging next SpineDB alternative...')
-        db_emlab.import_alternatives([str(current_emlab_tick + 1)])
+        step = 5
+        db_emlab.import_alternatives([str(current_emlab_tick + step)])
 
         path_to_competes_results = sys.argv[3]
         file_name_gentrans = sys.argv[4].replace('?', str(current_competes_tick))
@@ -351,7 +352,7 @@ def export_all_competes_results():
         export_power_plant_dispatch_plans_to_emlab(db_emlab, current_emlab_tick, unit_generation_df, db_emlab_ppdps,
                                                    hourly_nodal_prices_nl, db_emlab_powerplants)
         export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, current_emlab_tick,
-                                                          new_generation_capacity_df, current_competes_tick)
+                                                          new_generation_capacity_df, current_competes_tick, step)
         export_decommissioning_decisions_to_emlab_and_competes(db_competes, db_emlab, db_competes_powerplants,
                                                                decommissioning_df, current_competes_tick,
                                                                current_emlab_tick)

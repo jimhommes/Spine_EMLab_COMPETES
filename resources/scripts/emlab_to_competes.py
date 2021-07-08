@@ -56,7 +56,7 @@ def export_fixed_om_and_capex_to_competes(db_competes, db_technology_map_key, ca
 def add_market_clearing_price_to_fixed_om_with_backtracking_if_necessary(fixed_om, db_overnight_cost_map,
                                                                          db_initial_overnight_cost_map, fuel,
                                                                          current_competes_tick,
-                                                                         previous_cm_market_clearing_price):
+                                                                         previous_cm_market_clearing_price, step):
     """
     This function adds the market clearing price to the provided fixed O&M. The function checks whether backtracking
     is necessary. This is the case if a previous reduction has happened and the values are now skewed.
@@ -74,9 +74,9 @@ def add_market_clearing_price_to_fixed_om_with_backtracking_if_necessary(fixed_o
     if fixed_om == 0:
         print('Fixed O&M is 0, so backtrack CAPEX difference from previous tick')
         print('Backtracking previous CAPEX reduction...')
-        previous_capex = db_overnight_cost_map.get_value(fuel).get_value(str(current_competes_tick - 1))
+        previous_capex = db_overnight_cost_map.get_value(fuel).get_value(str(current_competes_tick - step))
         previous_original_capex = db_initial_overnight_cost_map.get_value(fuel).get_value(
-            str(current_competes_tick - 1))
+            str(current_competes_tick - step))
 
         # First backtrack original value of CAPEX and Fixed O&M
         if previous_capex + previous_cm_market_clearing_price > previous_original_capex:
@@ -109,7 +109,8 @@ def get_fuel_and_fixed_om_from_technology_map(db_technology_map):
 
 
 def export_capacity_market_revenues_for_technology(db_competes, participating_technology, current_competes_tick,
-                                                   current_cm_market_clearing_price, previous_cm_market_clearing_price):
+                                                   current_cm_market_clearing_price, previous_cm_market_clearing_price,
+                                                   step):
     """
     This function exports all capacity market revenues as Fixed O&M and CAPEX costs.
 
@@ -134,7 +135,8 @@ def export_capacity_market_revenues_for_technology(db_competes, participating_te
         fixed_om = add_market_clearing_price_to_fixed_om_with_backtracking_if_necessary(fixed_om, db_overnight_cost_map,
                                                                                         db_initial_overnight_cost_map,
                                                                                         fuel, current_competes_tick,
-                                                                                        previous_cm_market_clearing_price)
+                                                                                        previous_cm_market_clearing_price,
+                                                                                        step)
 
         capex_map = db_overnight_cost_map.get_value(fuel)
         export_fixed_om_and_capex_to_competes(db_competes, db_technology_map_key, capex_map, current_competes_tick,
@@ -154,13 +156,13 @@ def get_cm_market_clearing_price(tick, db_emlab_marketclearingpoints):
                                  row['parameter_name'] == 'Market' and row[
                                      'parameter_value'] == 'DutchCapacityMarket' and row['alternative'] == str(tick))
     market_clearing_price = next(row['parameter_value'] for row in db_emlab_marketclearingpoints if
-                                 row['parameter_name'] == market_clearing_point and row['parameter_name'] == 'Price')
+                                 row['object_name'] == market_clearing_point and row['parameter_name'] == 'Price')
     market_clearing_price = market_clearing_price / 1000  # EMLAB is in Euro / MWh - COMPETES is in Euro / kWh
     print('Current CM Market Clearing Price: ' + str(market_clearing_price))
     return market_clearing_price
 
 
-def get_previous_cm_market_clearing_price(current_emlab_tick, db_emlab_marketclearingpoints):
+def get_previous_cm_market_clearing_price(current_emlab_tick, db_emlab_marketclearingpoints, step):
     """
     This function gets the previous MCP in reference to the current year.
 
@@ -168,8 +170,8 @@ def get_previous_cm_market_clearing_price(current_emlab_tick, db_emlab_marketcle
     :param db_emlab_marketclearingpoints: MCPs as queried from SpineDB EMLab
     :return: CM Market Clearing Price (float)
     """
-    if current_emlab_tick > 1:
-        previous_cm_market_clearing_price = get_cm_market_clearing_price(current_emlab_tick - 2,
+    if current_emlab_tick > step:
+        previous_cm_market_clearing_price = get_cm_market_clearing_price(current_emlab_tick - 2 * step,
                                                                          db_emlab_marketclearingpoints)
         print('Current EMLab tick > 1, previous Capacity Market clearing price is ' + str(
             previous_cm_market_clearing_price))
@@ -204,7 +206,7 @@ def get_participating_technologies_in_capacity_market(db_emlab_powerplantdispatc
 
 
 def export_capacity_market_revenues(db_competes, current_emlab_tick, db_emlab_powerplantdispatchplans,
-                                    db_emlab_marketclearingpoints, current_competes_tick):
+                                    db_emlab_marketclearingpoints, current_competes_tick, step):
     """
     In the conceptual COMPETES EMLab coupling, the CM revenues are exported as Fixed O&M and CAPEX reduction.
     For all participating technologies the CM price gets subtracted from the Fixed O&M. If the Fixed O&M reaches 0,
@@ -228,8 +230,8 @@ def export_capacity_market_revenues(db_competes, current_emlab_tick, db_emlab_po
             capacity_market_participating_technologies))
 
         previous_cm_market_clearing_price = get_previous_cm_market_clearing_price(current_emlab_tick,
-                                                                                  db_emlab_marketclearingpoints)
-        current_cm_market_clearing_price = get_cm_market_clearing_price(current_emlab_tick - 1,
+                                                                                  db_emlab_marketclearingpoints, step)
+        current_cm_market_clearing_price = get_cm_market_clearing_price(current_emlab_tick - step,
                                                                         db_emlab_marketclearingpoints)
 
         # For every participating technology the Fixed O&M, and if too little Fixed O&M the CAPEX will be reduced
@@ -237,7 +239,7 @@ def export_capacity_market_revenues(db_competes, current_emlab_tick, db_emlab_po
             print('Editing CAPEX and Fixed O&M for ' + str(participating_technology))
             export_capacity_market_revenues_for_technology(db_competes, participating_technology, current_competes_tick,
                                                            current_cm_market_clearing_price,
-                                                           previous_cm_market_clearing_price)
+                                                           previous_cm_market_clearing_price, step)
 
     else:
         print('Current tick == 0, so not exporting anything of the CM revenues')
@@ -315,6 +317,7 @@ def execute_export_to_competes():
             'PowerPlantDispatchPlans')
         print('Done querying Databases')
 
+        step = 5
         current_emlab_tick, current_competes_tick, current_competes_tick_rounded = get_current_ticks(db_emlab, 2020)
         print('Current EMLAB Tick: ' + str(current_emlab_tick))
         print('Current COMPETES Tick: ' + str(current_competes_tick))
@@ -325,7 +328,7 @@ def execute_export_to_competes():
         export_co2_market_clearing_price(db_competes, db_emlab_marketclearingpoints, current_emlab_tick,
                                          co2_object_class_name, current_competes_tick, months)
         export_capacity_market_revenues(db_competes, current_emlab_tick, db_emlab_powerplantdispatchplans,
-                                        db_emlab_marketclearingpoints, current_competes_tick)
+                                        db_emlab_marketclearingpoints, current_competes_tick, step)
 
         print('Committing...')
         db_competes.commit('Committing EMLAB to COMPETES script. EMLab tick: ' + str(current_emlab_tick) +

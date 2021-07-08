@@ -45,7 +45,7 @@
                             },
                             {
                                 "map_type": "ParameterValueIndex",
-                                "position": 0
+                                "position": 4
                             },
                             {
                                 "map_type": "IndexName",
@@ -53,7 +53,7 @@
                             },
                             {
                                 "map_type": "ParameterValueIndex",
-                                "position": 4
+                                "position": 0
                             },
                             {
                                 "map_type": "IndexName",
