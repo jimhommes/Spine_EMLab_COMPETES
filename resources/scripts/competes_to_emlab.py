@@ -93,7 +93,7 @@ def prepare_competes_importer(vre_investment_df, current_competes_tick, path_to_
 
 def export_decommissioning_decisions_to_emlab_and_competes(db_competes, db_emlab, db_competes_powerplants,
                                                            decommissioning_df, current_competes_tick,
-                                                           current_emlab_tick):
+                                                           current_emlab_tick, step):
     """
     This function exports all decommissioning decisions to EMLab and COMPETES.
     This means that the duplicate objects (the ones with (D) in the title) will be changed in their year, or
@@ -115,11 +115,11 @@ def export_decommissioning_decisions_to_emlab_and_competes(db_competes, db_emlab
             power_plant_name_decom_version = power_plant_name_decom_version_row['object_name']
             db_competes.import_object_parameter_values([(power_plant_name_decom_version_row['object_class_name'],
                                                          power_plant_name_decom_version, 'ON-STREAMNL',
-                                                         current_competes_tick, str(current_emlab_tick))])
+                                                         current_competes_tick, '0')])
             if row['node'] == 'NED':
                 # If node is NED, export to EMLAB
                 db_emlab.import_object_parameter_values([('PowerPlants', power_plant_name_decom_version, 'ON-STREAMNL',
-                                                          current_competes_tick, str(current_emlab_tick))])
+                                                          current_competes_tick, str(current_emlab_tick + step))])
         except StopIteration:
             print('No DECOM version found for plant ' + row['unit'])
     print('Done')
@@ -166,7 +166,7 @@ def export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, cur
         print('New plant ' + plant_name + ' with parameters ' + str(param_values))
         db_competes.import_objects([('Installed Capacity Abroad', plant_name)])
         db_competes.import_object_parameter_values(
-            [('Installed Capacity Abroad', row['UNITEU'], param_name, param_value) for (param_name, param_value) in
+            [('Installed Capacity Abroad', row['UNITEU'], param_name, param_value, '0') for (param_name, param_value) in
              param_values])
         print('Done')
 
@@ -358,7 +358,7 @@ def export_all_competes_results():
                                                           new_generation_capacity_df, current_competes_tick, step)
         export_decommissioning_decisions_to_emlab_and_competes(db_competes, db_emlab, db_competes_powerplants,
                                                                decommissioning_df, current_competes_tick,
-                                                               current_emlab_tick)
+                                                               current_emlab_tick, step)
         prepare_competes_importer(vre_investment_df, current_competes_tick, path_to_competes_results)
         export_total_sum_exports_to_emlab(db_emlab, hourly_nl_balance_df, current_emlab_tick)
 

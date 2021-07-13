@@ -15,7 +15,7 @@ if not os.path.exists(path_to_plots):
 # Select what years you want to generate plots for
 path_to_competes_results = '../../COMPETES/Results'
 filename_to_load = 'Output_Dynamic_Gen&Trans_?.xlsx'
-years_to_generate = [2020]
+years_to_generate = [2020, 2030, 2040]
 
 co2_emission_sums = dict()
 vre_investment_sums = dict()
@@ -34,6 +34,10 @@ for year in years_to_generate:
             investment_sums[row['CombinedIndex']].append(row['MW'])
         else:
             investment_sums[row['CombinedIndex']] = [row['MW']]
+    # Add 0 to values if not in COMPETES results
+    for key in investment_sums.keys():
+        if key not in investments['CombinedIndex'].values:
+            investment_sums[key].append(0)
 
     # Preparing values for VRE Investments plot, plot after years iterations
     vre_investments = pandas.read_excel(path_and_filename, 'VRE investment', skiprows=2)
@@ -42,6 +46,10 @@ for year in years_to_generate:
             vre_investment_sums[row['WindOn']].append(row['Initial'])
         else:
             vre_investment_sums[row['WindOn']] = [row['Initial']]
+    # Add 0 to values if not in COMPETES results
+    for key in vre_investment_sums.keys():
+        if key not in vre_investments[vre_investments['Bus'] == 'NED']['WindOn'].values:
+            vre_investment_sums[key].append(0)
 
     # Preparing values for CO2 Emissions plot, plot after years iterations
     co2_emissions = pandas.read_excel(path_and_filename, 'CO2 Emissions tech', skiprows=1, index_col=0)
@@ -52,16 +60,29 @@ for year in years_to_generate:
             co2_emission_sums[index].append(value)
         else:
             co2_emission_sums[index] = [value]
+    # Add 0 to values if not in COMPETES results
+    for key in co2_emission_sums.keys():
+        if key not in co2_emissions.columns.values:
+            co2_emission_sums[key].append(0)
 
     # Plot 1
     hourly_nl_balance_df = pandas.read_excel(path_and_filename, 'Hourly NL Balance', skiprows=1, index_col=0, skipfooter=2).replace(np.nan, 0)
     axs = hourly_nl_balance_df.plot()
-    axs.set_title('Hourly NL Balance - All Technologies')
+    axs.set_title('Hourly NL Balance - All Technologies' + str(year))
     plt.xlabel('Hours')
     plt.ylabel('MWh')
     plt.legend(fontsize='xx-small', loc='upper left', bbox_to_anchor=(1, 1.1))
     fig = axs.get_figure()
     fig.savefig(path_to_plots + '/' + 'NL Hourly Balance ' + str(year) + '.png')
+
+    # Plot 1.5
+    plt.figure()
+    axs15 = hourly_nl_balance_df['Demand'].sort_values(ascending=False).plot(use_index=False)
+    axs15.set_title('NL Load Duration Curve ' + str(year))
+    plt.xlabel('Hours')
+    plt.ylabel('MWh')
+    fig15 = axs15.get_figure()
+    fig15.savefig(path_to_plots + '/' + 'NL Load Duration Curve ' + str(year) + '.png')
 
     # Plot 2
     hourly_nodal_prices_df = pandas.read_excel(path_and_filename, 'Hourly Nodal Prices', skiprows=1, index_col=0)
@@ -71,9 +92,18 @@ for year in years_to_generate:
     axs2 = hourly_nodal_prices_df['NED'].plot()
     plt.xlabel('Hours')
     plt.ylabel('Euro')
-    axs2.set_title('NL Hourly Market Prices')
+    axs2.set_title('NL Hourly Market Prices ' + str(year))
     fig2 = axs2.get_figure()
     fig2.savefig(path_to_plots + '/' + 'NL Nodal Prices ' + str(year) + '.png')
+
+    # Plot 2.5
+    plt.figure()
+    axs25 = hourly_nodal_prices_df['NED'].sort_values(ascending=False).plot(use_index=False)
+    plt.xlabel('Hours')
+    plt.ylabel('Euro')
+    axs25.set_title('NL Hourly Market Price Duration Curve ' + str(year))
+    fig25 = axs25.get_figure()
+    fig25.savefig(path_to_plots + '/' + 'NL Nodal Prices Duration Curve ' + str(year) + '.png')
 
     # Plot 3
     nl_unit_generation_df = pandas.read_excel(path_and_filename, 'NL Unit Generation', skiprows=1, index_col=0, header=0).transpose()
@@ -83,7 +113,7 @@ for year in years_to_generate:
     plt.xlabel('Hours')
     plt.ylabel('MWh')
     plt.legend(fontsize='xx-small', loc='upper left', bbox_to_anchor=(1, 1.1))
-    axs3.set_title('NL Unit Generation')
+    axs3.set_title('NL Unit Generation ' + str(year))
     fig3 = axs3.get_figure()
     fig3.savefig(path_to_plots + '/' + 'NL Unit Generation ' + str(year) + '.png')
 
@@ -98,16 +128,6 @@ axs4.set_title('NL CO2 Emissions')
 fig4 = axs4.get_figure()
 fig4.savefig(path_to_plots + '/' + 'NL CO2 Emissions.png')
 
-# VRE Investments plot
-plt.figure()
-vre_investments_df = pd.DataFrame(vre_investment_sums, index=years_to_generate)
-axs5 = vre_investments_df.plot.bar(stacked=True, rot=0)
-plt.xlabel('Years')
-plt.ylabel('MW')
-axs5.set_title('NL VRE Investments')
-fig5 = axs5.get_figure()
-fig5.savefig(path_to_plots + '/' + 'NL VRE Investments.png')
-
 # Investments plot
 plt.figure()
 investments_df = pd.DataFrame(investment_sums, index=years_to_generate)
@@ -117,6 +137,16 @@ plt.ylabel('MW')
 axs6.set_title('NL Investments')
 fig6 = axs6.get_figure()
 fig6.savefig(path_to_plots + '/' + 'NL Investments.png')
+
+# VRE Investments plot
+plt.figure()
+vre_investments_df = pd.DataFrame(vre_investment_sums, index=years_to_generate)
+axs5 = vre_investments_df.plot.bar(stacked=True, rot=0)
+plt.xlabel('Years')
+plt.ylabel('MW')
+axs5.set_title('NL VRE Investments')
+fig5 = axs5.get_figure()
+fig5.savefig(path_to_plots + '/' + 'NL VRE Investments.png')
 
 # EMLab Plots
 spinedb = SpineDB("sqlite:///E:\Dropbox\workspace\Spine_EMLab_COMPETES\.spinetoolbox\items\db_emlab\DB.sqlite")
@@ -135,7 +165,7 @@ try:
 
     fig7 = plt.figure()
     axs7 = plt.axes()
-    axs7.plot(co2_x, co2_y)
+    axs7.plot(co2_x, co2_y, 'bo')
     plt.xlabel('Years')
     plt.ylabel('Euro / ton')
     axs7.set_title('NL CO2 Prices')
@@ -151,7 +181,7 @@ try:
 
     fig8 = plt.figure()
     axs8 = plt.axes()
-    axs8.plot(cm_x, cm_y)
+    axs8.plot(cm_x, cm_y, 'bo')
     plt.xlabel('Years')
     plt.ylabel('Euro / MW')
     axs8.set_title('NL Capacity Market Prices')
