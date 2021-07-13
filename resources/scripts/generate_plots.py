@@ -21,6 +21,15 @@ co2_emission_sums = dict()
 vre_investment_sums = dict()
 investment_sums = dict()
 
+# EMLab Plots
+spinedb = SpineDB("sqlite:///E:\Dropbox\workspace\Spine_EMLab_COMPETES\.spinetoolbox\items\db_emlab\DB.sqlite")
+try:
+    emlab_spine_powerplants = spinedb.query_object_parameter_values_by_object_class('PowerPlants')
+    emlab_spine_powerplants_tech_dict = {i['object_name']: i['parameter_value'] + ' (D)' for i in emlab_spine_powerplants if i['parameter_name'] == 'TECHTYPENL'}
+except Exception as e:
+    spinedb.close_connection()
+    raise
+
 # Generate plots
 for year in years_to_generate:
     path_and_filename = path_to_competes_results + '/' + filename_to_load.replace('?', str(year))
@@ -30,13 +39,23 @@ for year in years_to_generate:
     investments = investments[investments['Node'] == 'NED']
     investments['CombinedIndex'] = [i[0] + ', ' + i[1] for i in zip(investments['FUEL'].values, investments['FuelType'].values)]
     for index, row in investments.iterrows():
-        if row['CombinedIndex'] in investment_sums:
+        if row['CombinedIndex'] in investment_sums.keys():
             investment_sums[row['CombinedIndex']].append(row['MW'])
         else:
-            investment_sums[row['CombinedIndex']] = [row['MW']]
+            investment_sums[row['CombinedIndex']] = [0] * years_to_generate.index(year) + [row['MW']]
+
+    decommissioning = pandas.read_excel(path_and_filename, 'Decommissioning', skiprows=2, usecols='A:C')
+    decommissioning = decommissioning[decommissioning['node'] == 'NED']
+    decommissioning['Technology'] = [emlab_spine_powerplants_tech_dict[i] for i in decommissioning['unit'].values]
+    decommissioning_grouped_and_summed = decommissioning.groupby('Technology')['MW'].sum()
+    for tech, mw_sum in decommissioning_grouped_and_summed.iteritems():
+        if tech in investment_sums.keys():
+            investment_sums[tech].append(-1 * mw_sum)
+        else:
+            investment_sums[tech] = [0] * years_to_generate.index(year) + [-1 * mw_sum]
     # Add 0 to values if not in COMPETES results
     for key in investment_sums.keys():
-        if key not in investments['CombinedIndex'].values:
+        if key not in investments['CombinedIndex'].values and key not in decommissioning_grouped_and_summed.index:
             investment_sums[key].append(0)
 
     # Preparing values for VRE Investments plot, plot after years iterations
@@ -45,7 +64,7 @@ for year in years_to_generate:
         if row['WindOn'] in vre_investment_sums.keys():
             vre_investment_sums[row['WindOn']].append(row['Initial'])
         else:
-            vre_investment_sums[row['WindOn']] = [row['Initial']]
+            vre_investment_sums[row['WindOn']] = [0] * years_to_generate.index(year) + [row['Initial']]
     # Add 0 to values if not in COMPETES results
     for key in vre_investment_sums.keys():
         if key not in vre_investments[vre_investments['Bus'] == 'NED']['WindOn'].values:
@@ -59,7 +78,7 @@ for year in years_to_generate:
         if index in co2_emission_sums.keys():
             co2_emission_sums[index].append(value)
         else:
-            co2_emission_sums[index] = [value]
+            co2_emission_sums[index] = [0] * years_to_generate.index(year) + [value]
     # Add 0 to values if not in COMPETES results
     for key in co2_emission_sums.keys():
         if key not in co2_emissions.columns.values:
@@ -148,8 +167,7 @@ axs5.set_title('NL VRE Investments')
 fig5 = axs5.get_figure()
 fig5.savefig(path_to_plots + '/' + 'NL VRE Investments.png')
 
-# EMLab Plots
-spinedb = SpineDB("sqlite:///E:\Dropbox\workspace\Spine_EMLab_COMPETES\.spinetoolbox\items\db_emlab\DB.sqlite")
+
 try:
     db_mcps = spinedb.query_object_parameter_values_by_object_class('MarketClearingPoints')
     co2_mcps = [i['object_name'] for i in db_mcps if i['parameter_name'] == 'Market' and i['parameter_value'] == 'CO2Auction']
@@ -191,4 +209,4 @@ except Exception:
     spinedb.close_connection()
     raise
 
-plt.show()
+# plt.show()
