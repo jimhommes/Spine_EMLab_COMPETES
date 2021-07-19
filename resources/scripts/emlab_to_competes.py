@@ -185,11 +185,6 @@ def export_capacity_market_revenues_for_technology(db_competes, participating_te
                                                      'VRE Technologies', vre_technologies, '0')])
 
 
-
-
-
-
-
 def get_cm_market_clearing_price(tick, db_emlab_marketclearingpoints):
     """
     This function returns the CM MCP for tick specified.
