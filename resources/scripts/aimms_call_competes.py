@@ -28,22 +28,22 @@ finally:
 
 aimms_service_name = sys.argv[2]
 print('Running AIMMS service ' + aimms_service_name)
+port = 8080
+url = 'http://localhost'
 
 print('Sending HTTP Request to AIMMS')
-result = requests.post('http://localhost:60117/api/v1/tasks/' + aimms_service_name + '?InputYear=' + str(current_competes_tick))
+result = requests.post(url + ':' + str(port) + '/api/v1/tasks/' + aimms_service_name + '?InputYear=' + str(current_competes_tick))
 print('Response Code: ' + str(result.status_code))
 print('Response Body: ' + result.text)
 request_id = result.json()['id']
 print('Activity ID: ' + request_id)
 
-status = requests.get('http://localhost:60117/api/v1/tasks/' + request_id)
+status = requests.get(url + ':' + str(port) + '/api/v1/tasks/' + request_id)
 print(status.json())
-t = 0
 while status.json()['status'] != 'finished' and status.json()['status'] != 'interrupted':
-    print('Current status: ' + status.json()['status'] + ', t=' + str(t))
+    print('Current status: ' + status.json()['status'] + ', t=' + status.json()['runtime'])
     time.sleep(5)
-    t += 5
-    status = requests.get('http://localhost:60117/api/v1/tasks/' + request_id)
+    status = requests.get(url + ':' + str(port) + '/api/v1/tasks/' + request_id)
 print('Done')
 print('Response Code: ' + str(status.status_code))
 print('Response Body: ' + status.text)
