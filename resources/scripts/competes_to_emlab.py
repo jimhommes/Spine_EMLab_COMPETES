@@ -139,11 +139,15 @@ def export_vre_investment_decisions_to_emlab(db_emlab, current_emlab_tick, vre_i
     print('Exporting VRE Investment Decisions to EMLAB...')
     print('Export to EMLAB')
     for index, vre_row in vre_investment_df.iterrows():
-        old_mw = next(row['parameter_value'] for row in db_emlab_powerplants if
-                      row['object_name'] == vre_row['WindOn'] and row['parameter_name'] == 'MWNL')
-        db_emlab.import_object_parameter_values([('PowerPlants', vre_row['WindOn'], 'MWNL',
+        try:
+            old_mw = next(row['parameter_value'] for row in db_emlab_powerplants if
+                          row['object_name'] == vre_row['WindOn'] and row['parameter_name'] == 'MWNL')
+            db_emlab.import_object_parameter_values([('PowerPlants', vre_row['WindOn'], 'MWNL',
                                                   float(old_mw) + float(vre_row['Initial']),
                                                   str(current_emlab_tick + step))])
+        except KeyError:
+            print('No VRE Investments found')
+            break
     print('Done')
     print('Done exporting VRE Investment Decisions to EMLAB')
 
