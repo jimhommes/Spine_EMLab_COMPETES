@@ -38,29 +38,29 @@ def query_databases(db_emlab, db_competes):
     return db_emlab_powerplants, db_emlab_ppdps, db_competes_powerplants, db_emlab_mcps
 
 
-def read_excel_sheets(path_to_competes_results, file_name_gentrans, file_name_uc):
+def read_excel_sheets(path_to_competes_results, file_name_gentransinv, file_name_gentransdisp):
     """
     This function reads all Excel sheets output by COMPETES. This is done with pandas.
 
     :param path_to_competes_results: URL
-    :param file_name_gentrans: Filename of the Investment output
+    :param file_name_gentransinv: Filename of the Investment output
     :param file_name_uc: Filename of the Unit Commitment output
     :return: The pandas dataframes of the read Excel sheets
     """
     # Unit Commitment
-    hourly_nodal_prices_df = pandas.read_excel(path_to_competes_results + '/' + file_name_gentrans,
+    hourly_nodal_prices_df = pandas.read_excel(path_to_competes_results + '/' + file_name_gentransdisp,
                                                'Hourly Nodal Prices')
-    unit_generation_df = pandas.read_excel(path_to_competes_results + '/' + file_name_gentrans, 'NL Unit Generation',
-                                           index_col=0, skiprows=1)
-    hourly_nl_balance_df = pandas.read_excel(path_to_competes_results + '/' + file_name_gentrans, 'Hourly NL Balance',
-                                             skiprows=1)
+    unit_generation_df = pandas.read_excel(path_to_competes_results + '/' + file_name_gentransdisp,
+                                           'NL Unit Generation', index_col=0, skiprows=1)
+    hourly_nl_balance_df = pandas.read_excel(path_to_competes_results + '/' + file_name_gentransdisp,
+                                             'Hourly NL Balance', skiprows=1)
 
     # Investment and Decom decisions
-    new_generation_capacity_df = pandas.read_excel(path_to_competes_results + '/' + file_name_gentrans,
+    new_generation_capacity_df = pandas.read_excel(path_to_competes_results + '/' + file_name_gentransinv,
                                                    'New Generation Capacity', skiprows=2, usecols='A:D,G:X')
-    decommissioning_df = pandas.read_excel(path_to_competes_results + '/' + file_name_gentrans, 'Decommissioning',
+    decommissioning_df = pandas.read_excel(path_to_competes_results + '/' + file_name_gentransinv, 'Decommissioning',
                                            skiprows=2, usecols='A:C')
-    vre_investment_df = pandas.read_excel(path_to_competes_results + '/' + file_name_gentrans, 'VRE investment',
+    vre_investment_df = pandas.read_excel(path_to_competes_results + '/' + file_name_gentransinv, 'VRE investment',
                                           skiprows=2, usecols='A:D')
 
     return hourly_nodal_prices_df, unit_generation_df, new_generation_capacity_df, decommissioning_df, \
@@ -335,12 +335,13 @@ def export_all_competes_results():
         db_emlab.import_alternatives([str(current_emlab_tick + step)])
 
         path_to_competes_results = sys.argv[3]
-        file_name_gentrans = sys.argv[4].replace('?', str(current_competes_tick))
-        file_name_uc = sys.argv[5].replace('?', str(current_competes_tick))
+        file_name_gentransinv = sys.argv[4].replace('?', str(current_competes_tick))
+        file_name_gentransdisp = sys.argv[5].replace('?', str(current_competes_tick))
 
         print('Loading sheets...')
         hourly_nodal_prices_df, unit_generation_df, new_generation_capacity_df, decommissioning_df, vre_investment_df, \
-            hourly_nl_balance_df = read_excel_sheets(path_to_competes_results, file_name_gentrans, file_name_uc)
+            hourly_nl_balance_df = read_excel_sheets(path_to_competes_results, file_name_gentransinv,
+                                                     file_name_gentransdisp)
 
         new_generation_capacity_df = crop_dataframe_until_first_empty_row(new_generation_capacity_df)
         vre_investment_df = crop_dataframe_until_first_empty_row(vre_investment_df)

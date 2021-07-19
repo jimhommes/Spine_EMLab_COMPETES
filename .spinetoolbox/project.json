@@ -362,16 +362,6 @@
             },
             {
                 "from": [
-                    "COMPETES Investment",
-                    "right"
-                ],
-                "to": [
-                    "COMPETES Output to EMLAB DB and COMPETES DB",
-                    "bottom"
-                ]
-            },
-            {
-                "from": [
                     "DB EMLAB ref",
                     "left"
                 ],
@@ -452,16 +442,6 @@
             },
             {
                 "from": [
-                    "DB EMLAB ref",
-                    "left"
-                ],
-                "to": [
-                    "COMPETES Investment",
-                    "right"
-                ]
-            },
-            {
-                "from": [
                     "DB COMPETES ref",
                     "left"
                 ],
@@ -506,8 +486,48 @@
                     "right"
                 ],
                 "to": [
+                    "COMPETES Dispatch",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "DB EMLAB ref",
+                    "left"
+                ],
+                "to": [
+                    "COMPETES Dispatch",
+                    "right"
+                ]
+            },
+            {
+                "from": [
+                    "COMPETES Dispatch",
+                    "right"
+                ],
+                "to": [
                     "COMPETES Investment",
                     "left"
+                ]
+            },
+            {
+                "from": [
+                    "COMPETES Investment",
+                    "right"
+                ],
+                "to": [
+                    "COMPETES Output to EMLAB DB and COMPETES DB",
+                    "bottom"
+                ]
+            },
+            {
+                "from": [
+                    "DB EMLAB ref",
+                    "left"
+                ],
+                "to": [
+                    "COMPETES Investment",
+                    "right"
                 ]
             }
         ]
@@ -905,11 +925,11 @@
                 },
                 {
                     "type": "literal",
-                    "arg": "Output_Dynamic_Gen&Trans_?.xlsx"
+                    "arg": "Output_Dynamic_Gen&Trans_?_Investments.xlsx"
                 },
                 {
                     "type": "literal",
-                    "arg": "Output_UC_?.xlsx"
+                    "arg": "Output_Dynamic_Gen&Trans_?_Dispatch.xlsx"
                 }
             ]
         },
@@ -973,11 +993,20 @@
                 }
             ]
         },
-        "COMPETES Investment": {
+        "Execute Sleep and Click": {
             "type": "Tool",
             "description": "",
-            "x": 297.04479044419907,
-            "y": 163.31911205775884,
+            "x": 546.7889736130492,
+            "y": -273.5587113879518,
+            "specification": "Execute Sleep and Click",
+            "execute_in_work": false,
+            "cmd_line_args": []
+        },
+        "COMPETES Dispatch": {
+            "type": "Tool",
+            "description": "",
+            "x": 112.17095853909649,
+            "y": 164.20903208816176,
             "specification": "COMPETES",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -991,14 +1020,23 @@
                 }
             ]
         },
-        "Execute Sleep and Click": {
+        "COMPETES Investment": {
             "type": "Tool",
             "description": "",
-            "x": 546.7889736130492,
-            "y": -273.5587113879518,
-            "specification": "Execute Sleep and Click",
+            "x": 299.50802331573175,
+            "y": 164.20903208816176,
+            "specification": "COMPETES",
             "execute_in_work": false,
-            "cmd_line_args": []
+            "cmd_line_args": [
+                {
+                    "type": "resource",
+                    "arg": "db_url@DB EMLAB ref"
+                },
+                {
+                    "type": "literal",
+                    "arg": "spine_run_gentransinv"
+                }
+            ]
         }
     }
 }

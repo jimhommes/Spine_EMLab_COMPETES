@@ -42,7 +42,7 @@ status = requests.get(url + ':' + str(port) + '/api/v1/tasks/' + request_id)
 print(status.json())
 while status.json()['status'] != 'finished' and status.json()['status'] != 'interrupted':
     print('Current status: ' + status.json()['status'] + ', t=' + str(status.json()['runtime']))
-    time.sleep(5)
+    time.sleep(20)
     status = requests.get(url + ':' + str(port) + '/api/v1/tasks/' + request_id)
 print('Done')
 print('Response Code: ' + str(status.status_code))
