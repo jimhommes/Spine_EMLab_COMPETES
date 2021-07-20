@@ -30,7 +30,7 @@ class GeometricTrend(Trend):
 
     def add_parameter_value(self, reps, parameter_name, parameter_value, alternative):
         if parameter_name == 'start':
-            self.start = float(parameter_value) * 1000  # * 1000 because Fixed O&M from COMPETES is / kW
+            self.start = float(parameter_value)
         elif parameter_name == 'growthRate':
             self.growth_rate = float(parameter_value)
 
