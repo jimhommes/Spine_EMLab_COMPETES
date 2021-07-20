@@ -392,10 +392,7 @@
                             {
                                 "map_type": "ObjectClass",
                                 "position": "table_name",
-                                "value": "GeometricTrends",
-                                "skip_columns": [
-                                    1
-                                ]
+                                "value": "GeometricTrends"
                             },
                             {
                                 "map_type": "Object",

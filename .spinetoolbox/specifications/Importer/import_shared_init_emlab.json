@@ -552,43 +552,6 @@
                             }
                         ]
                     }
-                },
-                {
-                    "GeometricTrends": {
-                        "mapping": [
-                            {
-                                "map_type": "ObjectClass",
-                                "position": "hidden",
-                                "value": "GeometricTrends"
-                            },
-                            {
-                                "map_type": "Object",
-                                "position": 11
-                            },
-                            {
-                                "map_type": "ObjectMetadata",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterDefinition",
-                                "position": "hidden",
-                                "value": "start"
-                            },
-                            {
-                                "map_type": "Alternative",
-                                "position": "hidden",
-                                "value": "0"
-                            },
-                            {
-                                "map_type": "ParameterValueMetadata",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterValue",
-                                "position": 7
-                            }
-                        ]
-                    }
                 }
             ],
             "Techtype": [
@@ -799,43 +762,6 @@
                             {
                                 "map_type": "ParameterValue",
                                 "position": 1
-                            }
-                        ]
-                    }
-                },
-                {
-                    "GeometricTrends startvalues": {
-                        "mapping": [
-                            {
-                                "map_type": "ObjectClass",
-                                "position": "hidden",
-                                "value": "GeometricTrends"
-                            },
-                            {
-                                "map_type": "Object",
-                                "position": 8
-                            },
-                            {
-                                "map_type": "ObjectMetadata",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterDefinition",
-                                "position": "hidden",
-                                "value": "start"
-                            },
-                            {
-                                "map_type": "Alternative",
-                                "position": "hidden",
-                                "value": "0"
-                            },
-                            {
-                                "map_type": "ParameterValueMetadata",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterValue",
-                                "position": 3
                             }
                         ]
                     }

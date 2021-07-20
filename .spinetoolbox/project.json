@@ -570,8 +570,8 @@
         "EMLAB Init Data": {
             "type": "Data Connection",
             "description": "Loads all initialization values",
-            "x": -702.4831941948709,
-            "y": -120.28653965992916,
+            "x": -702.483194194871,
+            "y": -121.36906042603047,
             "references": [
                 {
                     "type": "path",
@@ -1010,8 +1010,8 @@
         "Initialization Preprocessing DB EMLAB": {
             "type": "Tool",
             "description": "",
-            "x": -470.0385754576462,
-            "y": -190.96374413588532,
+            "x": -470.03857545764623,
+            "y": -192.0462649019866,
             "specification": "Initialization Preprocessing EMLAB",
             "execute_in_work": false,
             "cmd_line_args": [

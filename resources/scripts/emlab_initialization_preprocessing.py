@@ -58,6 +58,48 @@ def import_initial_vre(db_emlab, db_competes_vre_capacities, initialization_year
         db_emlab.import_object_parameter_values([('PowerPlants', row['object_name'], 'MWNL', amount_mw, '0')])
 
 
+def import_initial_vre_fixed_oc_start_values(db_emlab, db_competes_vre_technologies, db_emlab_technologies, initialization_year):
+    """
+    This function copies the start values for the VRE Fixed Operating cost Geometric trends from COMPETES.
+    This function is necessary because of the conversion (Euro/kW/yr to Euro/MW/yr) and because it needs to be
+    filtered using the starting year.
+
+    :param initialization_year:
+    :param db_emlab_technologies:
+    :param db_emlab:
+    :param db_competes_vre_technologies:
+    :return:
+    """
+    for row in db_competes_vre_technologies:
+        amount_fixed_oc_start = row['parameter_value'].get_value(str(initialization_year))\
+            .get_value('Fixed O&M(Euro/kW/yr)') * 1000
+        trend_name = next(i['parameter_value'] for i in db_emlab_technologies if i['object_name'] == row['object_name']
+                          and i['parameter_name'] == 'fixedOperatingCostTimeSeries')
+        db_emlab.import_object_parameter_values([('GeometricTrends', trend_name, 'start', amount_fixed_oc_start, '0')])
+
+
+def import_initial_fixed_oc_start_values(db_emlab, db_competes_technologies, db_emlab_technologies):
+    """
+    This function copies the start values for the Fixed Operating cost Geometric trends from COMPETES.
+    This function is necessary because of the conversion (Euro/kW/yr to Euro/MW/yr) and because it needs to be
+    filtered using the starting year.
+
+    :param db_emlab:
+    :param db_competes_technologies:
+    :param db_emlab_technologies:
+    :param initialization_year:
+    """
+    for row in db_competes_technologies:
+        technology_map = row['parameter_value']
+        for technology_order in technology_map.indexes:
+            amount_fixed_oc_start = technology_map.get_value(technology_order).get_value('FIXED O&M') * 1000
+            trend_name = next(i['parameter_value'] for i in db_emlab_technologies
+                              if i['object_name'] == technology_order
+                              and i['parameter_name'] == 'fixedOperatingCostTimeSeries')
+            db_emlab.import_object_parameter_values([('GeometricTrends', trend_name, 'start',
+                                                      amount_fixed_oc_start, '0')])
+
+
 def execute_all_initialization_preprocessing():
     """
     This function executes all steps of this script.
@@ -67,13 +109,19 @@ def execute_all_initialization_preprocessing():
     db_competes = SpineDB(sys.argv[2])
     print('Querying SpineDB...')
     db_emlab_fuelmap = db_emlab.query_object_parameter_values_by_object_class('FuelMap')
-    db_emlab_technologies = db_emlab.query_object_parameter_values_by_object_class('PowerGeneratingTechnologyFuel')
+    db_emlab_technologies_fuel = db_emlab.query_object_parameter_values_by_object_class('PowerGeneratingTechnologyFuel')
+    db_emlab_technologies = db_emlab.query_object_parameter_values_by_object_class('PowerGeneratingTechnologies')
     db_competes_vre_capacities = db_competes.query_object_parameter_values_by_object_class('VRE Capacities')
+    db_competes_vre_technologies = db_competes.query_object_parameter_values_by_object_class('VRE Technologies')
+    db_competes_technologies = db_competes.query_object_parameter_values_by_object_class('Technologies')
     print('Done querying')
 
     try:
-        replace_power_generating_technology_fuel_names(db_emlab, db_emlab_fuelmap, db_emlab_technologies)
+        replace_power_generating_technology_fuel_names(db_emlab, db_emlab_fuelmap, db_emlab_technologies_fuel)
         import_initial_vre(db_emlab, db_competes_vre_capacities, 2020)
+        import_initial_fixed_oc_start_values(db_emlab, db_competes_technologies, db_emlab_technologies)
+        import_initial_vre_fixed_oc_start_values(db_emlab, db_competes_vre_technologies, db_emlab_technologies, 2020)
+
 
         print('Committing...')
         db_emlab.commit('DB EMLAB Initialization Preprocessing')
@@ -83,6 +131,7 @@ def execute_all_initialization_preprocessing():
         raise
     finally:
         db_emlab.close_connection()
+        db_competes.close_connection()
 
 
 print('===== Start EMLAB Preprocessing script =====')
