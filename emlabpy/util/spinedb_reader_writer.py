@@ -29,6 +29,13 @@ class SpineDBReaderWriter:
         reps.dbrw = self
         db_data = self.db.export_data()
 
+        # Determine current tick
+        reps.current_tick = max(
+            [int(i[3]) for i in db_data['object_parameter_values'] if i[0] == i[1] == 'SystemClockTicks' and
+             i[2] == 'ticks'])
+        logging.info('Current tick: ' + str(reps.current_tick))
+        self.stage_init_alternative(reps.current_tick)
+
         # Load the parameter priorities from the config file
         parameter_priorities = pandas.read_excel(self.config_url, 'Import Priorities')
 
@@ -40,13 +47,13 @@ class SpineDBReaderWriter:
                                         key=lambda item: int(parameter_priorities.loc[parameter_priorities['object_class_name'] == item[0], 'priority'].iat[0])
                                         if not parameter_priorities.loc[parameter_priorities['object_class_name'] == item[0], 'priority'].empty else 0, reverse=True)
 
-
         # Import all object parameter values in one go
         for (object_class_name, parameter_name, _, _, _) in sorted_parameter_names:
             for (_, object_name, _) in [i for i in db_data['objects'] if i[0] == object_class_name]:
                 try:
                     db_line = next(i for i in sorted_object_parameter_values
-                                   if i[0] == object_class_name and i[1] == object_name and i[2] == parameter_name)
+                                   if i[0] == object_class_name and i[1] == object_name and i[2] == parameter_name and
+                                   int(i[4]) <= reps.current_tick)
                     add_parameter_value_to_repository_based_on_object_class_name(reps, db_line)
                 except StopIteration:
                     logging.warning('No value found for class: ' + object_class_name +
@@ -55,13 +62,6 @@ class SpineDBReaderWriter:
 
         # Because of COMPETES structure, this is hard to set normally. So separate function:
         set_expected_lifetimes_of_power_generating_technologies(reps, db_data, 'PowerGeneratingTechnologyLifetime')
-
-        # Determine current tick
-        reps.current_tick = max(
-            [int(i[3]) for i in db_data['object_parameter_values'] if i[0] == i[1] == 'SystemClockTicks' and
-             i[2] == 'ticks'])
-        logging.info('Current tick: ' + str(reps.current_tick))
-        self.stage_init_alternative(reps.current_tick)
 
         logging.info('SpineDBRW: End Read Repository')
         # logging.info('Repository: ' + str(reps))

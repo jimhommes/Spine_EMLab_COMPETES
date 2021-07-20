@@ -1011,43 +1011,6 @@
                     }
                 },
                 {
-                    "PowerPlant MWNL": {
-                        "mapping": [
-                            {
-                                "map_type": "ObjectClass",
-                                "position": "hidden",
-                                "value": "PowerPlants"
-                            },
-                            {
-                                "map_type": "Object",
-                                "position": 5
-                            },
-                            {
-                                "map_type": "ObjectMetadata",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterDefinition",
-                                "position": "hidden",
-                                "value": "MWNL"
-                            },
-                            {
-                                "map_type": "Alternative",
-                                "position": "hidden",
-                                "value": "0"
-                            },
-                            {
-                                "map_type": "ParameterValueMetadata",
-                                "position": "hidden"
-                            },
-                            {
-                                "map_type": "ParameterValue",
-                                "position": 1
-                            }
-                        ]
-                    }
-                },
-                {
                     "PowerPlant Efficiency": {
                         "mapping": [
                             {

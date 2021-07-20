@@ -103,35 +103,6 @@ def get_power_plants_by_string_in_object_name(object_name_part, db_emlab_powerpl
             and row['parameter_name'] == 'ON-STREAMNL'}
 
 
-def replace_power_generating_technology_fuel_names(db_emlab, db_emlab_fuelmap, current_emlab_tick,
-                                                   db_emlab_technologies):
-    """
-    This function replaces the full caps Fuel names which are found in the init files. The text used is lowercase and
-    can be found in the FuelMap. This function replaces the fuelnames (if first tick, so it only happens once).
-    Then it's according to the other references.
-
-    :param db_emlab: SpineDB
-    :param db_emlab_fuelmap: FuelMap as queried in EMLAB SpineDB
-    :param current_emlab_tick: int
-    :param db_emlab_technologies: Technologies as queried in EMLAB SPineDB
-    """
-    print('Setting correct PowerGeneratingTechnologyFuel names...')
-    if current_emlab_tick == 0:
-        for row in db_emlab_technologies:
-            if row['parameter_name'] == 'FUELTYPENEW':
-                old_substance_name = next(i['parameter_value'] for i in db_emlab_technologies if
-                                          i['object_name'] == row['object_name'] and i['parameter_name'] == 'FUELNEW')
-                try:
-                    new_substance_name = next(fm_row['parameter_value'] for fm_row in db_emlab_fuelmap if
-                                              fm_row['object_name'] == row['parameter_value']).get_value(
-                        old_substance_name)
-                    db_emlab.import_object_parameter_values(
-                        [('PowerGeneratingTechnologyFuel', row['object_name'], 'FUELNEW', new_substance_name, '0')])
-                except StopIteration:  # Not all technologies are in the FuelMap
-                    print('Tech not found in FuelMap: ' + row['parameter_value'])
-    print('Done setting correct PowerGeneratingTechnologyFuel names')
-
-
 def hotfix_disable_double_vre_plants(db_emlab, current_emlab_tick):
     object_names = ['NED SUN PV 2020', 'NED WIND OFFSHORE 2020', 'NED WIND ONSHORE 2020']
     db_emlab.import_object_parameter_values([('PowerPlants', i, 'STATUSNL', 'DECOM', str(current_emlab_tick))
@@ -146,8 +117,6 @@ def execute_all_preprocessing():
     db_emlab = SpineDB(sys.argv[1])
     print('Querying SpineDB...')
     db_emlab_powerplants = db_emlab.query_object_parameter_values_by_object_class('PowerPlants')
-    db_emlab_fuelmap = db_emlab.query_object_parameter_values_by_object_class('FuelMap')
-    db_emlab_technologies = db_emlab.query_object_parameter_values_by_object_class('PowerGeneratingTechnologyFuel')
 
     current_emlab_tick, current_competes_tick, current_competes_tick_rounded = get_current_ticks(db_emlab, 2020)
     print('Done querying')
@@ -156,8 +125,6 @@ def execute_all_preprocessing():
     print('Current COMPETES Tick: ' + str(current_competes_tick))
 
     try:
-        replace_power_generating_technology_fuel_names(db_emlab, db_emlab_fuelmap, current_emlab_tick,
-                                                       db_emlab_technologies)
         set_correct_power_plant_statuses(db_emlab, db_emlab_powerplants, current_competes_tick)
         hotfix_disable_double_vre_plants(db_emlab, current_emlab_tick)
 
