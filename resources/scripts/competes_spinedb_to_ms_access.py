@@ -141,13 +141,7 @@ def export_type1(cursor, table_name, id_parameter_name):
                         in db_competes_data['object_parameter_values']
                         if itable_name == table_name and iid == id_parameter_value]
 
-        # Workaround for Excel sheet name restrictions
-        if table_name == 'NL Installed Capacity-RES (+he':
-            table_res = 'NL Installed Capacity-RES (+heat)'
-        else:
-            table_res = table_name
-
-        sql_query = 'INSERT INTO [' + table_res + '] ([' + id_parameter_name + '], ' + \
+        sql_query = 'INSERT INTO [' + table_name + '] ([' + id_parameter_name + '], ' + \
                     ', '.join([i[0] for i in param_values]) + ') VALUES (?, ' + \
                     ', '.join(list('?' * len(param_values))) + ');'
         values = (id_parameter_value,) + tuple(i[1] for i in param_values)
@@ -274,7 +268,7 @@ def export_fuelpriceyears(cursor):
     print('Exporting Fuelpriceyears...')
     table_name_spine = 'FuelpriceTrends'
     table_name_competes = 'Fuelpriceyears'
-    years = [2020, 2025, 2030, 2035, 2040, 2045, 2050]
+    years = list(range(2020, 2031))
     months = ['[' + i[1] + ']' for i in db_competes_data['objects'] if i[0] == 'Months']
     countries = [i[1] for i in db_competes_data['objects'] if i[0] == 'Country']
     for (_, trend_name, _) in [i for i in db_competes_data['objects'] if i[0] == table_name_spine]:

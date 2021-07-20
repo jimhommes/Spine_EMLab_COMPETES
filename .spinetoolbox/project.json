@@ -536,7 +536,7 @@
         "DB EMLAB": {
             "type": "Data Store",
             "description": "",
-            "x": -458.03620733655737,
+            "x": -459.1926089709811,
             "y": -77.51469900967389,
             "url": {
                 "dialect": "sqlite",
@@ -595,8 +595,8 @@
         "COMPETES Init Data": {
             "type": "Data Connection",
             "description": "",
-            "x": -749.3143281009103,
-            "y": 257.87258883724843,
+            "x": -749.3143281009102,
+            "y": 256.71618720282476,
             "references": [
                 {
                     "type": "path",
