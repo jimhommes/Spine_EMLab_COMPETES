@@ -35,8 +35,10 @@ def query_databases(db_emlab, db_competes):
          'NL Installed Capacity-RES (+he'])
     db_emlab_mcps = db_emlab.query_object_parameter_values_by_object_class('MarketClearingPoints')
     db_competes_vre_capacities = db_competes.query_object_parameter_values_by_object_class('VRE Capacities')
+    db_emlab_technologies = db_emlab.query_object_parameter_values_by_object_class('PowerGeneratingTechnologies')
     print('Done')
-    return db_emlab_powerplants, db_emlab_ppdps, db_competes_powerplants, db_emlab_mcps, db_competes_vre_capacities
+    return db_emlab_powerplants, db_emlab_ppdps, db_competes_powerplants, db_emlab_mcps, db_competes_vre_capacities, \
+           db_emlab_technologies
 
 
 def read_excel_sheets(path_to_competes_results, file_name_gentransinv, file_name_gentransdisp):
@@ -102,7 +104,8 @@ def export_decommissioning_decisions_to_emlab_and_competes(db_competes, db_emlab
     print('Done')
 
 
-def export_vre_investment_decisions(db_emlab, db_competes, current_emlab_tick, current_competes_tick, vre_investment_df, db_emlab_powerplants, db_competes_vre_capacities, step, look_ahead):
+def export_vre_investment_decisions(db_emlab, db_competes, current_emlab_tick, current_competes_tick, vre_investment_df,
+                                    db_emlab_technologies, db_competes_vre_capacities, step, look_ahead):
     """
     This function exports all VRE Investment decisions.
     Column titles are not printed if they are empty. 'New' is the column title if an investment has been made. If not,
@@ -117,27 +120,47 @@ def export_vre_investment_decisions(db_emlab, db_competes, current_emlab_tick, c
     print('Exporting VRE Investment Decisions to EMLAB and COMPETES...')
     for index, vre_row in vre_investment_df.iterrows():
         if 'New' in vre_row.index and not pandas.isnull(vre_row['New']):
+            expected_permit_time = next(int(i['parameter_value']) for i in db_emlab_technologies if i['object_name'] ==
+                                        vre_row['WindOn'] and i['parameter_name'] == 'expectedPermittime')
+            expected_lead_time = next(int(i['parameter_value']) for i in db_emlab_technologies if i['object_name'] ==
+                                      vre_row['WindOn'] and i['parameter_name'] == 'expectedLeadtime')
+            build_time = expected_permit_time + expected_lead_time
+
             # There has only been an investment if there is a column New
-            vre_capacity_per_year = next(i['parameter_value'] for i in db_competes_vre_capacities if i['object_name'] == vre_row['WindOn'])
-            vre_capacity_per_bus = vre_capacity_per_year.get_value(str(current_competes_tick + look_ahead))
+            vre_capacity_per_year = next(
+                i['parameter_value'] for i in db_competes_vre_capacities if i['object_name'] == vre_row['WindOn'])
+            vre_capacity_per_bus = vre_capacity_per_year.get_value(str(current_competes_tick + build_time))
             vre_capacity = vre_capacity_per_bus.get_value(vre_row['Bus'])
             old_mw = vre_capacity.get_value('Initial Capacity(MW)')
             vre_capacity.set_value('Initial Capacity(MW)', old_mw + vre_row['New'])
             vre_capacity_per_bus.set_value(vre_row['Bus'], vre_capacity)
-            vre_capacity_per_year.set_value(str(current_competes_tick + look_ahead), vre_capacity_per_bus)
-            db_competes.import_object_parameter_values([('VRE Capacities', vre_row['WindOn'], 'VRE Capacities', vre_capacity_per_year, '0')])
+            vre_capacity_per_year.set_value(str(current_competes_tick + build_time), vre_capacity_per_bus)
+            db_competes.import_object_parameter_values(
+                [('VRE Capacities', vre_row['WindOn'], 'VRE Capacities', vre_capacity_per_year, '0')])
 
-        if 'Bus' in vre_row.index and vre_row['Bus'] == 'NED':     # Retrieve Initial from SpineDB COMPETES
-            vre_capacity_per_year = next(i['parameter_value'] for i in db_competes_vre_capacities if i['object_name'] == vre_row['WindOn'])
-            new_mw = vre_capacity_per_year.get_value(str(current_competes_tick + step)).get_value(vre_row['Bus'])\
+        if 'Bus' in vre_row.index and vre_row['Bus'] == 'NED':  # Retrieve Initial from SpineDB COMPETES
+            vre_capacity_per_year = next(
+                i['parameter_value'] for i in db_competes_vre_capacities if i['object_name'] == vre_row['WindOn'])
+            new_mw = vre_capacity_per_year.get_value(str(current_competes_tick + step)).get_value(vre_row['Bus']) \
                 .get_value('Initial Capacity(MW)')
-            db_emlab.import_object_parameter_values([('PowerPlants', vre_row['WindOn'], 'MWNL', new_mw, str(current_emlab_tick + step))])
+            db_emlab.import_object_parameter_values(
+                [('PowerPlants', vre_row['WindOn'], 'MWNL', new_mw, str(current_emlab_tick + step))])
 
     print('Done Exporting VRE Investment Decisions to EMLAB and COMPETES')
 
 
+def get_year_online_by_technology(db_emlab_technologies, fuel, techtype, current_competes_tick):
+    technologies_by_fuel = [i['object_name'] for i in db_emlab_technologies if i['parameter_name'] == 'FUELNEW' and i['parameter_value'] == fuel]
+    technologies_by_techtype = [i['object_name'] for i in db_emlab_technologies if i['parameter_name'] == 'FUELTYPENEW' and i['parameter_value'] == techtype]
+    technology = next(name for name in technologies_by_fuel if name in technologies_by_techtype)
+    expected_permit_time = next(int(i['parameter_value']) for i in db_emlab_technologies if i['object_name'] == technology and i['parameter_name'] == 'expectedPermittime')
+    expected_lead_time = next(int(i['parameter_value']) for i in db_emlab_technologies if i['object_name'] == technology and i['parameter_name'] == 'expectedLeadtime')
+    build_time = expected_permit_time + expected_lead_time
+    return current_competes_tick + build_time
+
+
 def export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, current_emlab_tick,
-                                                      new_generation_capacity_df, current_competes_tick, look_ahead):
+                                                      new_generation_capacity_df, current_competes_tick, look_ahead, db_emlab_technologies):
     """
     This function exports all Investment decisions.
 
@@ -147,8 +170,12 @@ def export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, cur
     """
     print('Exporting Investment Decisions to EMLAB and COMPETES...')
     for index, row in new_generation_capacity_df.iterrows():
+        online_in_year = get_year_online_by_technology(db_emlab_technologies, row['FUELEU'], row['TECHTYPEEU'],
+                                                       current_competes_tick)
+
         print('Export to COMPETES')
-        param_values = [i for i in row[4:].items() if i[0] != 'UNITEU']
+        param_values = [i for i in row[4:].items() if not (i[0] == 'UNITEU' or i[0] == 'ON-STREAMEU')]
+        param_values += ('ON-STREAMEU', online_in_year)
         param_values = [(i[0], 0) if pandas.isnull(i[1]) else i for i in param_values]
         plant_name = row['UNITEU']
         print('New plant ' + plant_name + ' with parameters ' + str(param_values))
@@ -163,8 +190,9 @@ def export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, cur
             db_emlab.import_objects([('PowerPlants', plant_name)])
             param_values = [(col.replace("TECHTYPEU", "TECHTYPENL").replace("EU", "NL"), value)
                             for (col, value) in param_values if not (col == 'STATUSEU' or col == 'ON-STREAMEU')]
-            param_values.insert(0, ('STATUSNL', 'DECOM'))  # Always Decom, in EMLAB_Preprocessing it will be set correctly
-            param_values.insert(0, ('ON-STREAMNL', current_competes_tick))     # Year in the sheet is random and wrong
+            param_values.insert(0,
+                                ('STATUSNL', 'DECOM'))  # Always Decom, in EMLAB_Preprocessing it will be set correctly
+            param_values.insert(0, ('ON-STREAMNL', online_in_year))  # Year in the sheet is random and wrong
             print(param_values)
             db_emlab.import_object_parameter_values(
                 [('PowerPlants', plant_name, param_index, param_value, str(current_emlab_tick + look_ahead))
@@ -317,8 +345,8 @@ def export_all_competes_results():
         print('Current EM-Lab tick: ' + str(current_emlab_tick))
         print('Current COMPETES tick: ' + str(current_competes_tick))
 
-        db_emlab_powerplants, db_emlab_ppdps, db_competes_powerplants, db_emlab_mcps, db_competes_vre_capacities = \
-            query_databases(db_emlab, db_competes)
+        db_emlab_powerplants, db_emlab_ppdps, db_competes_powerplants, db_emlab_mcps, db_competes_vre_capacities, \
+        db_emlab_technologies = query_databases(db_emlab, db_competes)
 
         print('Staging next SpineDB alternative...')
         step = next(int(i['parameter_value']) for i in db_config_parameters if i['object_name'] == 'Time Step')
@@ -330,8 +358,8 @@ def export_all_competes_results():
 
         print('Loading sheets...')
         hourly_nodal_prices_df, unit_generation_df, new_generation_capacity_df, decommissioning_df, vre_investment_df, \
-            hourly_nl_balance_df = read_excel_sheets(path_to_competes_results, file_name_gentransinv,
-                                                     file_name_gentransdisp)
+        hourly_nl_balance_df = read_excel_sheets(path_to_competes_results, file_name_gentransinv,
+                                                 file_name_gentransdisp)
 
         new_generation_capacity_df = crop_dataframe_until_first_empty_row(new_generation_capacity_df)
         vre_investment_df = crop_dataframe_until_first_empty_row(vre_investment_df)
@@ -345,15 +373,15 @@ def export_all_competes_results():
         print('Done loading sheets')
 
         hourly_nodal_prices_nl = get_hourly_nodal_prices(hourly_nodal_prices_df)
-        hourly_nodal_prices_nl = [i if i < 250 else 250 for i in hourly_nodal_prices_nl]    # Limit nodal prices to 250
+        hourly_nodal_prices_nl = [i if i < 250 else 250 for i in hourly_nodal_prices_nl]  # Limit nodal prices to 250
         export_vre_investment_decisions(db_emlab, db_competes, current_emlab_tick, current_competes_tick,
-                                        vre_investment_df, db_emlab_powerplants, db_competes_vre_capacities,
+                                        vre_investment_df, db_emlab_technologies, db_competes_vre_capacities,
                                         step, look_ahead)
         export_market_clearing_points_to_emlab(db_emlab, current_emlab_tick, hourly_nodal_prices_nl, db_emlab_mcps)
         export_power_plant_dispatch_plans_to_emlab(db_emlab, current_emlab_tick, unit_generation_df, db_emlab_ppdps,
                                                    hourly_nodal_prices_nl, db_emlab_powerplants)
         export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, current_emlab_tick,
-                                                          new_generation_capacity_df, current_competes_tick, look_ahead)
+                                                          new_generation_capacity_df, current_competes_tick, look_ahead, db_emlab_technologies)
         export_decommissioning_decisions_to_emlab_and_competes(db_competes, db_emlab, db_competes_powerplants,
                                                                decommissioning_df, current_competes_tick,
                                                                current_emlab_tick, look_ahead)

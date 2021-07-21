@@ -43,7 +43,7 @@ execution_year = current_competes_tick
 if include_look_ahead:
     execution_year += look_ahead
 
-print('Sending HTTP Request to AIMMS')
+print('Sending HTTP Request to AIMMS year ' + str(execution_year))
 result = requests.post(url + ':' + str(port) + '/api/v1/tasks/' + aimms_service_name + '?InputYear=' +
                        str(execution_year))
 print('Response Code: ' + str(result.status_code))
