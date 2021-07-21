@@ -70,7 +70,7 @@ def read_excel_sheets(path_to_competes_results, file_name_gentransinv, file_name
 
 def export_decommissioning_decisions_to_emlab_and_competes(db_competes, db_emlab, db_competes_powerplants,
                                                            decommissioning_df, current_competes_tick,
-                                                           current_emlab_tick, step):
+                                                           current_emlab_tick, look_ahead):
     """
     This function exports all decommissioning decisions to EMLab and COMPETES.
     This means that the duplicate objects (the ones with (D) in the title) will be changed in their year, or
@@ -102,7 +102,7 @@ def export_decommissioning_decisions_to_emlab_and_competes(db_competes, db_emlab
     print('Done')
 
 
-def export_vre_investment_decisions(db_emlab, db_competes, current_emlab_tick, current_competes_tick, vre_investment_df, db_emlab_powerplants, db_competes_vre_capacities, step):
+def export_vre_investment_decisions(db_emlab, db_competes, current_emlab_tick, current_competes_tick, vre_investment_df, db_emlab_powerplants, db_competes_vre_capacities, step, look_ahead):
     """
     This function exports all VRE Investment decisions.
     Column titles are not printed if they are empty. 'New' is the column title if an investment has been made. If not,
@@ -119,12 +119,12 @@ def export_vre_investment_decisions(db_emlab, db_competes, current_emlab_tick, c
         if 'New' in vre_row.index and not pandas.isnull(vre_row['New']):
             # There has only been an investment if there is a column New
             vre_capacity_per_year = next(i['parameter_value'] for i in db_competes_vre_capacities if i['object_name'] == vre_row['WindOn'])
-            vre_capacity_per_bus = vre_capacity_per_year.get_value(str(current_competes_tick + step))
+            vre_capacity_per_bus = vre_capacity_per_year.get_value(str(current_competes_tick + look_ahead))
             vre_capacity = vre_capacity_per_bus.get_value(vre_row['Bus'])
             old_mw = vre_capacity.get_value('Initial Capacity(MW)')
             vre_capacity.set_value('Initial Capacity(MW)', old_mw + vre_row['New'])
             vre_capacity_per_bus.set_value(vre_row['Bus'], vre_capacity)
-            vre_capacity_per_year.set_value(str(current_competes_tick + step), vre_capacity_per_bus)
+            vre_capacity_per_year.set_value(str(current_competes_tick + look_ahead), vre_capacity_per_bus)
             db_competes.import_object_parameter_values([('VRE Capacities', vre_row['WindOn'], 'VRE Capacities', vre_capacity_per_year, '0')])
 
         if 'Bus' in vre_row.index and vre_row['Bus'] == 'NED':     # Retrieve Initial from SpineDB COMPETES
@@ -137,7 +137,7 @@ def export_vre_investment_decisions(db_emlab, db_competes, current_emlab_tick, c
 
 
 def export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, current_emlab_tick,
-                                                      new_generation_capacity_df, current_competes_tick, step):
+                                                      new_generation_capacity_df, current_competes_tick, look_ahead):
     """
     This function exports all Investment decisions.
 
@@ -167,7 +167,7 @@ def export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, cur
             param_values.insert(0, ('ON-STREAMNL', current_competes_tick))     # Year in the sheet is random and wrong
             print(param_values)
             db_emlab.import_object_parameter_values(
-                [('PowerPlants', plant_name, param_index, param_value, str(current_emlab_tick + step))
+                [('PowerPlants', plant_name, param_index, param_value, str(current_emlab_tick + look_ahead))
                  for (param_index, param_value) in param_values])
         print('Done')
     print('Done exporting Investment Decisions to EMLAB and COMPETES')
@@ -347,15 +347,16 @@ def export_all_competes_results():
         hourly_nodal_prices_nl = get_hourly_nodal_prices(hourly_nodal_prices_df)
         hourly_nodal_prices_nl = [i if i < 250 else 250 for i in hourly_nodal_prices_nl]    # Limit nodal prices to 250
         export_vre_investment_decisions(db_emlab, db_competes, current_emlab_tick, current_competes_tick,
-                                        vre_investment_df, db_emlab_powerplants, db_competes_vre_capacities, step)
+                                        vre_investment_df, db_emlab_powerplants, db_competes_vre_capacities,
+                                        step, look_ahead)
         export_market_clearing_points_to_emlab(db_emlab, current_emlab_tick, hourly_nodal_prices_nl, db_emlab_mcps)
         export_power_plant_dispatch_plans_to_emlab(db_emlab, current_emlab_tick, unit_generation_df, db_emlab_ppdps,
                                                    hourly_nodal_prices_nl, db_emlab_powerplants)
         export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, current_emlab_tick,
-                                                          new_generation_capacity_df, current_competes_tick, step)
+                                                          new_generation_capacity_df, current_competes_tick, look_ahead)
         export_decommissioning_decisions_to_emlab_and_competes(db_competes, db_emlab, db_competes_powerplants,
                                                                decommissioning_df, current_competes_tick,
-                                                               current_emlab_tick, step)
+                                                               current_emlab_tick, look_ahead)
         export_total_sum_exports_to_emlab(db_emlab, hourly_nl_balance_df, current_emlab_tick)
 
         print('Committing...')
