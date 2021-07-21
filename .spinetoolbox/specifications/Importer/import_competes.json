@@ -2356,6 +2356,7 @@
             }
         },
         "selected_tables": [
+            "Select All",
             "VRE LoadFactors",
             "VRE FLH",
             "Unit Commitment Database",

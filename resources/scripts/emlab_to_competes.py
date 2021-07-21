@@ -324,11 +324,12 @@ def export_co2_market_clearing_price(db_competes, db_emlab_marketclearingpoints,
         [(co2_object_class_name, str(current_competes_tick + look_ahead), i, future_mcp, '0') for i in months])
 
 
-def initialize_co2_spine_structure(db_competes, current_competes_tick, object_class_name, parameters):
+def initialize_co2_spine_structure(db_competes, current_competes_tick, object_class_name, parameters, look_ahead):
     """
     In order to export the CO2 Market Clearing Price to COMPETES, the structure (object_class_name, object etc)
     has to be present in the SpineDB.
 
+    :param look_ahead:
     :param db_competes: SpineDB
     :param current_competes_tick: int
     :param object_class_name: Object class name to import, so the CO2 object class name
@@ -338,7 +339,8 @@ def initialize_co2_spine_structure(db_competes, current_competes_tick, object_cl
     print('Staging object class')
     db_competes.import_object_classes([object_class_name])
     print('Staging object')
-    db_competes.import_objects([(object_class_name, str(current_competes_tick))])
+    db_competes.import_objects([(object_class_name, str(current_competes_tick)),
+                                (object_class_name, str(current_competes_tick + look_ahead))])
     print('Staging object parameters')
     db_competes.import_data({'object_parameters': [[object_class_name, i] for i in parameters]})
     print('Done exporting CO2 structure')
@@ -374,7 +376,7 @@ def execute_export_to_competes():
 
         co2_object_class_name = 'EU_ETS_CO2price'
         months = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-        initialize_co2_spine_structure(db_competes, current_competes_tick, co2_object_class_name, months)
+        initialize_co2_spine_structure(db_competes, current_competes_tick, co2_object_class_name, months, look_ahead)
         export_co2_market_clearing_price(db_competes, db_emlab_marketclearingpoints, current_emlab_tick,
                                          co2_object_class_name, current_competes_tick, months, look_ahead)
         export_capacity_market_revenues(db_competes, current_emlab_tick, db_emlab_powerplantdispatchplans,
