@@ -96,7 +96,7 @@ def export_decommissioning_decisions_to_emlab_and_competes(db_competes, db_emlab
             if row['node'] == 'NED':
                 # If node is NED, export to EMLAB
                 db_emlab.import_object_parameter_values([('PowerPlants', power_plant_name_decom_version, 'ON-STREAMNL',
-                                                          current_competes_tick, str(current_emlab_tick + step))])
+                                                          current_competes_tick, str(current_emlab_tick + look_ahead))])
         except StopIteration:
             print('No DECOM version found for plant ' + row['unit'])
     print('Done')
