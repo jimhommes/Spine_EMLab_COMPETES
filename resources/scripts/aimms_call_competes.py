@@ -31,6 +31,7 @@ try:
                                                                                                  start_simulation_year)
 finally:
     db_emlab.close_connection()
+    db_config.close_connection()
 
 aimms_service_name = sys.argv[3]
 print('Running AIMMS service ' + aimms_service_name)
