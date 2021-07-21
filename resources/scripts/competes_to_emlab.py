@@ -304,10 +304,15 @@ def export_all_competes_results():
     print('Establishing Database Connections...')
     db_emlab = SpineDB(sys.argv[1])
     db_competes = SpineDB(sys.argv[2])
+    db_config = SpineDB(sys.argv[3])
     print('Done')
 
     try:
-        current_emlab_tick, current_competes_tick, current_competes_tick_rounded = get_current_ticks(db_emlab, 2020)
+        db_config_parameters = db_config.query_object_parameter_values_by_object_class('Coupling Parameters')
+        start_simulation_year = next(int(i['parameter_value']) for i in db_config_parameters
+                                     if i['object_name'] == 'Start Year')
+        current_emlab_tick, current_competes_tick, current_competes_tick_rounded = get_current_ticks(db_emlab,
+                                                                                                     start_simulation_year)
         print('Current EM-Lab tick: ' + str(current_emlab_tick))
         print('Current COMPETES tick: ' + str(current_competes_tick))
 
@@ -315,12 +320,12 @@ def export_all_competes_results():
             query_databases(db_emlab, db_competes)
 
         print('Staging next SpineDB alternative...')
-        step = 10
+        step = next(int(i['parameter_value']) for i in db_config_parameters if i['object_name'] == 'Time Step')
         db_emlab.import_alternatives([str(current_emlab_tick + step)])
 
-        path_to_competes_results = sys.argv[3]
-        file_name_gentransinv = sys.argv[4].replace('?', str(current_competes_tick))
-        file_name_gentransdisp = sys.argv[5].replace('?', str(current_competes_tick))
+        path_to_competes_results = sys.argv[4]
+        file_name_gentransinv = sys.argv[5].replace('?', str(current_competes_tick))
+        file_name_gentransdisp = sys.argv[6].replace('?', str(current_competes_tick))
 
         print('Loading sheets...')
         hourly_nodal_prices_df, unit_generation_df, new_generation_capacity_df, decommissioning_df, vre_investment_df, \
@@ -363,6 +368,7 @@ def export_all_competes_results():
         print('Closing database connection...')
         db_emlab.close_connection()
         db_competes.close_connection()
+        db_config.close_connection()
 
 
 print('===== Starting COMPETES Output Interpretation script =====')

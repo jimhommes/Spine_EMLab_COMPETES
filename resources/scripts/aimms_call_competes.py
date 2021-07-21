@@ -21,18 +21,23 @@ from helper_functions import get_current_ticks
 print('===== Starting COMPETES Execution =====')
 print('Read current year from SpineDB...')
 db_emlab = SpineDB(sys.argv[1])
+db_config = SpineDB(sys.argv[2])
 try:
-    current_emlab_tick, current_competes_tick, current_competes_tick_rounded = get_current_ticks(db_emlab, 2020)
+    start_simulation_year = next(int(i['parameter_value']) for i in
+                                 db_config.query_object_parameter_values_by_object_class('Coupling Parameters'))
+    current_emlab_tick, current_competes_tick, current_competes_tick_rounded = get_current_ticks(db_emlab,
+                                                                                                 start_simulation_year)
 finally:
     db_emlab.close_connection()
 
-aimms_service_name = sys.argv[2]
+aimms_service_name = sys.argv[3]
 print('Running AIMMS service ' + aimms_service_name)
 port = 8080
 url = 'http://localhost'
 
 print('Sending HTTP Request to AIMMS')
-result = requests.post(url + ':' + str(port) + '/api/v1/tasks/' + aimms_service_name + '?InputYear=' + str(current_competes_tick))
+result = requests.post(url + ':' + str(port) + '/api/v1/tasks/' + aimms_service_name + '?InputYear=' +
+                       str(current_competes_tick))
 print('Response Code: ' + str(result.status_code))
 print('Response Body: ' + result.text)
 request_id = result.json()['id']

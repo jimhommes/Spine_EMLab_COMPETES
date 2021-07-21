@@ -62,7 +62,7 @@ class PowerPlant(ImportObject):
         elif parameter_name == 'STATUSNL':
             self.status = parameter_value
         elif parameter_name == 'ON-STREAMNL':
-            self.age = reps.current_tick - int(parameter_value) + 2020
+            self.age = reps.current_tick - int(parameter_value) + reps.start_simulation_year
 
     def calculate_emission_intensity(self, reps):
         emission = 0

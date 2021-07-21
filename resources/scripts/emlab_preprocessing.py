@@ -115,10 +115,15 @@ def execute_all_preprocessing():
     """
     print('Creating connection to SpineDB...')
     db_emlab = SpineDB(sys.argv[1])
+    db_config = SpineDB(sys.argv[2])
     print('Querying SpineDB...')
+    start_simulation_year = next(int(i['parameter_value']) for i
+                                 in db_config.query_object_parameter_values_by_object_class('Coupling Parameters')
+                                 if i['object_name'] == 'Start Year')
     db_emlab_powerplants = db_emlab.query_object_parameter_values_by_object_class('PowerPlants')
 
-    current_emlab_tick, current_competes_tick, current_competes_tick_rounded = get_current_ticks(db_emlab, 2020)
+    current_emlab_tick, current_competes_tick, current_competes_tick_rounded = get_current_ticks(db_emlab,
+                                                                                                 start_simulation_year)
     print('Done querying')
 
     print('Current EMLAB Tick: ' + str(current_emlab_tick))
@@ -136,6 +141,7 @@ def execute_all_preprocessing():
         raise
     finally:
         db_emlab.close_connection()
+        db_config.close_connection()
 
 
 print('===== Start EMLAB Preprocessing script =====')

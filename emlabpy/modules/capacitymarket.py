@@ -42,13 +42,14 @@ class CapacityMarketSubmitBids(MarketModule):
                 expected_electricity_revenues = planned_dispatch * (clearing_point_price - mc)
 
                 net_revenues = expected_electricity_revenues - fixed_on_m_cost
-                price_to_bid = 0
-                if powerplant.get_actual_nominal_capacity() > 0 and net_revenues <= 0:
-                    price_to_bid = -1 * net_revenues / (powerplant.get_actual_nominal_capacity() *
-                                                        powerplant.technology.peak_segment_dependent_availability)
+                if not (powerplant.name == 'SunPV' or powerplant.name == 'WindOn' or powerplant.name == 'WindOff'):
+                    price_to_bid = 0
+                    if powerplant.get_actual_nominal_capacity() > 0 and net_revenues <= 0:
+                        price_to_bid = -1 * net_revenues / (powerplant.get_actual_nominal_capacity() *
+                                                            powerplant.technology.peak_segment_dependent_availability)
 
-                self.reps.create_or_update_power_plant_dispatch_plan(powerplant, energy_producer, market, capacity,
-                                                                     price_to_bid, self.reps.current_tick)
+                    self.reps.create_or_update_power_plant_dispatch_plan(powerplant, energy_producer, market, capacity,
+                                                                         price_to_bid, self.reps.current_tick)
 
 
 class CapacityMarketClearing(MarketModule):
@@ -63,7 +64,8 @@ class CapacityMarketClearing(MarketModule):
         for market in self.reps.capacity_markets.values():
             node = self.reps.get_power_grid_node_by_zone(market.parameters['zone'])
             peak_load = max(
-                self.reps.get_hourly_demand_by_power_grid_node_and_year(node, self.reps.current_tick + 2020))
+                self.reps.get_hourly_demand_by_power_grid_node_and_year(node, self.reps.current_tick +
+                                                                        self.reps.start_simulation_year))
 
             # Retrieve vars
             sdc = market.get_sloping_demand_curve(peak_load)
@@ -90,5 +92,6 @@ class CapacityMarketClearing(MarketModule):
                     self.reps.set_power_plant_dispatch_plan_production(
                         ppdp, self.reps.power_plant_dispatch_plan_status_failed, 0)
 
+            print(clearing_price)
             self.reps.create_or_update_market_clearing_point(market, clearing_price, total_supply,
                                                              self.reps.current_tick)

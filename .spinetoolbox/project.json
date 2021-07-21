@@ -101,6 +101,21 @@
                     "type": "path",
                     "relative": true,
                     "path": ".spinetoolbox/specifications/Importer/import_competes_to_competes_db.json"
+                },
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/specifications/Importer/import_emlab_config.json"
+                },
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/specifications/Importer/import_coupling_config.json"
+                },
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/specifications/Importer/import_competes_config.json"
                 }
             ]
         },
@@ -307,16 +322,6 @@
             },
             {
                 "from": [
-                    "Empty MS Access Files",
-                    "right"
-                ],
-                "to": [
-                    "Prepare COMPETES",
-                    "bottom"
-                ]
-            },
-            {
-                "from": [
                     "COMPETES Output to EMLAB DB and COMPETES DB",
                     "right"
                 ],
@@ -333,36 +338,6 @@
                 "to": [
                     "COMPETES Output to EMLAB DB and COMPETES DB",
                     "right"
-                ]
-            },
-            {
-                "from": [
-                    "EMLAB Config File",
-                    "bottom"
-                ],
-                "to": [
-                    "EMLAB CO2 Market",
-                    "right"
-                ]
-            },
-            {
-                "from": [
-                    "EMLAB Config File",
-                    "bottom"
-                ],
-                "to": [
-                    "EMLAB Capacity Market",
-                    "left"
-                ]
-            },
-            {
-                "from": [
-                    "COMPETES Config File",
-                    "left"
-                ],
-                "to": [
-                    "Prepare COMPETES",
-                    "bottom"
                 ]
             },
             {
@@ -544,6 +519,186 @@
                     "Initialization Preprocessing DB EMLAB",
                     "bottom"
                 ]
+            },
+            {
+                "from": [
+                    "Empty MS Access Files",
+                    "right"
+                ],
+                "to": [
+                    "Prepare COMPETES",
+                    "bottom"
+                ]
+            },
+            {
+                "from": [
+                    "EMLAB Config File",
+                    "right"
+                ],
+                "to": [
+                    "Import EMLAB Config",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "Import EMLAB Config",
+                    "right"
+                ],
+                "to": [
+                    "Simulation Configuration Parameters",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "Coupling Config File",
+                    "right"
+                ],
+                "to": [
+                    "Import Coupling Config",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "Import Coupling Config",
+                    "right"
+                ],
+                "to": [
+                    "Simulation Configuration Parameters",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "COMPETES Config File",
+                    "right"
+                ],
+                "to": [
+                    "Import COMPETES Config",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "Import COMPETES Config",
+                    "right"
+                ],
+                "to": [
+                    "Simulation Configuration Parameters",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "Simulation Configuration Parameters",
+                    "bottom"
+                ],
+                "to": [
+                    "EMLAB CO2 Market",
+                    "right"
+                ]
+            },
+            {
+                "from": [
+                    "Simulation Configuration Parameters",
+                    "bottom"
+                ],
+                "to": [
+                    "Increment EMLAB Clock",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "Simulation Configuration Parameters",
+                    "bottom"
+                ],
+                "to": [
+                    "Init EMLAB Clock",
+                    "right"
+                ]
+            },
+            {
+                "from": [
+                    "Simulation Configuration Parameters",
+                    "bottom"
+                ],
+                "to": [
+                    "Preprocessing DB EMLAB",
+                    "right"
+                ]
+            },
+            {
+                "from": [
+                    "Simulation Configuration Parameters",
+                    "bottom"
+                ],
+                "to": [
+                    "DB EMLAB to DB COMPETES",
+                    "right"
+                ]
+            },
+            {
+                "from": [
+                    "Simulation Configuration Parameters",
+                    "bottom"
+                ],
+                "to": [
+                    "COMPETES Investment",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "Simulation Configuration Parameters",
+                    "bottom"
+                ],
+                "to": [
+                    "COMPETES Dispatch",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "Simulation Configuration Parameters",
+                    "bottom"
+                ],
+                "to": [
+                    "COMPETES Output to EMLAB DB and COMPETES DB",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "Simulation Configuration Parameters",
+                    "bottom"
+                ],
+                "to": [
+                    "EMLAB Capacity Market",
+                    "left"
+                ]
+            },
+            {
+                "from": [
+                    "Simulation Configuration Parameters",
+                    "bottom"
+                ],
+                "to": [
+                    "Prepare COMPETES",
+                    "right"
+                ]
+            },
+            {
+                "from": [
+                    "Simulation Configuration Parameters",
+                    "bottom"
+                ],
+                "to": [
+                    "Initialization Preprocessing DB EMLAB",
+                    "right"
+                ]
             }
         ]
     },
@@ -551,8 +706,8 @@
         "DB EMLAB": {
             "type": "Data Store",
             "description": "",
-            "x": -320.5648704361627,
-            "y": -77.51469900967389,
+            "x": -329.5335441017955,
+            "y": 94.505837410159,
             "url": {
                 "dialect": "sqlite",
                 "username": "",
@@ -570,8 +725,8 @@
         "EMLAB Init Data": {
             "type": "Data Connection",
             "description": "Loads all initialization values",
-            "x": -702.483194194871,
-            "y": -121.36906042603047,
+            "x": -702.4831941948709,
+            "y": 43.92497074457779,
             "references": [
                 {
                     "type": "path",
@@ -583,8 +738,8 @@
         "Import EMLAB Init": {
             "type": "Importer",
             "description": "",
-            "x": -540.6190077469342,
-            "y": -119.43368292560808,
+            "x": -540.6190077469341,
+            "y": 45.86034824500018,
             "specification": "Import EMLAB Init",
             "cancel_on_error": true,
             "file_selection": [
@@ -597,8 +752,8 @@
         "SHARED Init Data": {
             "type": "Data Connection",
             "description": "",
-            "x": -700.6954606095288,
-            "y": 19.354481812960557,
+            "x": -700.6954606095287,
+            "y": 184.64851298356882,
             "references": [
                 {
                     "type": "path",
@@ -610,8 +765,8 @@
         "COMPETES Init Data": {
             "type": "Data Connection",
             "description": "",
-            "x": -697.4167121478675,
-            "y": 257.8725888372484,
+            "x": -697.4167121478674,
+            "y": 423.16662000785664,
             "references": [
                 {
                     "type": "path",
@@ -628,8 +783,8 @@
         "Import COMPETES Init": {
             "type": "Importer",
             "description": "",
-            "x": -540.3803659382037,
-            "y": 165.10160166309217,
+            "x": -540.3803659382036,
+            "y": 330.39563283370046,
             "specification": "Import COMPETES",
             "cancel_on_error": false,
             "file_selection": [
@@ -646,8 +801,8 @@
         "DB COMPETES": {
             "type": "Data Store",
             "description": "",
-            "x": -326.820450106404,
-            "y": 148.52821403714933,
+            "x": -326.8204501064039,
+            "y": 313.8222452077576,
             "url": {
                 "dialect": "sqlite",
                 "username": "",
@@ -665,8 +820,8 @@
         "Import SHARED Init to COMPETES": {
             "type": "Importer",
             "description": "",
-            "x": -540.7194840027588,
-            "y": 71.12874142719323,
+            "x": -540.7194840027587,
+            "y": 236.4227725978015,
             "specification": "Import Shared Init to COMPETES",
             "cancel_on_error": false,
             "file_selection": [
@@ -679,8 +834,8 @@
         "Import SHARED Init to EMLAB": {
             "type": "Importer",
             "description": "",
-            "x": -541.2213898479978,
-            "y": -18.427415853106936,
+            "x": -541.2213898479977,
+            "y": 146.86661531750133,
             "specification": "Import Shared Init EMLAB",
             "cancel_on_error": false,
             "file_selection": [
@@ -693,8 +848,8 @@
         "Import COMPETES Init (PP)": {
             "type": "Importer",
             "description": "",
-            "x": -541.6487522377396,
-            "y": 261.61637381095113,
+            "x": -541.6487522377395,
+            "y": 426.9104049815594,
             "specification": "Import COMPETES (PP)",
             "cancel_on_error": false,
             "file_selection": [
@@ -711,8 +866,8 @@
         "EMLAB CO2 Market": {
             "type": "Tool",
             "description": "",
-            "x": -61.82301003778446,
-            "y": -77.12288003300124,
+            "x": -65.7348345910998,
+            "y": 91.87312305976036,
             "specification": "CO2 Market",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -722,7 +877,7 @@
                 },
                 {
                     "type": "resource",
-                    "arg": "EMLAB config.xlsx"
+                    "arg": "db_url@Simulation Configuration Parameters"
                 },
                 {
                     "type": "literal",
@@ -733,14 +888,18 @@
         "Init EMLAB Clock": {
             "type": "Tool",
             "description": "",
-            "x": -261.80337236917023,
-            "y": -188.978859725421,
+            "x": -261.8033723691701,
+            "y": -23.684828554812725,
             "specification": "Clock",
             "execute_in_work": false,
             "cmd_line_args": [
                 {
                     "type": "resource",
                     "arg": "db_url@DB EMLAB"
+                },
+                {
+                    "type": "resource",
+                    "arg": "db_url@Simulation Configuration Parameters"
                 },
                 {
                     "type": "literal",
@@ -751,8 +910,8 @@
         "DB EMLAB to DB COMPETES": {
             "type": "Tool",
             "description": "",
-            "x": -38.67918425879657,
-            "y": 38.982485260207824,
+            "x": -39.46154916945954,
+            "y": 204.27651643081612,
             "specification": "EMLAB to COMPETES",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -763,14 +922,18 @@
                 {
                     "type": "resource",
                     "arg": "db_url@DB COMPETES"
+                },
+                {
+                    "type": "resource",
+                    "arg": "db_url@Simulation Configuration Parameters"
                 }
             ]
         },
         "Prepare COMPETES": {
             "type": "Tool",
             "description": "",
-            "x": -11.964411438085733,
-            "y": 165.76994667989973,
+            "x": -14.648412394646527,
+            "y": 314.24771472744646,
             "specification": "COMPETES SpineDB to MS Access",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -784,7 +947,7 @@
                 },
                 {
                     "type": "resource",
-                    "arg": "COMPETES EU 2050-KIP config.xlsx"
+                    "arg": "db_url@Simulation Configuration Parameters"
                 },
                 {
                     "type": "resource",
@@ -799,8 +962,8 @@
         "DB EMLAB ref": {
             "type": "Data Store",
             "description": "",
-            "x": 689.5681751302367,
-            "y": -75.02574971398768,
+            "x": 689.5681751302368,
+            "y": 90.26828145662058,
             "url": {
                 "dialect": "sqlite",
                 "username": "",
@@ -818,8 +981,8 @@
         "EMLAB Capacity Market": {
             "type": "Tool",
             "description": "",
-            "x": 491.6832814498966,
-            "y": -74.64712486740552,
+            "x": 491.6832814498967,
+            "y": 90.64690630320274,
             "specification": "Capacity Market",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -829,7 +992,7 @@
                 },
                 {
                     "type": "resource",
-                    "arg": "EMLAB config.xlsx"
+                    "arg": "db_url@Simulation Configuration Parameters"
                 },
                 {
                     "type": "literal",
@@ -840,14 +1003,18 @@
         "Increment EMLAB Clock": {
             "type": "Tool",
             "description": "",
-            "x": 517.8331787357697,
-            "y": -187.67960238399272,
+            "x": 517.8331787357698,
+            "y": -22.385571213384452,
             "specification": "Clock",
             "execute_in_work": false,
             "cmd_line_args": [
                 {
                     "type": "resource",
                     "arg": "db_url@DB EMLAB ref"
+                },
+                {
+                    "type": "resource",
+                    "arg": "db_url@Simulation Configuration Parameters"
                 },
                 {
                     "type": "literal",
@@ -858,8 +1025,8 @@
         "DB COMPETES ref": {
             "type": "Data Store",
             "description": "",
-            "x": 599.572120458931,
-            "y": 166.98756826776253,
+            "x": 599.5372684662029,
+            "y": 319.6545768692549,
             "url": {
                 "dialect": "sqlite",
                 "username": "",
@@ -877,8 +1044,8 @@
         "Empty MS Access Files": {
             "type": "Data Connection",
             "description": "",
-            "x": -103.32812679145377,
-            "y": 277.55871138795186,
+            "x": -39.762440973510074,
+            "y": 423.5754039110849,
             "references": [
                 {
                     "type": "path",
@@ -895,8 +1062,8 @@
         "EMLAB Config File": {
             "type": "Data Connection",
             "description": "",
-            "x": 133.9646769056901,
-            "y": -105.454753302238,
+            "x": -138.581975672498,
+            "y": -446.4814249079835,
             "references": [
                 {
                     "type": "path",
@@ -908,8 +1075,8 @@
         "COMPETES Config File": {
             "type": "Data Connection",
             "description": "",
-            "x": 75.65873683216896,
-            "y": 275.36343601646325,
+            "x": -138.78685337795827,
+            "y": -250.6611213587895,
             "references": [
                 {
                     "type": "path",
@@ -921,8 +1088,8 @@
         "COMPETES Output to EMLAB DB and COMPETES DB": {
             "type": "Tool",
             "description": "",
-            "x": 464.74168800784975,
-            "y": 45.00747754752257,
+            "x": 464.74168800784986,
+            "y": 210.30150871813083,
             "specification": "DB COMPETES to DB EMLAB",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -933,6 +1100,10 @@
                 {
                     "type": "resource",
                     "arg": "db_url@DB COMPETES ref"
+                },
+                {
+                    "type": "resource",
+                    "arg": "db_url@Simulation Configuration Parameters"
                 },
                 {
                     "type": "literal",
@@ -951,22 +1122,26 @@
         "Preprocessing DB EMLAB": {
             "type": "Tool",
             "description": "",
-            "x": -89.16193889284759,
-            "y": -189.50413283750368,
+            "x": -89.16193889284747,
+            "y": -24.21010166689541,
             "specification": "Preprocessing DB EMLAB",
             "execute_in_work": false,
             "cmd_line_args": [
                 {
                     "type": "resource",
                     "arg": "db_url@DB EMLAB"
+                },
+                {
+                    "type": "resource",
+                    "arg": "db_url@Simulation Configuration Parameters"
                 }
             ]
         },
         "Execute Sleep and Click": {
             "type": "Tool",
             "description": "",
-            "x": 685.4167121478675,
-            "y": -273.5587113879518,
+            "x": 685.4167121478677,
+            "y": -108.26468021734354,
             "specification": "Execute Sleep and Click",
             "execute_in_work": false,
             "cmd_line_args": []
@@ -974,14 +1149,18 @@
         "COMPETES Dispatch": {
             "type": "Tool",
             "description": "",
-            "x": 250.79869707391487,
-            "y": 164.20903208816176,
+            "x": 248.67433168497143,
+            "y": 316.7568709251088,
             "specification": "COMPETES",
             "execute_in_work": false,
             "cmd_line_args": [
                 {
                     "type": "resource",
                     "arg": "db_url@DB EMLAB ref"
+                },
+                {
+                    "type": "resource",
+                    "arg": "db_url@Simulation Configuration Parameters"
                 },
                 {
                     "type": "literal",
@@ -992,14 +1171,18 @@
         "COMPETES Investment": {
             "type": "Tool",
             "description": "",
-            "x": 438.1357618505501,
-            "y": 164.20903208816176,
+            "x": 436.79376137226984,
+            "y": 316.18761445414975,
             "specification": "COMPETES",
             "execute_in_work": false,
             "cmd_line_args": [
                 {
                     "type": "resource",
                     "arg": "db_url@DB EMLAB ref"
+                },
+                {
+                    "type": "resource",
+                    "arg": "db_url@Simulation Configuration Parameters"
                 },
                 {
                     "type": "literal",
@@ -1010,8 +1193,8 @@
         "Initialization Preprocessing DB EMLAB": {
             "type": "Tool",
             "description": "",
-            "x": -470.03857545764623,
-            "y": -192.0462649019866,
+            "x": -470.03857545764606,
+            "y": -24.022310104956922,
             "specification": "Initialization Preprocessing EMLAB",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -1022,7 +1205,85 @@
                 {
                     "type": "resource",
                     "arg": "db_url@DB COMPETES"
+                },
+                {
+                    "type": "resource",
+                    "arg": "db_url@Simulation Configuration Parameters"
                 }
+            ]
+        },
+        "Coupling Config File": {
+            "type": "Data Connection",
+            "description": "",
+            "x": -139.48367783299562,
+            "y": -346.9811790253382,
+            "references": [
+                {
+                    "type": "path",
+                    "relative": true,
+                    "path": "resources/configurations/Coupling Config.xlsx"
+                }
+            ]
+        },
+        "Simulation Configuration Parameters": {
+            "type": "Data Store",
+            "description": "",
+            "x": 234.35509141474398,
+            "y": -344.66504692841437,
+            "url": {
+                "dialect": "sqlite",
+                "username": "",
+                "password": "",
+                "host": "",
+                "port": "",
+                "database": {
+                    "type": "path",
+                    "relative": true,
+                    "path": ".spinetoolbox/items/simulation_configuration_parameters/Simulation Configuration Parameters.sqlite"
+                }
+            },
+            "cancel_on_error": false
+        },
+        "Import EMLAB Config": {
+            "type": "Importer",
+            "description": "",
+            "x": 16.146210063482663,
+            "y": -446.0601953239808,
+            "specification": "Import EMLAB Config",
+            "cancel_on_error": false,
+            "file_selection": [
+                [
+                    "EMLAB config.xlsx",
+                    true
+                ]
+            ]
+        },
+        "Import Coupling Config": {
+            "type": "Importer",
+            "description": "",
+            "x": 15.412291424233455,
+            "y": -346.2472603860889,
+            "specification": "Import Coupling Config",
+            "cancel_on_error": false,
+            "file_selection": [
+                [
+                    "Coupling Config.xlsx",
+                    true
+                ]
+            ]
+        },
+        "Import COMPETES Config": {
+            "type": "Importer",
+            "description": "",
+            "x": 14.678372784984246,
+            "y": -249.3700000051935,
+            "specification": "Import COMPETES Config",
+            "cancel_on_error": false,
+            "file_selection": [
+                [
+                    "COMPETES EU 2050-KIP config.xlsx",
+                    true
+                ]
             ]
         }
     }

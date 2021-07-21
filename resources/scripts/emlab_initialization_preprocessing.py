@@ -107,20 +107,26 @@ def execute_all_initialization_preprocessing():
     print('Creating connection to SpineDB...')
     db_emlab = SpineDB(sys.argv[1])
     db_competes = SpineDB(sys.argv[2])
-    print('Querying SpineDB...')
-    db_emlab_fuelmap = db_emlab.query_object_parameter_values_by_object_class('FuelMap')
-    db_emlab_technologies_fuel = db_emlab.query_object_parameter_values_by_object_class('PowerGeneratingTechnologyFuel')
-    db_emlab_technologies = db_emlab.query_object_parameter_values_by_object_class('PowerGeneratingTechnologies')
-    db_competes_vre_capacities = db_competes.query_object_parameter_values_by_object_class('VRE Capacities')
-    db_competes_vre_technologies = db_competes.query_object_parameter_values_by_object_class('VRE Technologies')
-    db_competes_technologies = db_competes.query_object_parameter_values_by_object_class('Technologies')
-    print('Done querying')
+    db_config = SpineDB(sys.argv[3])
 
     try:
+        print('Querying SpineDB...')
+        db_emlab_fuelmap = db_emlab.query_object_parameter_values_by_object_class('FuelMap')
+        db_emlab_technologies_fuel = db_emlab.query_object_parameter_values_by_object_class('PowerGeneratingTechnologyFuel')
+        db_emlab_technologies = db_emlab.query_object_parameter_values_by_object_class('PowerGeneratingTechnologies')
+        db_competes_vre_capacities = db_competes.query_object_parameter_values_by_object_class('VRE Capacities')
+        db_competes_vre_technologies = db_competes.query_object_parameter_values_by_object_class('VRE Technologies')
+        db_competes_technologies = db_competes.query_object_parameter_values_by_object_class('Technologies')
+        print('Done querying')
+
+        start_simulation_year = next(int(i['parameter_value']) for i in
+                                     db_config.query_object_parameter_values_by_object_class('Coupling Parameters')
+                                     if i['object_name'] == 'Start Year')
         replace_power_generating_technology_fuel_names(db_emlab, db_emlab_fuelmap, db_emlab_technologies_fuel)
-        import_initial_vre(db_emlab, db_competes_vre_capacities, 2020)
+        import_initial_vre(db_emlab, db_competes_vre_capacities, start_simulation_year)
         import_initial_fixed_oc_start_values(db_emlab, db_competes_technologies, db_emlab_technologies)
-        import_initial_vre_fixed_oc_start_values(db_emlab, db_competes_vre_technologies, db_emlab_technologies, 2020)
+        import_initial_vre_fixed_oc_start_values(db_emlab, db_competes_vre_technologies, db_emlab_technologies,
+                                                 start_simulation_year)
 
 
         print('Committing...')
@@ -132,6 +138,7 @@ def execute_all_initialization_preprocessing():
     finally:
         db_emlab.close_connection()
         db_competes.close_connection()
+        db_config.close_connection()
 
 
 print('===== Start EMLAB Preprocessing script =====')

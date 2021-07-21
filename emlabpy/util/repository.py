@@ -27,6 +27,8 @@ class Repository:
         self.dbrw = None
 
         self.current_tick = 0
+        self.time_step = 0
+        self.start_simulation_year = 0
 
         self.energy_producers = dict()
         self.power_plants = dict()

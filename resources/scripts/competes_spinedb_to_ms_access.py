@@ -47,7 +47,8 @@ class TriangularTrend:
 
 def export_to_mdb(path: str, filename: str,
                   tables_objects_type1: dict, tables_objects_type2: dict,
-                  tables_relationships_type1: dict, tables_relationships_type2: dict):
+                  tables_relationships_type1: dict, tables_relationships_type2: dict,
+                  start_simulation_year, end_simulation_year):
     """
     Initialize the connection to the MS Access DB and import the tables.
     Type1 Mapping: SpineDB has an object with parameters. {'Table Name': 'Object Column Name'}
@@ -59,6 +60,8 @@ def export_to_mdb(path: str, filename: str,
     First index is unique, second is the parameter names.
     {'Table Name': ('Object 1 Column Name', 'Object 2 Column Name', 'Index Column Name')}
 
+    :param end_simulation_year:
+    :param start_simulation_year:
     :param path: Path to COMPETES data folder
     :param filename: MS Access filename
     :param tables_objects_type1: Dict as described above
@@ -80,7 +83,7 @@ def export_to_mdb(path: str, filename: str,
         if filename == 'COMPETES EU 2050-KIP.mdb':
             print('Staging Unique Mappings...')
             export_co2_prices(cursor)
-            export_fuelpriceyears(cursor)
+            export_fuelpriceyears(cursor, start_simulation_year, end_simulation_year)
             export_nset(cursor)
             print('Finished Unique Mappings')
 
@@ -257,18 +260,20 @@ def export_co2_prices(cursor):
         cursor.execute(sql_query, (year, month, price))
 
 
-def export_fuelpriceyears(cursor):
+def export_fuelpriceyears(cursor, start_simulation_year, end_simulation_year):
     """
     Separate function because of the required execution of the "trends" to print numbers into MS Access.
     The price is divided by 3.6 because of the conversion of MWh to GJ.
 
+    :param start_simulation_year:
+    :param end_simulation_year:
     :param cursor: PYODBC
     :return:
     """
     print('Exporting Fuelpriceyears...')
     table_name_spine = 'FuelpriceTrends'
     table_name_competes = 'Fuelpriceyears'
-    years = list(range(2020, 2031))
+    years = list(range(start_simulation_year, end_simulation_year + 1))
     months = ['[' + i[1] + ']' for i in db_competes_data['objects'] if i[0] == 'Months']
     countries = [i[1] for i in db_competes_data['objects'] if i[0] == 'Country']
     for (_, trend_name, _) in [i for i in db_competes_data['objects'] if i[0] == table_name_spine]:
@@ -283,7 +288,7 @@ def export_fuelpriceyears(cursor):
                 print("Exporting for year " + str(year) + ' and country ' + country)
                 sql_query = 'INSERT INTO [' + table_name_competes + '] ([Fuelname], [Country], [Year], ' + ', '.join(
                     months) + ') VALUES (' + ','.join(['?'] * 15) + ');'
-                cursor.execute(sql_query, (fuelname, country, year,) + (prices[year - 2020] / 3.6,) * 12)
+                cursor.execute(sql_query, (fuelname, country, year,) + (prices[year - start_simulation_year] / 3.6,) * 12)
 
 
 def export_nset(cursor):
@@ -301,14 +306,23 @@ def export_nset(cursor):
 print('===== Starting COMPETES SpineDB to MS Access script =====')
 
 config_url = sys.argv[3]
-print('Config file path: ' + config_url)
+print('Config DB path: ' + config_url)
 
 print('Reading current tick...')
 db_emlab = SpineDB(sys.argv[2])
+db_config = SpineDB(config_url)
 try:
-    current_emlab_tick, current_competes_tick, current_competes_tick_rounded = get_current_ticks(db_emlab, 2020)
+    db_config_parameters = db_config.query_object_parameter_values_by_object_class('Coupling Parameters')
+    start_simulation_year = next(int(i['parameter_value']) for i in db_config_parameters
+                                 if i['object_name'] == 'Start Year')
+    end_simulation_year = next(int(i['parameter_value']) for i in db_config_parameters
+                               if i['object_name'] == 'End Year')
+    current_emlab_tick, current_competes_tick, current_competes_tick_rounded = get_current_ticks(db_emlab,
+                                                                                                 start_simulation_year)
+    db_config_competes_mappings = db_config.query_object_parameter_values_by_object_class('COMPETES Parameters')
 finally:
     db_emlab.close_connection()
+    db_config.close_connection()
 
 print('Copying empty Result Excel sheets...')
 originalfile = '../../COMPETES/Results/Empty output files/Output_Dynamic_Gen&Trans_INSERTYEAR.xlsx'
@@ -332,49 +346,53 @@ try:
 
     path_to_data = originalfiles[0].split("empty_")[0]
 
-    print('Reading type 1 mapping from config file')
-    object_mapping_type1 = {i[0]: i[1] for i in pandas.read_excel(config_url, 'Object Type 1').values}
+    print('Reading type 1 mapping from config DB')
+    object_mapping_type1 = {i['parameter_name']: i['parameter_value'] for i in db_config_competes_mappings
+                            if i['object_name'] == 'Object Type 1'}
     print(object_mapping_type1)
 
-    print('Reading type 2 mapping from config file')
-    object_mapping_type2 = {i[0]: tuple([j for j in i[1:] if type(j) == str]) for i in
-                            pandas.read_excel(config_url, 'Object Type 2').values}
+    print('Reading type 2 mapping from config DB')
+    object_mapping_type2 = {i['parameter_name']: tuple(i['parameter_value'].values) for i in db_config_competes_mappings
+                            if i['object_name'] == 'Object Type 2'}
     print(object_mapping_type2)
 
-    print('Reading relationship type 1 mapping from config file')
-    relationship_mapping_type1 = {i[0]: (i[1], i[2]) for i in
-                                  pandas.read_excel(config_url, 'Relationship Type 1').values}
+    print('Reading relationship type 1 mapping from config DB')
+    relationship_mapping_type1 = {i['parameter_name']: tuple(i['parameter_value'].values) for i in db_config_competes_mappings
+                                  if i['object_name'] == 'Relationship Type 1'}
     print(relationship_mapping_type1)
 
-    print('Reading relationship type 2 mapping from config file')
-    relationship_mapping_type2 = {i[0]: (i[1], i[2], i[3]) for i in
-                                  pandas.read_excel(config_url, 'Relationship Type 2').values}
+    print('Reading relationship type 2 mapping from config DB')
+    relationship_mapping_type2 = {i['parameter_name']: tuple(i['parameter_value'].values) for i in db_config_competes_mappings
+                                  if i['object_name'] == 'Relationship Type 2'}
     print(relationship_mapping_type2)
 
-    print('Reading PP type 1 mapping from config file')
-    pp_object_mapping_type1 = {i[0]: i[1] for i in pandas.read_excel(config_url, 'PP Object Type 1').values}
+    print('Reading PP type 1 mapping from config DB')
+    pp_object_mapping_type1 = {i['parameter_name']: i['parameter_value'] for i in db_config_competes_mappings
+                               if i['object_name'] == 'PP Object Type 1'}
     print(pp_object_mapping_type1)
 
-    print('Reading PP type 2 mapping from config file')
-    pp_object_mapping_type2 = {i[0]: tuple([j for j in i[1:] if type(j) == str]) for i in
-                               pandas.read_excel(config_url, 'PP Object Type 2').values}
+    print('Reading PP type 2 mapping from config DB')
+    pp_object_mapping_type2 = {i['parameter_name']: tuple(i['parameter_value'].values) for i in db_config_competes_mappings
+                               if i['object_name'] == 'PP Object Type 2'}
     print(pp_object_mapping_type2)
 
-    print('Reading PP relationship type 1 mapping from config file')
-    pp_relationship_mapping_type1 = {i[0]: (i[1], i[2]) for i in
-                                     pandas.read_excel(config_url, 'PP Relationship Type 1').values}
+    print('Reading PP relationship type 1 mapping from config DB')
+    pp_relationship_mapping_type1 = {i['parameter_name']: tuple(i['parameter_value'].values) for i in db_config_competes_mappings
+                                     if i['object_name'] == 'PP Relationship Type 1'}
     print(pp_relationship_mapping_type1)
 
-    print('Reading PP relationship type 2 mapping from config file')
-    pp_relationship_mapping_type2 = {i[0]: (i[1], i[2], i[3]) for i in
-                                     pandas.read_excel(config_url, 'PP Relationship Type 2').values}
+    print('Reading PP relationship type 2 mapping from config DB')
+    pp_relationship_mapping_type2 = {i['parameter_name']: tuple(i['parameter_value'].values) for i in db_config_competes_mappings
+                                     if i['object_name'] == 'PP Relationship Type 2'}
     print(pp_relationship_mapping_type2)
 
     export_to_mdb(path_to_data, 'COMPETES EU 2050-KIP.mdb',
-                  object_mapping_type1, object_mapping_type2, relationship_mapping_type1, relationship_mapping_type2)
+                  object_mapping_type1, object_mapping_type2, relationship_mapping_type1, relationship_mapping_type2,
+                  start_simulation_year, end_simulation_year)
 
     export_to_mdb(path_to_data, 'COMPETES EU PowerPlants 2050-KIP', pp_object_mapping_type1, pp_object_mapping_type2,
-                  pp_relationship_mapping_type1, pp_relationship_mapping_type2)
+                  pp_relationship_mapping_type1, pp_relationship_mapping_type2,
+                  start_simulation_year, end_simulation_year)
 except Exception as e:
     print('Exception occurred: ' + str(e))
     raise

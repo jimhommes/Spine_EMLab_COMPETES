@@ -47,11 +47,11 @@ db_url = sys.argv[1]
 logging.info('Selected database: ' + str(db_url))
 
 # Second argumant always has to be the Config Excel file
-config_url = sys.argv[2]
-logging.info('Configuration file found: ' + str(config_url))
+config_spinedb_url = sys.argv[2]
+logging.info('Selected simulation parameter database: ' + str(config_spinedb_url))
 
 # Initialize SpineDB Reader Writer (also initializes DB connection)
-spinedb_reader_writer = SpineDBReaderWriter(db_url, config_url)
+spinedb_reader_writer = SpineDBReaderWriter(db_url, config_spinedb_url)
 
 try:    # Try statement to always close DB properly
     # Load repository
@@ -94,3 +94,4 @@ except Exception as e:
 finally:
     logging.info('Closing database connections...')
     spinedb_reader_writer.db.close_connection()
+    spinedb_reader_writer.config_db.close_connection()

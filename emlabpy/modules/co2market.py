@@ -27,9 +27,8 @@ class CO2MarketDetermineCO2Price(MarketModule):
                 # co2price = self.reps.substances['co2'].get_price_for_tick(0)
                 co2price = 25
             else:
-                amount_of_years_to_look_back = 10
-
                 # If not first tick, base CO2 Price of profits/emissions last year
+                amount_of_years_to_look_back = self.reps.time_step
 
                 # If implemented, take MarketStabilityReserve into account
                 msr = self.reps.get_market_stability_reserve_for_market(market)
@@ -51,8 +50,6 @@ class CO2MarketDetermineCO2Price(MarketModule):
                     in profits_per_plant.items() if emissions_per_plant[key] != 0
                 }
 
-                print(sum(emissions_per_plant.values()) * 2 * 1.57)
-
                 co2_from_exports = 0
                 if 'Exports' in self.reps.exports.keys():
                     co2_from_exports = self.reps.exports['Exports'].amount_of_co2 * 2   # *2 for Banking compensation
@@ -64,14 +61,14 @@ class CO2MarketDetermineCO2Price(MarketModule):
                                     key=lambda item: item[1], reverse=True)
                 for (power_plant_name, wtp) in sorted_wtp:
                     emissions_per_plant_rounded = math.ceil(emissions_per_plant[power_plant_name])
-                    if co2_cap - co2_from_exports >= total_emissions + 2 * 1.57 * emissions_per_plant_rounded:
-                        total_emissions += emissions_per_plant_rounded * 2 * 1.57
+                    if co2_cap - co2_from_exports >= total_emissions + emissions_per_plant_rounded * 2:
+                        total_emissions += emissions_per_plant_rounded * 2
                         co2price = wtp
                     else:
                         break
-                print(co2price)
 
             # Check if CO2Price is below the Government's min CO2 price
+            print(co2price)
             co2price = self.floor_co2price(co2price)
             self.reps.create_or_update_market_clearing_point(market, co2price, 0, self.reps.current_tick)
 

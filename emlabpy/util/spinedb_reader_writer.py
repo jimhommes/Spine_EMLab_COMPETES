@@ -8,7 +8,6 @@ import logging
 
 from util.repository import *
 from util.spinedb import SpineDB
-import pandas
 
 
 class SpineDBReaderWriter:
@@ -18,7 +17,7 @@ class SpineDBReaderWriter:
 
     def __init__(self, db_url: str, config_url: str):
         self.db_url = db_url
-        self.config_url = config_url
+        self.config_db = SpineDB(config_url)
         self.db = SpineDB(db_url)
         self.powerplant_dispatch_plan_classname = 'PowerPlantDispatchPlans'
         self.market_clearing_point_object_classname = 'MarketClearingPoints'
@@ -36,16 +35,24 @@ class SpineDBReaderWriter:
         logging.info('Current tick: ' + str(reps.current_tick))
         self.stage_init_alternative(reps.current_tick)
 
-        # Load the parameter priorities from the config file
-        parameter_priorities = pandas.read_excel(self.config_url, 'Import Priorities')
+        # Load Coupling Parameters and set in repository
+        for row in self.config_db.query_object_parameter_values_by_object_class('Coupling Parameters'):
+            if row['object_name'] == 'Start Year':
+                reps.start_simulation_year = int(row['parameter_value'])
+            elif row['object_name'] == 'Time Step':
+                reps.time_step = int(row['parameter_value'])
+
+        # Load the parameter priorities from the config db
+        parameter_priorities = {i['parameter_name']: i['parameter_value'] for i
+                                in self.config_db.query_object_parameter_values_by_object_class('EMLAB Parameters')}
 
         # Sort the object_parameter_values and object_parameters
         # so that the most recent (highest tick) and highest priority is first selected.
         sorted_object_parameter_values = sorted(db_data['object_parameter_values'], reverse=True,
                                                 key=lambda item: int(item[4]))
         sorted_parameter_names = sorted(db_data['object_parameters'],
-                                        key=lambda item: int(parameter_priorities.loc[parameter_priorities['object_class_name'] == item[0], 'priority'].iat[0])
-                                        if not parameter_priorities.loc[parameter_priorities['object_class_name'] == item[0], 'priority'].empty else 0, reverse=True)
+                                        key=lambda item: parameter_priorities[item[0]]
+                                        if item[0] in parameter_priorities.keys() else 0, reverse=True)
 
         # Import all object parameter values in one go
         for (object_class_name, parameter_name, _, _, _) in sorted_parameter_names:

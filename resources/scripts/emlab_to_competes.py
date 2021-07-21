@@ -348,6 +348,7 @@ def execute_export_to_competes():
     print('Establishing Database Connections...')
     db_emlab = SpineDB(sys.argv[1])
     db_competes = SpineDB(sys.argv[2])
+    db_config = SpineDB(sys.argv[3])
     print('Done establishing connections')
 
     try:
@@ -356,10 +357,13 @@ def execute_export_to_competes():
         db_emlab_powerplantdispatchplans = db_emlab.query_object_parameter_values_by_object_class(
             'PowerPlantDispatchPlans')
         db_emlab_powerplants = db_emlab.query_object_parameter_values_by_object_class('PowerPlants')
+        db_config_parameters = db_config.query_object_parameter_values_by_object_class('Coupling Parameters')
         print('Done querying Databases')
 
-        step = 10
-        current_emlab_tick, current_competes_tick, current_competes_tick_rounded = get_current_ticks(db_emlab, 2020)
+        time_step = next(int(i['parameter_value']) for i in db_config_parameters if i['object_name'] == 'Time Step')
+        start_simulation_year = next(int(i['parameter_value']) for i in db_config_parameters
+                                     if i['object_name'] == 'Start Year')
+        current_emlab_tick, current_competes_tick, current_competes_tick_rounded = get_current_ticks(db_emlab, start_simulation_year)
         print('Current EMLAB Tick: ' + str(current_emlab_tick))
         print('Current COMPETES Tick: ' + str(current_competes_tick))
 
@@ -369,7 +373,7 @@ def execute_export_to_competes():
         export_co2_market_clearing_price(db_competes, db_emlab_marketclearingpoints, current_emlab_tick,
                                          co2_object_class_name, current_competes_tick, months)
         export_capacity_market_revenues(db_competes, current_emlab_tick, db_emlab_powerplantdispatchplans,
-                                        db_emlab_marketclearingpoints, current_competes_tick, step, db_emlab_powerplants)
+                                        db_emlab_marketclearingpoints, current_competes_tick, time_step, db_emlab_powerplants)
 
         print('Committing...')
         db_competes.commit('Committing EMLAB to COMPETES script. EMLab tick: ' + str(current_emlab_tick) +
