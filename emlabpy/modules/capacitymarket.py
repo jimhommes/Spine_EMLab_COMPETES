@@ -42,13 +42,12 @@ class CapacityMarketSubmitBids(MarketModule):
                 expected_electricity_revenues = planned_dispatch * (clearing_point_price - mc)
 
                 net_revenues = expected_electricity_revenues - fixed_on_m_cost
-                if not (powerplant.name == 'SunPV' or powerplant.name == 'WindOn' or powerplant.name == 'WindOff'):
-                    price_to_bid = 0
-                    if powerplant.get_actual_nominal_capacity() > 0 and net_revenues <= 0:
-                        price_to_bid = -1 * net_revenues / (powerplant.get_actual_nominal_capacity() *
-                                                            powerplant.technology.peak_segment_dependent_availability)
+                price_to_bid = 0
+                if powerplant.get_actual_nominal_capacity() > 0 and net_revenues <= 0:
+                    price_to_bid = -1 * net_revenues / (powerplant.get_actual_nominal_capacity() *
+                                                        powerplant.technology.peak_segment_dependent_availability)
 
-                    self.reps.create_or_update_power_plant_dispatch_plan(powerplant, energy_producer, market, capacity,
+                self.reps.create_or_update_power_plant_dispatch_plan(powerplant, energy_producer, market, capacity * powerplant.technology.peak_segment_dependent_availability,
                                                                          price_to_bid, self.reps.current_tick)
 
 
