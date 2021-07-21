@@ -317,6 +317,8 @@ try:
                                  if i['object_name'] == 'Start Year')
     end_simulation_year = next(int(i['parameter_value']) for i in db_config_parameters
                                if i['object_name'] == 'End Year')
+    look_ahead = next(int(i['parameter_value']) for i in db_config_parameters
+                      if i['object_name'] == 'Look Ahead')
     current_emlab_tick, current_competes_tick, current_competes_tick_rounded = get_current_ticks(db_emlab,
                                                                                                  start_simulation_year)
     db_config_competes_mappings = db_config.query_object_parameter_values_by_object_class('COMPETES Parameters')
@@ -327,7 +329,7 @@ finally:
 print('Copying empty Result Excel sheets...')
 originalfile = '../../COMPETES/Results/Empty output files/Output_Dynamic_Gen&Trans_INSERTYEAR.xlsx'
 shutil.copyfile(originalfile, originalfile.replace("INSERTYEAR", str(current_competes_tick) + '_Dispatch').replace("INSERTOUTPUTYEAR", str(current_competes_tick) + '_Dispatch').replace('/Empty output files', ''))
-shutil.copyfile(originalfile, originalfile.replace("INSERTYEAR", str(current_competes_tick) + '_Investments').replace("INSERTOUTPUTYEAR", str(current_competes_tick) + '_Investments').replace('/Empty output files', ''))
+shutil.copyfile(originalfile, originalfile.replace("INSERTYEAR", str(current_competes_tick + look_ahead) + '_Investments').replace("INSERTOUTPUTYEAR", str(current_competes_tick + look_ahead) + '_Investments').replace('/Empty output files', ''))
 
 print('Copying empty databases...')
 originalfiles = sys.argv[4:]

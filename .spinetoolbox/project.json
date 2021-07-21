@@ -707,7 +707,7 @@
             "type": "Data Store",
             "description": "",
             "x": -329.5335441017955,
-            "y": 94.505837410159,
+            "y": 106.29134737337107,
             "url": {
                 "dialect": "sqlite",
                 "username": "",
@@ -726,7 +726,7 @@
             "type": "Data Connection",
             "description": "Loads all initialization values",
             "x": -702.4831941948709,
-            "y": 43.92497074457779,
+            "y": 55.710480707789856,
             "references": [
                 {
                     "type": "path",
@@ -739,7 +739,7 @@
             "type": "Importer",
             "description": "",
             "x": -540.6190077469341,
-            "y": 45.86034824500018,
+            "y": 57.645858208212246,
             "specification": "Import EMLAB Init",
             "cancel_on_error": true,
             "file_selection": [
@@ -753,7 +753,7 @@
             "type": "Data Connection",
             "description": "",
             "x": -700.6954606095287,
-            "y": 184.64851298356882,
+            "y": 196.43402294678089,
             "references": [
                 {
                     "type": "path",
@@ -766,7 +766,7 @@
             "type": "Data Connection",
             "description": "",
             "x": -697.4167121478674,
-            "y": 423.16662000785664,
+            "y": 434.9521299710687,
             "references": [
                 {
                     "type": "path",
@@ -784,7 +784,7 @@
             "type": "Importer",
             "description": "",
             "x": -540.3803659382036,
-            "y": 330.39563283370046,
+            "y": 342.1811427969125,
             "specification": "Import COMPETES",
             "cancel_on_error": false,
             "file_selection": [
@@ -802,7 +802,7 @@
             "type": "Data Store",
             "description": "",
             "x": -326.8204501064039,
-            "y": 313.8222452077576,
+            "y": 325.60775517096965,
             "url": {
                 "dialect": "sqlite",
                 "username": "",
@@ -821,7 +821,7 @@
             "type": "Importer",
             "description": "",
             "x": -540.7194840027587,
-            "y": 236.4227725978015,
+            "y": 248.20828256101356,
             "specification": "Import Shared Init to COMPETES",
             "cancel_on_error": false,
             "file_selection": [
@@ -835,7 +835,7 @@
             "type": "Importer",
             "description": "",
             "x": -541.2213898479977,
-            "y": 146.86661531750133,
+            "y": 158.6521252807134,
             "specification": "Import Shared Init EMLAB",
             "cancel_on_error": false,
             "file_selection": [
@@ -849,7 +849,7 @@
             "type": "Importer",
             "description": "",
             "x": -541.6487522377395,
-            "y": 426.9104049815594,
+            "y": 438.69591494477146,
             "specification": "Import COMPETES (PP)",
             "cancel_on_error": false,
             "file_selection": [
@@ -867,7 +867,7 @@
             "type": "Tool",
             "description": "",
             "x": -65.7348345910998,
-            "y": 91.87312305976036,
+            "y": 103.65863302297242,
             "specification": "CO2 Market",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -889,7 +889,7 @@
             "type": "Tool",
             "description": "",
             "x": -261.8033723691701,
-            "y": -23.684828554812725,
+            "y": -11.899318591600661,
             "specification": "Clock",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -911,7 +911,7 @@
             "type": "Tool",
             "description": "",
             "x": -39.46154916945954,
-            "y": 204.27651643081612,
+            "y": 216.06202639402818,
             "specification": "EMLAB to COMPETES",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -933,7 +933,7 @@
             "type": "Tool",
             "description": "",
             "x": -14.648412394646527,
-            "y": 314.24771472744646,
+            "y": 326.0332246906585,
             "specification": "COMPETES SpineDB to MS Access",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -963,7 +963,7 @@
             "type": "Data Store",
             "description": "",
             "x": 689.5681751302368,
-            "y": 90.26828145662058,
+            "y": 102.05379141983265,
             "url": {
                 "dialect": "sqlite",
                 "username": "",
@@ -982,7 +982,7 @@
             "type": "Tool",
             "description": "",
             "x": 491.6832814498967,
-            "y": 90.64690630320274,
+            "y": 102.4324162664148,
             "specification": "Capacity Market",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -1004,7 +1004,7 @@
             "type": "Tool",
             "description": "",
             "x": 517.8331787357698,
-            "y": -22.385571213384452,
+            "y": -10.600061250172388,
             "specification": "Clock",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -1026,7 +1026,7 @@
             "type": "Data Store",
             "description": "",
             "x": 599.5372684662029,
-            "y": 319.6545768692549,
+            "y": 331.440086832467,
             "url": {
                 "dialect": "sqlite",
                 "username": "",
@@ -1045,7 +1045,7 @@
             "type": "Data Connection",
             "description": "",
             "x": -39.762440973510074,
-            "y": 423.5754039110849,
+            "y": 435.36091387429695,
             "references": [
                 {
                     "type": "path",
@@ -1063,7 +1063,7 @@
             "type": "Data Connection",
             "description": "",
             "x": -138.581975672498,
-            "y": -446.4814249079835,
+            "y": -434.69591494477146,
             "references": [
                 {
                     "type": "path",
@@ -1076,7 +1076,7 @@
             "type": "Data Connection",
             "description": "",
             "x": -138.78685337795827,
-            "y": -250.6611213587895,
+            "y": -238.87561139557744,
             "references": [
                 {
                     "type": "path",
@@ -1089,7 +1089,7 @@
             "type": "Tool",
             "description": "",
             "x": 464.74168800784986,
-            "y": 210.30150871813083,
+            "y": 222.0870186813429,
             "specification": "DB COMPETES to DB EMLAB",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -1123,7 +1123,7 @@
             "type": "Tool",
             "description": "",
             "x": -89.16193889284747,
-            "y": -24.21010166689541,
+            "y": -12.424591703683348,
             "specification": "Preprocessing DB EMLAB",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -1141,7 +1141,7 @@
             "type": "Tool",
             "description": "",
             "x": 685.4167121478677,
-            "y": -108.26468021734354,
+            "y": -96.47917025413147,
             "specification": "Execute Sleep and Click",
             "execute_in_work": false,
             "cmd_line_args": []
@@ -1150,7 +1150,7 @@
             "type": "Tool",
             "description": "",
             "x": 248.67433168497143,
-            "y": 316.7568709251088,
+            "y": 328.54238088832085,
             "specification": "COMPETES",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -1165,6 +1165,10 @@
                 {
                     "type": "literal",
                     "arg": "spine_run_gentransdisp"
+                },
+                {
+                    "type": "literal",
+                    "arg": "false"
                 }
             ]
         },
@@ -1172,7 +1176,7 @@
             "type": "Tool",
             "description": "",
             "x": 436.79376137226984,
-            "y": 316.18761445414975,
+            "y": 327.9731244173618,
             "specification": "COMPETES",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -1187,6 +1191,10 @@
                 {
                     "type": "literal",
                     "arg": "spine_run_gentransinv"
+                },
+                {
+                    "type": "literal",
+                    "arg": "true"
                 }
             ]
         },
@@ -1194,7 +1202,7 @@
             "type": "Tool",
             "description": "",
             "x": -470.03857545764606,
-            "y": -24.022310104956922,
+            "y": -12.236800141744858,
             "specification": "Initialization Preprocessing EMLAB",
             "execute_in_work": false,
             "cmd_line_args": [
@@ -1216,7 +1224,7 @@
             "type": "Data Connection",
             "description": "",
             "x": -139.48367783299562,
-            "y": -346.9811790253382,
+            "y": -335.1956690621261,
             "references": [
                 {
                     "type": "path",
@@ -1229,7 +1237,7 @@
             "type": "Data Store",
             "description": "",
             "x": 234.35509141474398,
-            "y": -344.66504692841437,
+            "y": -332.8795369652023,
             "url": {
                 "dialect": "sqlite",
                 "username": "",
@@ -1248,7 +1256,7 @@
             "type": "Importer",
             "description": "",
             "x": 16.146210063482663,
-            "y": -446.0601953239808,
+            "y": -434.27468536076873,
             "specification": "Import EMLAB Config",
             "cancel_on_error": false,
             "file_selection": [
@@ -1262,7 +1270,7 @@
             "type": "Importer",
             "description": "",
             "x": 15.412291424233455,
-            "y": -346.2472603860889,
+            "y": -334.46175042287683,
             "specification": "Import Coupling Config",
             "cancel_on_error": false,
             "file_selection": [
@@ -1276,7 +1284,7 @@
             "type": "Importer",
             "description": "",
             "x": 14.678372784984246,
-            "y": -249.3700000051935,
+            "y": -237.58449004198144,
             "specification": "Import COMPETES Config",
             "cancel_on_error": false,
             "file_selection": [

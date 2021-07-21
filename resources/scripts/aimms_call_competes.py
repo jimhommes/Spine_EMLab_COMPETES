@@ -23,8 +23,10 @@ print('Read current year from SpineDB...')
 db_emlab = SpineDB(sys.argv[1])
 db_config = SpineDB(sys.argv[2])
 try:
+    db_config_parameters = db_config.query_object_parameter_values_by_object_class('Coupling Parameters')
     start_simulation_year = next(int(i['parameter_value']) for i in
-                                 db_config.query_object_parameter_values_by_object_class('Coupling Parameters'))
+                                 db_config_parameters if i['object_name'] == 'Start Year')
+    look_ahead = next(int(i['parameter_value']) for i in db_config_parameters if i['object_name'] == 'Look Ahead')
     current_emlab_tick, current_competes_tick, current_competes_tick_rounded = get_current_ticks(db_emlab,
                                                                                                  start_simulation_year)
 finally:
@@ -35,9 +37,15 @@ print('Running AIMMS service ' + aimms_service_name)
 port = 8080
 url = 'http://localhost'
 
+include_look_ahead = sys.argv[4] == 'true'
+print('Add Look Ahead to execution year: ' + str(include_look_ahead))
+execution_year = current_competes_tick
+if include_look_ahead:
+    execution_year += look_ahead
+
 print('Sending HTTP Request to AIMMS')
 result = requests.post(url + ':' + str(port) + '/api/v1/tasks/' + aimms_service_name + '?InputYear=' +
-                       str(current_competes_tick))
+                       str(execution_year))
 print('Response Code: ' + str(result.status_code))
 print('Response Body: ' + result.text)
 request_id = result.json()['id']

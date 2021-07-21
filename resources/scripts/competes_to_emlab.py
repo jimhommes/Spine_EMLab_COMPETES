@@ -311,6 +311,7 @@ def export_all_competes_results():
         db_config_parameters = db_config.query_object_parameter_values_by_object_class('Coupling Parameters')
         start_simulation_year = next(int(i['parameter_value']) for i in db_config_parameters
                                      if i['object_name'] == 'Start Year')
+        look_ahead = next(int(i['parameter_value']) for i in db_config_parameters if i['object_name'] == 'Look Ahead')
         current_emlab_tick, current_competes_tick, current_competes_tick_rounded = get_current_ticks(db_emlab,
                                                                                                      start_simulation_year)
         print('Current EM-Lab tick: ' + str(current_emlab_tick))
@@ -324,7 +325,7 @@ def export_all_competes_results():
         db_emlab.import_alternatives([str(current_emlab_tick + step)])
 
         path_to_competes_results = sys.argv[4]
-        file_name_gentransinv = sys.argv[5].replace('?', str(current_competes_tick))
+        file_name_gentransinv = sys.argv[5].replace('?', str(current_competes_tick + look_ahead))
         file_name_gentransdisp = sys.argv[6].replace('?', str(current_competes_tick))
 
         print('Loading sheets...')
