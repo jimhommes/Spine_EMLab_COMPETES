@@ -170,14 +170,14 @@ def export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, cur
     """
     print('Exporting Investment Decisions to EMLAB and COMPETES...')
     for index, row in new_generation_capacity_df.iterrows():
-        online_in_year = get_year_online_by_technology(db_emlab_technologies, row['FUELEU'], row['TECHTYPEEU'],
+        online_in_year = get_year_online_by_technology(db_emlab_technologies, row['FUELEU'], row['TECHTYPEU'],
                                                        current_competes_tick)
 
         print('Export to COMPETES')
         param_values = [i for i in row[4:].items() if not (i[0] == 'UNITEU' or i[0] == 'ON-STREAMEU')]
-        param_values += ('ON-STREAMEU', online_in_year)
+        param_values += [('ON-STREAMEU', online_in_year)]
         param_values = [(i[0], 0) if pandas.isnull(i[1]) else i for i in param_values]
-        plant_name = row['UNITEU']
+        plant_name = row['UNITEU'] + 'invtick' + str(current_competes_tick)
         print('New plant ' + plant_name + ' with parameters ' + str(param_values))
         db_competes.import_objects([('Installed Capacity Abroad', plant_name)])
         db_competes.import_object_parameter_values(
