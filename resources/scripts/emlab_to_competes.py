@@ -384,8 +384,6 @@ def execute_export_to_competes():
         db_competes.commit('Committing EMLAB to COMPETES script. EMLab tick: ' + str(current_emlab_tick) +
                            ', COMPETES tick: ' + str(current_competes_tick))
 
-        db_competes.close_connection()
-        db_emlab.close_connection()
         print('Done!')
     except Exception as e:
         print('Exception occurred: ' + str(e))
@@ -394,6 +392,7 @@ def execute_export_to_competes():
         print('Closing database connections...')
         db_emlab.close_connection()
         db_competes.close_connection()
+        db_config.close_connection()
 
 
 print('===== Starting EMLab to COMPETES script =====')
