@@ -304,10 +304,11 @@ def get_co2_market_clearing_price(db_emlab_marketclearingpoints, current_emlab_t
 
 
 def export_co2_market_clearing_price(db_competes, db_emlab_marketclearingpoints, current_emlab_tick,
-                                     co2_object_class_name, current_competes_tick, months):
+                                     co2_object_class_name, current_competes_tick, months, look_ahead):
     """
     This function exports the CO2 Market Clearing Price after the structure has been initialized.
 
+    :param look_ahead: Amount of years ahead the investment will occur
     :param db_competes: SpineDB
     :param db_emlab_marketclearingpoints: MCP as queried at SpineDB EMLab
     :param current_emlab_tick: int
@@ -316,9 +317,11 @@ def export_co2_market_clearing_price(db_competes, db_emlab_marketclearingpoints,
     :param months: Array of months in COMPETES
     """
     mcp = get_co2_market_clearing_price(db_emlab_marketclearingpoints, current_emlab_tick)
+    future_mcp = mcp * math.pow(1.05, look_ahead)   # A 5% increase per year
     print('Staging prices...')
     db_competes.import_object_parameter_values(
-        [(co2_object_class_name, str(current_competes_tick), i, mcp, '0') for i in months])
+        [(co2_object_class_name, str(current_competes_tick), i, mcp, '0') for i in months] +
+        [(co2_object_class_name, str(current_competes_tick + look_ahead), i, future_mcp, '0') for i in months])
 
 
 def initialize_co2_spine_structure(db_competes, current_competes_tick, object_class_name, parameters):
@@ -363,6 +366,8 @@ def execute_export_to_competes():
         time_step = next(int(i['parameter_value']) for i in db_config_parameters if i['object_name'] == 'Time Step')
         start_simulation_year = next(int(i['parameter_value']) for i in db_config_parameters
                                      if i['object_name'] == 'Start Year')
+        look_ahead = next(int(i['parameter_value']) for i in db_config_parameters
+                          if i['object_name'] == 'Look Ahead')
         current_emlab_tick, current_competes_tick, current_competes_tick_rounded = get_current_ticks(db_emlab, start_simulation_year)
         print('Current EMLAB Tick: ' + str(current_emlab_tick))
         print('Current COMPETES Tick: ' + str(current_competes_tick))
@@ -371,7 +376,7 @@ def execute_export_to_competes():
         months = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
         initialize_co2_spine_structure(db_competes, current_competes_tick, co2_object_class_name, months)
         export_co2_market_clearing_price(db_competes, db_emlab_marketclearingpoints, current_emlab_tick,
-                                         co2_object_class_name, current_competes_tick, months)
+                                         co2_object_class_name, current_competes_tick, months, look_ahead)
         export_capacity_market_revenues(db_competes, current_emlab_tick, db_emlab_powerplantdispatchplans,
                                         db_emlab_marketclearingpoints, current_competes_tick, time_step, db_emlab_powerplants)
 
