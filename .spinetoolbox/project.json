@@ -1088,8 +1088,8 @@
         "COMPETES Output to EMLAB DB and COMPETES DB": {
             "type": "Tool",
             "description": "",
-            "x": 464.74168800784986,
-            "y": 222.0870186813429,
+            "x": 463.4314162143651,
+            "y": 220.77674688785814,
             "specification": "DB COMPETES to DB EMLAB",
             "execute_in_work": false,
             "cmd_line_args": [
