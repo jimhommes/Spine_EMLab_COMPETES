@@ -181,7 +181,7 @@ def export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, cur
         print('New plant ' + plant_name + ' with parameters ' + str(param_values))
         db_competes.import_objects([('Installed Capacity Abroad', plant_name)])
         db_competes.import_object_parameter_values(
-            [('Installed Capacity Abroad', row['UNITEU'], param_name, param_value, '0') for (param_name, param_value) in
+            [('Installed Capacity Abroad', plant_name, param_name, param_value, '0') for (param_name, param_value) in
              param_values])
         print('Done')
 

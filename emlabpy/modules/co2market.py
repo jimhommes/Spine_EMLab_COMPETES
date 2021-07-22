@@ -50,9 +50,11 @@ class CO2MarketDetermineCO2Price(MarketModule):
                     in profits_per_plant.items() if emissions_per_plant[key] != 0
                 }
 
+                emission_hedging_correction = 1.8
+
                 co2_from_exports = 0
                 if 'Exports' in self.reps.exports.keys():
-                    co2_from_exports = self.reps.exports['Exports'].amount_of_co2 * 2   # *2 for Banking compensation
+                    co2_from_exports = self.reps.exports['Exports'].amount_of_co2 * emission_hedging_correction
 
                 # Determine CO2 Price based on the WTP merit order
                 co2price = max(willingness_to_pay_per_plant.values())
@@ -61,8 +63,8 @@ class CO2MarketDetermineCO2Price(MarketModule):
                                     key=lambda item: item[1], reverse=True)
                 for (power_plant_name, wtp) in sorted_wtp:
                     emissions_per_plant_rounded = math.ceil(emissions_per_plant[power_plant_name])
-                    if co2_cap - co2_from_exports >= total_emissions + emissions_per_plant_rounded * 2:
-                        total_emissions += emissions_per_plant_rounded * 2
+                    if co2_cap - co2_from_exports >= total_emissions + emissions_per_plant_rounded * emission_hedging_correction:
+                        total_emissions += emissions_per_plant_rounded * emission_hedging_correction
                         co2price = wtp
                     else:
                         break

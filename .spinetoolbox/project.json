@@ -834,8 +834,8 @@
         "Import SHARED Init to EMLAB": {
             "type": "Importer",
             "description": "",
-            "x": -541.2213898479977,
-            "y": 158.6521252807134,
+            "x": -541.2213898479976,
+            "y": 157.34185348722863,
             "specification": "Import Shared Init EMLAB",
             "cancel_on_error": false,
             "file_selection": [

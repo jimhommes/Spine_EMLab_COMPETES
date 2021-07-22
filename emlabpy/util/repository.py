@@ -103,17 +103,13 @@ class Repository:
 
     def get_power_plant_emissions_by_tick(self, time: int) -> Dict[str, float]:
         res = {}
-        total_cap_sum = 0
         for power_plant in [i for i in self.power_plants.values() if i.status == self.power_plant_status_operational]:
             # Total Capacity is in MWh
             total_capacity = self.get_total_accepted_amounts_by_power_plant_and_tick_and_market(power_plant, time,
                                                                                                 self.electricity_spot_markets['DutchElectricitySpotMarket'])
             # Emission intensity is in ton CO2 / MWh
             emission_intensity = power_plant.calculate_emission_intensity(self)
-            total_cap_sum += total_capacity
-            # banking_correction = 2  # Because of banking more ETS will be claimed.
             res[power_plant.name] = total_capacity * emission_intensity
-        print(total_cap_sum)
         return res
 
     # PowerPlantDispatchPlans
