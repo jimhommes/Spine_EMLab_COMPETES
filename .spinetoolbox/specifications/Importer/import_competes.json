@@ -2193,7 +2193,10 @@
                 "23": "float",
                 "24": "float",
                 "25": "float",
-                "26": "float"
+                "26": "float",
+                "27": "float",
+                "28": "float",
+                "29": "float"
             },
             "Season": {
                 "0": "string",

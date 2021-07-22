@@ -982,7 +982,7 @@
             "type": "Tool",
             "description": "",
             "x": 491.6832814498967,
-            "y": 102.4324162664148,
+            "y": 101.08720920465478,
             "specification": "Capacity Market",
             "execute_in_work": false,
             "cmd_line_args": [
