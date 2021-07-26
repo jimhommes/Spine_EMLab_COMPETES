@@ -848,8 +848,8 @@
         "Import COMPETES Init (PP)": {
             "type": "Importer",
             "description": "",
-            "x": -541.6487522377395,
-            "y": 438.69591494477146,
+            "x": -542.9590240312243,
+            "y": 438.6959149447715,
             "specification": "Import COMPETES (PP)",
             "cancel_on_error": false,
             "file_selection": [
@@ -1175,8 +1175,8 @@
         "COMPETES Investment": {
             "type": "Tool",
             "description": "",
-            "x": 436.79376137226984,
-            "y": 327.9731244173618,
+            "x": 434.6800936524357,
+            "y": 329.3083669823681,
             "specification": "COMPETES",
             "execute_in_work": false,
             "cmd_line_args": [

@@ -50,7 +50,7 @@ class CO2MarketDetermineCO2Price(MarketModule):
                     in profits_per_plant.items() if emissions_per_plant[key] != 0
                 }
 
-                emission_hedging_correction = 1.8
+                emission_hedging_correction = 1
 
                 co2_from_exports = 0
                 if 'Exports' in self.reps.exports.keys():

@@ -32,13 +32,14 @@ def query_databases(db_emlab, db_competes):
     db_emlab_ppdps = db_emlab.query_object_parameter_values_by_object_class('PowerPlantDispatchPlans')
     db_competes_powerplants = db_competes.query_object_parameter_values_by_object_classes(
         ['Installed Capacity Abroad', 'Installed Capacity-RES Abroad', 'NL Installed Capacity (+heat)',
-         'NL Installed Capacity-RES (+he'])
+         'NL Installed Capacity-RES (+heat)', 'NL Installed Capacity Decentralized (+heat)'])
     db_emlab_mcps = db_emlab.query_object_parameter_values_by_object_class('MarketClearingPoints')
     db_competes_vre_capacities = db_competes.query_object_parameter_values_by_object_class('VRE Capacities')
     db_emlab_technologies = db_emlab.query_object_parameter_values_by_object_class('PowerGeneratingTechnologies')
+    db_competes_new_technologies = db_competes.query_object_parameter_values_by_object_class('New Technologies')
     print('Done')
     return db_emlab_powerplants, db_emlab_ppdps, db_competes_powerplants, db_emlab_mcps, db_competes_vre_capacities, \
-           db_emlab_technologies
+           db_emlab_technologies, db_competes_new_technologies
 
 
 def read_excel_sheets(path_to_competes_results, file_name_gentransinv, file_name_gentransdisp):
@@ -92,13 +93,14 @@ def export_decommissioning_decisions_to_emlab_and_competes(db_competes, db_emlab
             power_plant_name_decom_version_row = next(
                 i for i in db_competes_powerplants if row['unit'] in i['object_name'] and '(D)' in i['object_name'])
             power_plant_name_decom_version = power_plant_name_decom_version_row['object_name']
+            onstream_title = 'ON-STREAMNL' if row['node'] == 'NED' else 'ON-STREAMEU'
             db_competes.import_object_parameter_values([(power_plant_name_decom_version_row['object_class_name'],
-                                                         power_plant_name_decom_version, 'ON-STREAMNL',
-                                                         current_competes_tick, '0')])
+                                                         power_plant_name_decom_version, onstream_title,
+                                                         current_competes_tick + look_ahead, '0')])
             if row['node'] == 'NED':
                 # If node is NED, export to EMLAB
                 db_emlab.import_object_parameter_values([('PowerPlants', power_plant_name_decom_version, 'ON-STREAMNL',
-                                                          current_competes_tick, str(current_emlab_tick + look_ahead))])
+                                                          current_competes_tick + look_ahead, str(current_emlab_tick))])
         except StopIteration:
             print('No DECOM version found for plant ' + row['unit'])
     print('Done')
@@ -159,8 +161,15 @@ def get_year_online_by_technology(db_emlab_technologies, fuel, techtype, current
     return current_competes_tick + build_time
 
 
+def get_plant_efficiency_and_availability_by_fuel_and_tech(db_competes_new_technologies, tech, year, bus, fuel):
+    res_map = next(i['parameter_value'] for i in db_competes_new_technologies if i['object_name'] == tech)
+    res_map_per_parameter = res_map.get_value(str(year)).get_value(bus).get_value(fuel)
+    return res_map_per_parameter.get_value('Efficiencynew'), res_map_per_parameter.get_value('Availibilitynew')
+
+
 def export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, current_emlab_tick,
-                                                      new_generation_capacity_df, current_competes_tick, look_ahead, db_emlab_technologies):
+                                                      new_generation_capacity_df, current_competes_tick, look_ahead,
+                                                      db_emlab_technologies, db_competes_new_technologies):
     """
     This function exports all Investment decisions.
 
@@ -173,31 +182,66 @@ def export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, cur
         online_in_year = get_year_online_by_technology(db_emlab_technologies, row['FUELEU'], row['TECHTYPEU'],
                                                        current_competes_tick)
 
-        print('Export to COMPETES')
-        param_values = [i for i in row[4:].items() if not (i[0] == 'UNITEU' or i[0] == 'ON-STREAMEU')]
-        param_values += [('ON-STREAMEU', online_in_year)]
-        param_values = [(i[0], 0) if pandas.isnull(i[1]) else i for i in param_values]
         plant_name = row['UNITEU'] + 'invtick' + str(current_competes_tick)
-        print('New plant ' + plant_name + ' with parameters ' + str(param_values))
-        db_competes.import_objects([('Installed Capacity Abroad', plant_name)])
-        db_competes.import_object_parameter_values(
-            [('Installed Capacity Abroad', plant_name, param_name, param_value, '0') for (param_name, param_value) in
-             param_values])
-        print('Done')
+        plant_name_decom = plant_name + '(D)'
+        plant_efficiency, plant_availability = get_plant_efficiency_and_availability_by_fuel_and_tech(
+            db_competes_new_technologies, row['TECHTYPEU'], online_in_year, row['BUSEU'], row['FUELEU'])
 
-        print('If NED export to EMLAB')
-        if row['Node'] == 'NED' and float(row['MWEU']) > 0:
-            db_emlab.import_objects([('PowerPlants', plant_name)])
+        if row['Node'] == 'NED':
+            print('Node == NED')
+            print('Preparing parameters...')
             param_values = [(col.replace("TECHTYPEU", "TECHTYPENL").replace("EU", "NL"), value)
-                            for (col, value) in param_values if not (col == 'STATUSEU' or col == 'ON-STREAMEU')]
-            param_values.insert(0,
-                                ('STATUSNL', 'DECOM'))  # Always Decom, in EMLAB_Preprocessing it will be set correctly
-            param_values.insert(0, ('ON-STREAMNL', online_in_year))  # Year in the sheet is random and wrong
-            print(param_values)
+                            for (col, value) in row[4:].items() if not (col == 'STATUSEU'
+                                                                        or col == 'MWEU'
+                                                                        or col == 'UNITEU'
+                                                                        or col == 'ON-STREAMEU'
+                                                                        or col == 'EfficiencyEU'
+                                                                        or col == 'AvailabilityEU')]
+            param_values += [('EfficiencyNL', plant_efficiency),
+                             ('AvailabilityNL', plant_availability)]
+            param_values_competes = [('STATUSNL', 'OPR'), ('MWNL', row['MWEU']), ('ON-STREAMNL', online_in_year)] + param_values
+            param_values_competes_decom = [('STATUSNL', 'DECOM'), ('MWNL', -1 * row['MWEU']), ('ON-STREAMNL', online_in_year + 40)] + param_values
+            param_values_emlab = [('STATUSNL', 'DECOM'), ('MWNL', row['MWEU']), ('ON-STREAMNL', online_in_year)] + param_values
+            param_values_emlab_decom = [('STATUSNL', 'DECOM'), ('MWNL', -1 * row['MWEU']), ('ON-STREAMNL', online_in_year + 40)] + param_values
+            # Always DECOM so CM does not take into account. Will be set to OPR in preprocessing
+
+            competes_table_name = 'NL Installed Capacity (+heat)'
+
+            print('Exporting to EM-Lab...')
+            db_emlab.import_objects([('PowerPlants', plant_name), ('PowerPlants', plant_name_decom)])
             db_emlab.import_object_parameter_values(
-                [('PowerPlants', plant_name, param_index, param_value, str(current_emlab_tick + look_ahead))
-                 for (param_index, param_value) in param_values])
-        print('Done')
+                [('PowerPlants', plant_name, param_index, param_value, str(current_emlab_tick))
+                 for (param_index, param_value) in param_values_emlab] +
+                [('PowerPlants', plant_name_decom, param_index, param_value, str(current_emlab_tick))
+                 for (param_index, param_value) in param_values_emlab_decom])
+
+
+        else:
+            print('Node != NED')
+            param_values = [i for i in row[4:].items() if not (i[0] == 'UNITEU' or
+                                                               i[0] == 'MWEU' or
+                                                               i[0] == 'ON-STREAMEU' or
+                                                               i[0] == 'EfficiencyEU' or
+                                                               i[0] == 'AvailabilityEU')]
+            param_values_competes = [('ON-STREAMEU', online_in_year),
+                                     ('MWEU', row['MWEU']),
+                                     ('AvailabilityEU', plant_availability),
+                                     ('EfficiencyEU', plant_efficiency)] + param_values
+            param_values_competes_decom = [('ON-STREAMEU', online_in_year + 40),
+                                           ('MWEU', -1 * row['MWEU']),
+                                           ('AvailabilityEU', plant_availability),
+                                           ('EfficiencyEU', plant_efficiency)] + param_values
+            competes_table_name = 'Installed Capacity Abroad'
+
+        print('Exporting to COMPETES...')
+        db_competes.import_objects([(competes_table_name, plant_name), (competes_table_name, plant_name_decom)])
+        db_competes.import_object_parameter_values(
+            [(competes_table_name, plant_name, param_name, param_value, '0') for (param_name, param_value)
+             in param_values_competes] +
+            [(competes_table_name, plant_name_decom, param_name, param_value, '0') for (param_name, param_value)
+             in param_values_competes_decom])
+
+        print('Exported plant ' + plant_name + ' with parameters ' + str(param_values_competes))
     print('Done exporting Investment Decisions to EMLAB and COMPETES')
 
 
@@ -346,7 +390,7 @@ def export_all_competes_results():
         print('Current COMPETES tick: ' + str(current_competes_tick))
 
         db_emlab_powerplants, db_emlab_ppdps, db_competes_powerplants, db_emlab_mcps, db_competes_vre_capacities, \
-        db_emlab_technologies = query_databases(db_emlab, db_competes)
+        db_emlab_technologies, db_competes_new_technologies = query_databases(db_emlab, db_competes)
 
         print('Staging next SpineDB alternative...')
         step = next(int(i['parameter_value']) for i in db_config_parameters if i['object_name'] == 'Time Step')
@@ -373,7 +417,7 @@ def export_all_competes_results():
         print('Done loading sheets')
 
         hourly_nodal_prices_nl = get_hourly_nodal_prices(hourly_nodal_prices_df)
-        hourly_nodal_prices_nl = [i if i < 250 else 250 for i in hourly_nodal_prices_nl]  # Limit nodal prices to 250
+        hourly_nodal_prices_nl = [i if i < 2000 else 2000 for i in hourly_nodal_prices_nl]  # Limit nodal prices to 2000 (VOLL)
         export_vre_investment_decisions(db_emlab, db_competes, current_emlab_tick, current_competes_tick,
                                         vre_investment_df, db_emlab_technologies, db_competes_vre_capacities,
                                         step, look_ahead)
@@ -381,7 +425,8 @@ def export_all_competes_results():
         export_power_plant_dispatch_plans_to_emlab(db_emlab, current_emlab_tick, unit_generation_df, db_emlab_ppdps,
                                                    hourly_nodal_prices_nl, db_emlab_powerplants)
         export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, current_emlab_tick,
-                                                          new_generation_capacity_df, current_competes_tick, look_ahead, db_emlab_technologies)
+                                                          new_generation_capacity_df, current_competes_tick, look_ahead,
+                                                          db_emlab_technologies, db_competes_new_technologies)
         export_decommissioning_decisions_to_emlab_and_competes(db_competes, db_emlab, db_competes_powerplants,
                                                                decommissioning_df, current_competes_tick,
                                                                current_emlab_tick, look_ahead)

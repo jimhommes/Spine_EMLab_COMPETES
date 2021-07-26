@@ -48,7 +48,7 @@ class TriangularTrend:
 def export_to_mdb(path: str, filename: str,
                   tables_objects_type1: dict, tables_objects_type2: dict,
                   tables_relationships_type1: dict, tables_relationships_type2: dict,
-                  start_simulation_year, end_simulation_year):
+                  start_simulation_year, end_simulation_year, look_ahead):
     """
     Initialize the connection to the MS Access DB and import the tables.
     Type1 Mapping: SpineDB has an object with parameters. {'Table Name': 'Object Column Name'}
@@ -83,7 +83,7 @@ def export_to_mdb(path: str, filename: str,
         if filename == 'COMPETES EU 2050-KIP.mdb':
             print('Staging Unique Mappings...')
             export_co2_prices(cursor)
-            export_fuelpriceyears(cursor, start_simulation_year, end_simulation_year)
+            export_fuelpriceyears(cursor, start_simulation_year, end_simulation_year, look_ahead)
             export_nset(cursor)
             print('Finished Unique Mappings')
 
@@ -260,7 +260,7 @@ def export_co2_prices(cursor):
         cursor.execute(sql_query, (year, month, price))
 
 
-def export_fuelpriceyears(cursor, start_simulation_year, end_simulation_year):
+def export_fuelpriceyears(cursor, start_simulation_year, end_simulation_year, look_ahead):
     """
     Separate function because of the required execution of the "trends" to print numbers into MS Access.
     The price is divided by 3.6 because of the conversion of MWh to GJ.
@@ -273,7 +273,7 @@ def export_fuelpriceyears(cursor, start_simulation_year, end_simulation_year):
     print('Exporting Fuelpriceyears...')
     table_name_spine = 'FuelpriceTrends'
     table_name_competes = 'Fuelpriceyears'
-    years = list(range(start_simulation_year, end_simulation_year + 1))
+    years = list(range(start_simulation_year, end_simulation_year + look_ahead + 1))
     months = ['[' + i[1] + ']' for i in db_competes_data['objects'] if i[0] == 'Months']
     countries = [i[1] for i in db_competes_data['objects'] if i[0] == 'Country']
     for (_, trend_name, _) in [i for i in db_competes_data['objects'] if i[0] == table_name_spine]:
@@ -390,11 +390,11 @@ try:
 
     export_to_mdb(path_to_data, 'COMPETES EU 2050-KIP.mdb',
                   object_mapping_type1, object_mapping_type2, relationship_mapping_type1, relationship_mapping_type2,
-                  start_simulation_year, end_simulation_year)
+                  start_simulation_year, end_simulation_year, look_ahead)
 
     export_to_mdb(path_to_data, 'COMPETES EU PowerPlants 2050-KIP', pp_object_mapping_type1, pp_object_mapping_type2,
                   pp_relationship_mapping_type1, pp_relationship_mapping_type2,
-                  start_simulation_year, end_simulation_year)
+                  start_simulation_year, end_simulation_year, look_ahead)
 except Exception as e:
     print('Exception occurred: ' + str(e))
     raise

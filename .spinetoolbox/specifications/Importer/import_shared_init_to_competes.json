@@ -1070,6 +1070,7 @@
             }
         },
         "selected_tables": [
+            "Select All",
             "BusCountry",
             "Country",
             "Economic Lifetime",

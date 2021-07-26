@@ -10,4 +10,4 @@ def click(x, y):
 
 
 time.sleep(5)
-click(537, 110)
+click(540, 110)
