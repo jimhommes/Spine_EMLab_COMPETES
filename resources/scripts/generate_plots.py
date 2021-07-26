@@ -8,7 +8,8 @@ import pandas as pd
 
 def plot_mcps_with_filter(db_mcps, market, years_to_generate, path_to_plots, title, file_name):
     # MCP Plots
-    filtered_mcps = [i['object_name'] for i in db_mcps if i['parameter_name'] == 'Market' and i['parameter_value'] == market]
+    filtered_mcps = [i['object_name'] for i in db_mcps if
+                     i['parameter_name'] == 'Market' and i['parameter_value'] == market]
     mcp_x = []
     mcp_y = []
 
@@ -83,7 +84,8 @@ def plot_co2_emissions(co2_emission_sums, years_to_generate, path_to_plots):
 def plot_nl_unit_generation(path_and_filename_dispatch, year, path_to_plots):
     print('Plot NL Unit Generation')
     # Plot 3 NL Unit Generation curve
-    nl_unit_generation_df = pandas.read_excel(path_and_filename_dispatch, 'NL Unit Generation', skiprows=1, index_col=0, header=0).transpose()
+    nl_unit_generation_df = pandas.read_excel(path_and_filename_dispatch, 'NL Unit Generation', skiprows=1, index_col=0,
+                                              header=0).transpose()
 
     plt.figure()
     axs3 = nl_unit_generation_df.plot()
@@ -110,7 +112,8 @@ def plot_hourly_nodal_price_duration_curve(hourly_nodal_prices_df, year, path_to
 def plot_hourly_nodal_prices(path_and_filename_dispatch, year, path_to_plots):
     # Plot 2 Hourly Nodal Prices
     print('Read and create hourly nodal prices plot')
-    hourly_nodal_prices_df = pandas.read_excel(path_and_filename_dispatch, 'Hourly Nodal Prices', skiprows=1, index_col=0)
+    hourly_nodal_prices_df = pandas.read_excel(path_and_filename_dispatch, 'Hourly Nodal Prices', skiprows=1,
+                                               index_col=0)
     hourly_nodal_prices_df[hourly_nodal_prices_df > 250] = 250
 
     plt.figure()
@@ -166,21 +169,25 @@ def prepare_annual_nl_balance(hourly_nl_balance_df, annual_balance, years_to_gen
 def plot_hourly_nl_balance(path_and_filename_dispatch, path_to_plots, year):
     # Plot 1 Hourly NL Balance (per year)
     print('Read and Create Hourly NL Balance plot')
-    hourly_nl_balance_df = pandas.read_excel(path_and_filename_dispatch, 'Hourly NL Balance', skiprows=1, index_col=0, skipfooter=2, usecols='A:R').replace(np.nan, 0)
+    hourly_nl_balance_df = pandas.read_excel(path_and_filename_dispatch, 'Hourly NL Balance', skiprows=1, index_col=0,
+                                             skipfooter=2, usecols='A:R').replace(np.nan, 0)
     hourly_nl_balance_demand = hourly_nl_balance_df['Demand']
     hourly_nl_balance_df = hourly_nl_balance_df.drop(['Demand', 'Exports'], axis=1)
 
     hourly_nl_balance_df['T'] = hourly_nl_balance_df.sum(axis=1)
+    hourly_nl_balance_df.index = pandas.to_timedelta(hourly_nl_balance_df.index, unit='H')
+    hourly_nl_balance_df = hourly_nl_balance_df.resample('50H').mean()
     hourly_nl_balance_df = hourly_nl_balance_df.sort_values(by=['T'], ascending=False)
     hourly_nl_balance_df = hourly_nl_balance_df.drop(['T'], axis=1)
     hourly_nl_balance_df = hourly_nl_balance_df.interpolate(method='cubic')
-    axs = hourly_nl_balance_df.plot.area(use_index=False)
+    hourly_nl_balance_df.index = [i * 50 for i in range(0, len(hourly_nl_balance_df))]
+    axs = hourly_nl_balance_df.plot.area()
     axs.set_title('Hourly NL Balance - All Technologies ' + str(year))
     plt.xlabel('Hours')
     plt.ylabel('MWh')
     plt.legend(fontsize='xx-small', loc='upper left', bbox_to_anchor=(1, 1.1))
     fig = axs.get_figure()
-    fig.savefig(path_to_plots + '/' + 'NL Hourly Balance ' + str(year) + '.png')
+    fig.savefig(path_to_plots + '/' + 'NL Hourly Balance ' + str(year) + '.png', bbox_inches='tight')
     return hourly_nl_balance_df, hourly_nl_balance_demand
 
 
@@ -223,13 +230,14 @@ def prepare_investment_and_decom_data(path_and_filename_investments, investment_
     print('Loading investment and decom data')
     decommissioning = pandas.read_excel(path_and_filename_investments, 'Decommissioning', skiprows=2, usecols='A:C')
     investments = pandas.read_excel(path_and_filename_investments, 'New Generation Capacity', skiprows=2, usecols="A:D")
-    investment_sums = prepare_investment_data(investments, investment_sums, years_to_generate, year)
+    investment_sums, investments = prepare_investment_data(investments, investment_sums, years_to_generate, year)
     investment_sums = prepare_decom_data(decommissioning, emlab_spine_powerplants_tech_dict, investment_sums,
                                          years_to_generate, year, investments)
     return investment_sums
 
 
-def prepare_decom_data(decommissioning, emlab_spine_powerplants_tech_dict, investment_sums, years_to_generate, year, investments):
+def prepare_decom_data(decommissioning, emlab_spine_powerplants_tech_dict, investment_sums, years_to_generate, year,
+                       investments):
     print('Preparing Decom plot data')
     decommissioning = decommissioning[decommissioning['node'] == 'NED']
     decommissioning['Technology'] = [emlab_spine_powerplants_tech_dict[i] for i in decommissioning['unit'].values]
@@ -250,18 +258,19 @@ def prepare_investment_data(investments, investment_sums, years_to_generate, yea
     # Preparing values for Investments plot, plot after years iterations
     print('Preparing Investment plot data')
     investments = investments[investments['Node'] == 'NED']
-    investments['CombinedIndex'] = [i[0] + ', ' + i[1] for i in zip(investments['FUEL'].values, investments['FuelType'].values)]
+    investments['CombinedIndex'] = [i[0] + ', ' + i[1] for i in
+                                    zip(investments['FUEL'].values, investments['FuelType'].values)]
     for index, row in investments.iterrows():
         if row['CombinedIndex'] in investment_sums.keys():
             investment_sums[row['CombinedIndex']].append(row['MW'])
         else:
             investment_sums[row['CombinedIndex']] = [0] * years_to_generate.index(year) + [row['MW']]
-    return investment_sums
+    return investment_sums, investments
 
 
 def generate_plots():
     # Select what years you want to generate plots for
-    path_to_competes_results = '../../COMPETES/Results'
+    path_to_competes_results = '../../COMPETES/Results/Run 20210722 COMPETES Only'
     filename_to_load_dispatch = 'Output_Dynamic_Gen&Trans_?_Dispatch.xlsx'
     filename_to_load_investment = 'Output_Dynamic_Gen&Trans_?_Investments.xlsx'
 
@@ -283,7 +292,8 @@ def generate_plots():
     spinedb = SpineDB(r"sqlite:///E:\Dropbox\workspace\Spine_EMLab_COMPETES\.spinetoolbox\items\db_emlab\DB.sqlite")
     try:
         emlab_spine_powerplants = spinedb.query_object_parameter_values_by_object_class('PowerPlants')
-        emlab_spine_powerplants_tech_dict = {i['object_name']: i['parameter_value'] + ' (D)' for i in emlab_spine_powerplants if i['parameter_name'] == 'TECHTYPENL'}
+        emlab_spine_powerplants_tech_dict = {i['object_name']: i['parameter_value'] + ' (D)' for i in
+                                             emlab_spine_powerplants if i['parameter_name'] == 'TECHTYPENL'}
         db_mcps = spinedb.query_object_parameter_values_by_object_class('MarketClearingPoints')
     finally:
         spinedb.close_connection()
@@ -294,13 +304,15 @@ def generate_plots():
     for year in years_to_generate:
         print('Preparing and plotting for year ' + str(year))
         path_and_filename_dispatch = path_to_competes_results + '/' + filename_to_load_dispatch.replace('?', str(year))
-        path_and_filename_investments = path_to_competes_results + '/' + filename_to_load_investment.replace('?', str(year + look_ahead))
+        path_and_filename_investments = path_to_competes_results + '/' + filename_to_load_investment.replace('?',
+                                                                                                             str(year + look_ahead))
 
         # Preparing Data
         investment_sums = prepare_investment_and_decom_data(path_and_filename_investments, investment_sums,
                                                             years_to_generate, year, emlab_spine_powerplants_tech_dict)
-        vre_nl_installed_capacity = prepare_vre_investment_data(path_and_filename_investments, vre_nl_installed_capacity,
-                                                          years_to_generate, year)
+        vre_nl_installed_capacity = prepare_vre_investment_data(path_and_filename_investments,
+                                                                vre_nl_installed_capacity,
+                                                                years_to_generate, year)
         co2_emission_sums = prepare_co2_emission_data(path_and_filename_dispatch, co2_emission_sums, years_to_generate,
                                                       year)
 
