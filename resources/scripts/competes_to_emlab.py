@@ -179,6 +179,7 @@ def export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, cur
     """
     print('Exporting Investment Decisions to EMLAB and COMPETES...')
     for index, row in new_generation_capacity_df.iterrows():
+        row = row.fillna(0)
         online_in_year = get_year_online_by_technology(db_emlab_technologies, row['FUELEU'], row['TECHTYPEU'],
                                                        current_competes_tick)
 
@@ -214,7 +215,6 @@ def export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, cur
                  for (param_index, param_value) in param_values_emlab] +
                 [('PowerPlants', plant_name_decom, param_index, param_value, str(current_emlab_tick))
                  for (param_index, param_value) in param_values_emlab_decom])
-
 
         else:
             print('Node != NED')
