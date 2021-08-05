@@ -104,8 +104,8 @@ class Repository:
         return res
 
     def get_power_plant_emissions_by_tick(self, time: int) -> Dict[str, float]:
-        res = {}
-        for power_plant in [i for i in self.power_plants.values() if i.status == self.power_plant_status_operational]:
+        res = self.emissions['YearlyEmissions'].emissions[time]
+        for power_plant in [i for i in self.power_plants.values() if i.status == self.power_plant_status_operational and i.name not in res.keys()]:
             # Total Capacity is in MWh
             total_capacity = self.get_total_accepted_amounts_by_power_plant_and_tick_and_market(power_plant, time,
                                                                                                 self.electricity_spot_markets['DutchElectricitySpotMarket'])
