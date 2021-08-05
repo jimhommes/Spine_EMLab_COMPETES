@@ -25,7 +25,7 @@ def plot_mcps_with_filter(db_mcps, market, years_to_generate, path_to_plots, tit
     plt.xlabel('Years')
     plt.ylabel('Euro / ton')
     axs7.set_title(title)
-    fig7.savefig(path_to_plots + '/' + file_name)
+    fig7.savefig(path_to_plots + '/' + file_name, bbox_inches='tight')
 
 
 def plot_annual_balances(annual_balance, years_to_generate, path_to_plots):
@@ -37,8 +37,9 @@ def plot_annual_balances(annual_balance, years_to_generate, path_to_plots):
     plt.xlabel('Years')
     plt.ylabel('MWh')
     axs125.set_title('NL Annual Balance per Technology')
+    plt.legend(fontsize='xx-small', loc='upper left', bbox_to_anchor=(1, 1.1))
     fig125 = axs125.get_figure()
-    fig125.savefig(path_to_plots + '/' + 'NL Annual Balance.png')
+    fig125.savefig(path_to_plots + '/' + 'NL Annual Balance.png', bbox_inches='tight')
 
 
 def plot_vre_nl_installed_capacity(vre_investment_sums, years_to_generate, path_to_plots):
@@ -51,21 +52,20 @@ def plot_vre_nl_installed_capacity(vre_investment_sums, years_to_generate, path_
     plt.ylabel('MW')
     axs5.set_title('NL VRE Installed Capacity')
     fig5 = axs5.get_figure()
-    fig5.savefig(path_to_plots + '/' + 'NL VRE Investments.png')
+    fig5.savefig(path_to_plots + '/' + 'NL Installed Capacity.png', bbox_inches='tight')
 
 
-def plot_investments(investment_sums, years_to_generate, path_to_plots):
+def plot_investments(investment_sums, years_to_generate, path_to_plots, look_ahead):
     # Investments plot
     print('Create Investments plot')
-    if len(investment_sums.keys()) > 0:
-        plt.figure()
-        investments_df = pd.DataFrame(investment_sums, index=years_to_generate)
-        axs6 = investments_df.plot.bar(stacked=True, rot=0)
-        plt.xlabel('Years')
-        plt.ylabel('MW')
-        axs6.set_title('NL Investments')
-        fig6 = axs6.get_figure()
-        fig6.savefig(path_to_plots + '/' + 'NL Investments.png')
+    plt.figure()
+    investments_df = pd.DataFrame(investment_sums, index=list(range(years_to_generate[0], years_to_generate[-1] + look_ahead + 1)))
+    axs6 = investments_df.plot.bar(stacked=True, rot=0)
+    plt.xlabel('Years')
+    plt.ylabel('MW')
+    axs6.set_title('NL Investments')
+    fig6 = axs6.get_figure()
+    fig6.savefig(path_to_plots + '/' + 'NL Investments.png', bbox_inches='tight')
 
 
 def plot_co2_emissions(co2_emission_sums, years_to_generate, path_to_plots):
@@ -77,8 +77,9 @@ def plot_co2_emissions(co2_emission_sums, years_to_generate, path_to_plots):
     plt.xlabel('Years')
     plt.ylabel('tons')
     axs4.set_title('NL CO2 Emissions')
+    plt.legend(fontsize='xx-small', loc='upper left', bbox_to_anchor=(1, 1.1))
     fig4 = axs4.get_figure()
-    fig4.savefig(path_to_plots + '/' + 'NL CO2 Emissions.png')
+    fig4.savefig(path_to_plots + '/' + 'NL CO2 Emissions.png', bbox_inches='tight')
 
 
 def plot_nl_unit_generation(path_and_filename_dispatch, year, path_to_plots):
@@ -94,7 +95,7 @@ def plot_nl_unit_generation(path_and_filename_dispatch, year, path_to_plots):
     plt.legend(fontsize='xx-small', loc='upper left', bbox_to_anchor=(1, 1.1))
     axs3.set_title('NL Unit Generation ' + str(year))
     fig3 = axs3.get_figure()
-    fig3.savefig(path_to_plots + '/' + 'NL Unit Generation ' + str(year) + '.png')
+    fig3.savefig(path_to_plots + '/' + 'NL Unit Generation ' + str(year) + '.png', bbox_inches='tight')
 
 
 def plot_hourly_nodal_price_duration_curve(hourly_nodal_prices_df, year, path_to_plots):
@@ -106,7 +107,7 @@ def plot_hourly_nodal_price_duration_curve(hourly_nodal_prices_df, year, path_to
     plt.ylabel('Euro')
     axs25.set_title('NL Hourly Market Price Duration Curve ' + str(year))
     fig25 = axs25.get_figure()
-    fig25.savefig(path_to_plots + '/' + 'NL Nodal Prices Duration Curve ' + str(year) + '.png')
+    fig25.savefig(path_to_plots + '/' + 'NL Nodal Prices Duration Curve ' + str(year) + '.png', bbox_inches='tight')
 
 
 def plot_hourly_nodal_prices(path_and_filename_dispatch, year, path_to_plots):
@@ -122,7 +123,7 @@ def plot_hourly_nodal_prices(path_and_filename_dispatch, year, path_to_plots):
     plt.ylabel('Euro')
     axs2.set_title('NL Hourly Market Prices ' + str(year))
     fig2 = axs2.get_figure()
-    fig2.savefig(path_to_plots + '/' + 'NL Nodal Prices ' + str(year) + '.png')
+    fig2.savefig(path_to_plots + '/' + 'NL Nodal Prices ' + str(year) + '.png', bbox_inches='tight')
 
     return hourly_nodal_prices_df
 
@@ -140,7 +141,7 @@ def plot_residual_load_duration_curve(hourly_nl_balance_demand, hourly_nl_balanc
     plt.xlabel('Hours')
     plt.ylabel('MWh')
     fig175 = axs175.get_figure()
-    fig175.savefig(path_to_plots + '/' + 'NL Residual Load Duration Curve ' + str(year) + '.png')
+    fig175.savefig(path_to_plots + '/' + 'NL Residual Load Duration Curve ' + str(year) + '.png', bbox_inches='tight')
 
 
 def plot_load_duration_curve(hourly_nl_balance_demand, year, path_to_plots):
@@ -152,7 +153,7 @@ def plot_load_duration_curve(hourly_nl_balance_demand, year, path_to_plots):
     plt.xlabel('Hours')
     plt.ylabel('MWh')
     fig15 = axs15.get_figure()
-    fig15.savefig(path_to_plots + '/' + 'NL Load Duration Curve ' + str(year) + '.png')
+    fig15.savefig(path_to_plots + '/' + 'NL Load Duration Curve ' + str(year) + '.png', bbox_inches='tight')
 
 
 def prepare_annual_nl_balance(hourly_nl_balance_df, annual_balance, years_to_generate, year):
@@ -170,14 +171,20 @@ def plot_hourly_nl_balance(path_and_filename_dispatch, path_to_plots, year):
     # Plot 1 Hourly NL Balance (per year)
     print('Read and Create Hourly NL Balance plot')
     hourly_nl_balance_df = pandas.read_excel(path_and_filename_dispatch, 'Hourly NL Balance', skiprows=1, index_col=0,
-                                             skipfooter=2, usecols='A:R').replace(np.nan, 0)
+                                             skipfooter=2, usecols='A:W').replace(np.nan, 0)
     hourly_nl_balance_demand = hourly_nl_balance_df['Demand']
-    hourly_nl_balance_df = hourly_nl_balance_df.drop(['Demand', 'Exports'], axis=1)
+    hourly_nl_balance_df = hourly_nl_balance_df.drop(['Demand'], axis=1)
+    hourly_nl_balance_df['Exports'] = -1 * hourly_nl_balance_df['Exports']
+    hourly_nl_balance_df['H2'] = -1 * hourly_nl_balance_df['H2']
+    hourly_nl_balance_df['Heat'] = -1 * hourly_nl_balance_df['Heat']
+    hourly_nl_balance_df['HP'] = -1 * hourly_nl_balance_df['HP']
+    hourly_nl_balance_df['EVs'] = -1 * hourly_nl_balance_df['EVs']
+    hourly_nl_balance_df['Storage cons.'] = -1 * hourly_nl_balance_df['Storage cons.']
 
     hourly_nl_balance_df['T'] = hourly_nl_balance_df.sum(axis=1)
     hourly_nl_balance_df.index = pandas.to_timedelta(hourly_nl_balance_df.index, unit='H')
     hourly_nl_balance_df = hourly_nl_balance_df.resample('50H').mean()
-    hourly_nl_balance_df = hourly_nl_balance_df.sort_values(by=['T'], ascending=False)
+    # hourly_nl_balance_df = hourly_nl_balance_df.sort_values(by=['T'], ascending=False)
     hourly_nl_balance_df = hourly_nl_balance_df.drop(['T'], axis=1)
     hourly_nl_balance_df = hourly_nl_balance_df.interpolate(method='cubic')
     hourly_nl_balance_df.index = [i * 50 for i in range(0, len(hourly_nl_balance_df))]
@@ -226,51 +233,95 @@ def prepare_vre_investment_data(path_and_filename_investments, vre_investment_su
 
 
 def prepare_investment_and_decom_data(path_and_filename_investments, investment_sums, years_to_generate, year,
-                                      emlab_spine_powerplants_tech_dict):
+                                      emlab_spine_powerplants_tech_dict, emlab_spine_powerplants_fuel_dict,
+                                      emlab_spine_technologies, look_ahead):
     print('Loading investment and decom data')
     decommissioning = pandas.read_excel(path_and_filename_investments, 'Decommissioning', skiprows=2, usecols='A:C')
     investments = pandas.read_excel(path_and_filename_investments, 'New Generation Capacity', skiprows=2, usecols="A:D")
-    investment_sums, investments = prepare_investment_data(investments, investment_sums, years_to_generate, year)
+    investment_sums, investments = prepare_investment_data(investments, investment_sums, years_to_generate, year,
+                                                           emlab_spine_technologies, look_ahead)
     investment_sums = prepare_decom_data(decommissioning, emlab_spine_powerplants_tech_dict, investment_sums,
-                                         years_to_generate, year, investments)
+                                         years_to_generate, year, investments, emlab_spine_powerplants_fuel_dict,
+                                         look_ahead)
     return investment_sums
 
 
 def prepare_decom_data(decommissioning, emlab_spine_powerplants_tech_dict, investment_sums, years_to_generate, year,
-                       investments):
+                       investments, emlab_spine_powerplants_fuel_dict, look_ahead):
     print('Preparing Decom plot data')
     decommissioning = decommissioning[decommissioning['node'] == 'NED']
-    decommissioning['Technology'] = [emlab_spine_powerplants_tech_dict[i] for i in decommissioning['unit'].values]
+    decommissioning['Technology'] = [emlab_spine_powerplants_fuel_dict[i] + ', ' + emlab_spine_powerplants_tech_dict[i] + ' (D)' for i in decommissioning['unit'].values]
     decommissioning_grouped_and_summed = decommissioning.groupby('Technology')['MW'].sum()
+    index_years = list(range(years_to_generate[0], years_to_generate[-1] + look_ahead + 1))
+
     for tech, mw_sum in decommissioning_grouped_and_summed.iteritems():
-        if tech in investment_sums.keys():
-            investment_sums[tech].append(-1 * mw_sum)
-        else:
-            investment_sums[tech] = [0] * years_to_generate.index(year) + [-1 * mw_sum]
-    # Add 0 to values if not in COMPETES results
-    for key in investment_sums.keys():
-        if key not in investments['CombinedIndex'].values and key not in decommissioning_grouped_and_summed.index:
-            investment_sums[key].append(0)
+        if tech not in investment_sums.keys():
+            investment_sums[tech] = [0] * len(index_years)
+        investment_sums[tech][index_years.index(year + look_ahead)] = -1 * mw_sum
+
     return investment_sums
 
 
-def prepare_investment_data(investments, investment_sums, years_to_generate, year):
+def get_year_online_by_technology(db_emlab_technologies, fuel, techtype, current_competes_tick):
+    technologies_by_fuel = [i['object_name'] for i in db_emlab_technologies if i['parameter_name'] == 'FUELNEW' and i['parameter_value'] == fuel]
+    technologies_by_techtype = [i['object_name'] for i in db_emlab_technologies if i['parameter_name'] == 'FUELTYPENEW' and i['parameter_value'] == techtype]
+    technology = next(name for name in technologies_by_fuel if name in technologies_by_techtype)
+    expected_permit_time = next(int(i['parameter_value']) for i in db_emlab_technologies if i['object_name'] == technology and i['parameter_name'] == 'expectedPermittime')
+    expected_lead_time = next(int(i['parameter_value']) for i in db_emlab_technologies if i['object_name'] == technology and i['parameter_name'] == 'expectedLeadtime')
+    build_time = expected_permit_time + expected_lead_time
+    return current_competes_tick + build_time
+
+
+def prepare_investment_data(investments, investment_sums, years_to_generate, year, emlab_spine_technologies, look_ahead):
     # Preparing values for Investments plot, plot after years iterations
     print('Preparing Investment plot data')
     investments = investments[investments['Node'] == 'NED']
     investments['CombinedIndex'] = [i[0] + ', ' + i[1] for i in
                                     zip(investments['FUEL'].values, investments['FuelType'].values)]
+    index_years = list(range(years_to_generate[0], years_to_generate[-1] + look_ahead + 1))
+
     for index, row in investments.iterrows():
-        if row['CombinedIndex'] in investment_sums.keys():
-            investment_sums[row['CombinedIndex']].append(row['MW'])
-        else:
-            investment_sums[row['CombinedIndex']] = [0] * years_to_generate.index(year) + [row['MW']]
+        # Extracting buildtime
+        online_in_year = get_year_online_by_technology(emlab_spine_technologies, row['FUEL'], row['FuelType'], year)
+
+        if row['CombinedIndex'] not in investment_sums.keys():
+            investment_sums[row['CombinedIndex']] = [0] * len(index_years)
+
+        investment_sums[row['CombinedIndex']][index_years.index(online_in_year)] = row['MW']
+        
     return investment_sums, investments
+
+
+def prepare_annual_installed_capacity(path_and_filename_dispatch, emlab_spine_powerplants_tech_dict,
+                                      annual_installed_capacity, year, years_to_generate):
+    installed_capacity_df = pandas.read_excel(path_and_filename_dispatch, 'Initial generation capacity', skiprows=2)
+    installed_capacity_df = installed_capacity_df[installed_capacity_df['i'] == 'NED']
+    installed_capacity_df['Technology'] = [emlab_spine_powerplants_tech_dict[i] for i in installed_capacity_df['h'].values]
+    installed_capacity_df = installed_capacity_df.groupby(['Technology']).sum()
+    for tech, row in installed_capacity_df.iterrows():
+        if tech in annual_installed_capacity.keys():
+            annual_installed_capacity[tech].append(row['MW'])
+        else:
+            annual_installed_capacity[tech] = [0] * years_to_generate.index(year) + [row['MW']]
+    return annual_installed_capacity
+
+
+def plot_annual_installed_capacity(annual_installed_capacity, years_to_generate, path_to_plots):
+    print('Annual installed capacity NL')
+    plt.figure()
+    annual_installed_capacity_df = pd.DataFrame(annual_installed_capacity, index=years_to_generate)
+    axs10 = annual_installed_capacity_df.plot.bar(stacked=True, rot=0)
+    plt.xlabel('Years')
+    plt.ylabel('MW')
+    plt.legend(fontsize='xx-small', loc='upper left', bbox_to_anchor=(1, 1.1))
+    axs10.set_title('NL Installed Capacity per Technology')
+    fig10 = axs10.get_figure()
+    fig10.savefig(path_to_plots + '/' + 'NL Installed Capacity per Technology.png', bbox_inches='tight')
 
 
 def generate_plots():
     # Select what years you want to generate plots for
-    path_to_competes_results = '../../COMPETES/Results/Run 20210722 COMPETES Only'
+    path_to_competes_results = '../../COMPETES/Results/Run 20210730 COMPETES Only, no VOLL'
     filename_to_load_dispatch = 'Output_Dynamic_Gen&Trans_?_Dispatch.xlsx'
     filename_to_load_investment = 'Output_Dynamic_Gen&Trans_?_Investments.xlsx'
 
@@ -279,21 +330,26 @@ def generate_plots():
     if not os.path.exists(path_to_plots):
         os.makedirs(path_to_plots)
 
-    years_to_generate = [2020]
+    years_to_generate = [2020, 2021, 2022, 2023, 2024, 2025]
     look_ahead = 7
 
     co2_emission_sums = dict()
     vre_nl_installed_capacity = dict()
     investment_sums = dict()
     annual_balance = dict()
+    annual_installed_capacity = dict()
 
     # EMLab Plots
     print('Establishing and querying SpineDB...')
-    spinedb = SpineDB(r"sqlite:///E:\Dropbox\workspace\Spine_EMLab_COMPETES\.spinetoolbox\items\db_emlab\DB.sqlite")
+    sqlite_prepend = "sqlite:///"
+    spinedb = SpineDB(sqlite_prepend + path_to_competes_results + '/db.sqlite')
     try:
         emlab_spine_powerplants = spinedb.query_object_parameter_values_by_object_class('PowerPlants')
-        emlab_spine_powerplants_tech_dict = {i['object_name']: i['parameter_value'] + ' (D)' for i in
+        emlab_spine_powerplants_tech_dict = {i['object_name']: i['parameter_value'] for i in
                                              emlab_spine_powerplants if i['parameter_name'] == 'TECHTYPENL'}
+        emlab_spine_powerplants_fuel_dict = {i['object_name']: i['parameter_value'] for i in
+                                             emlab_spine_powerplants if i['parameter_name'] == 'FUELNL'}
+        emlab_spine_technologies = spinedb.query_object_parameter_values_by_object_class('PowerGeneratingTechnologies')
         db_mcps = spinedb.query_object_parameter_values_by_object_class('MarketClearingPoints')
     finally:
         spinedb.close_connection()
@@ -309,12 +365,16 @@ def generate_plots():
 
         # Preparing Data
         investment_sums = prepare_investment_and_decom_data(path_and_filename_investments, investment_sums,
-                                                            years_to_generate, year, emlab_spine_powerplants_tech_dict)
+                                                            years_to_generate, year, emlab_spine_powerplants_tech_dict,
+                                                            emlab_spine_powerplants_fuel_dict, emlab_spine_technologies, look_ahead)
         vre_nl_installed_capacity = prepare_vre_investment_data(path_and_filename_investments,
                                                                 vre_nl_installed_capacity,
                                                                 years_to_generate, year)
         co2_emission_sums = prepare_co2_emission_data(path_and_filename_dispatch, co2_emission_sums, years_to_generate,
                                                       year)
+        annual_installed_capacity = prepare_annual_installed_capacity(path_and_filename_dispatch,
+                                                                      emlab_spine_powerplants_tech_dict,
+                                                                      annual_installed_capacity, year, years_to_generate)
 
         # Plots
         hourly_nl_balance_df, hourly_nl_balance_demand = plot_hourly_nl_balance(path_and_filename_dispatch,
@@ -332,16 +392,18 @@ def generate_plots():
 
     print('Plotting prepared data')
     plot_co2_emissions(co2_emission_sums, years_to_generate, path_to_plots)
-    plot_investments(investment_sums, years_to_generate, path_to_plots)
+    plot_investments(investment_sums, years_to_generate, path_to_plots, look_ahead)
     plot_vre_nl_installed_capacity(vre_nl_installed_capacity, years_to_generate, path_to_plots)
     plot_annual_balances(annual_balance, years_to_generate, path_to_plots)
+    plot_annual_installed_capacity(annual_installed_capacity, years_to_generate, path_to_plots)
     plot_mcps_with_filter(db_mcps, 'CO2Auction', years_to_generate, path_to_plots, 'NL CO2 Market Clearing Prices',
                           'NL CO2 Market Clearing Prices.png')
     plot_mcps_with_filter(db_mcps, 'DutchCapacityMarket', years_to_generate, path_to_plots, 'NL Capacity Market Prices',
                           'NL Capacity Market Prices.png')
 
-    print('Showing plots...')
-    plt.show()
+
+    # print('Showing plots...')
+    # plt.show()
 
 
 print('===== Start Generating Plots =====')
