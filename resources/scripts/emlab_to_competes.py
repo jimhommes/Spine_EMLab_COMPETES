@@ -317,7 +317,7 @@ def export_co2_market_clearing_price(db_competes, db_emlab_marketclearingpoints,
     :param months: Array of months in COMPETES
     """
     mcp = get_co2_market_clearing_price(db_emlab_marketclearingpoints, current_emlab_tick)
-    future_mcp = mcp * math.pow(1.05, look_ahead)   # A 5% increase per year
+    future_mcp = mcp * math.pow(1.025, look_ahead)   # A 5% increase per year
     print('Staging prices...')
     db_competes.import_object_parameter_values(
         [(co2_object_class_name, str(current_competes_tick), i, mcp, '0') for i in months] +

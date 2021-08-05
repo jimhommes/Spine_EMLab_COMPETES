@@ -417,7 +417,7 @@ def export_all_competes_results():
         print('Done loading sheets')
 
         hourly_nodal_prices_nl = get_hourly_nodal_prices(hourly_nodal_prices_df)
-        hourly_nodal_prices_nl = [i if i < 2000 else 2000 for i in hourly_nodal_prices_nl]  # Limit nodal prices to 2000 (VOLL)
+        # hourly_nodal_prices_nl = [i if i < 2000 else 2000 for i in hourly_nodal_prices_nl]  # Limit nodal prices to 2000 (VOLL)
         export_vre_investment_decisions(db_emlab, db_competes, current_emlab_tick, current_competes_tick,
                                         vre_investment_df, db_emlab_technologies, db_competes_vre_capacities,
                                         step, look_ahead)

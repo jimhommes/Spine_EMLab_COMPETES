@@ -61,9 +61,14 @@ class CO2MarketDetermineCO2Price(MarketModule):
                 total_emissions = 0
                 sorted_wtp = sorted(willingness_to_pay_per_plant.items(),
                                     key=lambda item: item[1], reverse=True)
+
+                print(co2_cap)
+                print(sum(emissions_per_plant.values()))
+                print(sorted_wtp)
+
                 for (power_plant_name, wtp) in sorted_wtp:
                     emissions_per_plant_rounded = math.ceil(emissions_per_plant[power_plant_name])
-                    if co2_cap - co2_from_exports >= total_emissions + emissions_per_plant_rounded * emission_hedging_correction:
+                    if co2_cap >= total_emissions + emissions_per_plant_rounded * emission_hedging_correction:
                         total_emissions += emissions_per_plant_rounded * emission_hedging_correction
                         co2price = wtp
                     else:
