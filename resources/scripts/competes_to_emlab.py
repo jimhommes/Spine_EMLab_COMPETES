@@ -58,6 +58,8 @@ def read_excel_sheets(path_to_competes_results, file_name_gentransinv, file_name
                                            'NL Unit Generation', index_col=0, skiprows=1)
     hourly_nl_balance_df = pandas.read_excel(path_to_competes_results + '/' + file_name_gentransdisp,
                                              'Hourly NL Balance', skiprows=1)
+    yearly_emissions_df = pandas.read_excel(path_to_competes_results + '/' + file_name_gentransdisp,
+                                            'Unit Emissions', skiprows=3, header=None)
 
     # Investment and Decom decisions
     new_generation_capacity_df = pandas.read_excel(path_to_competes_results + '/' + file_name_gentransinv,
@@ -68,7 +70,22 @@ def read_excel_sheets(path_to_competes_results, file_name_gentransinv, file_name
                                           skiprows=2, usecols='A:G')
 
     return hourly_nodal_prices_df, unit_generation_df, new_generation_capacity_df, decommissioning_df, \
-           vre_investment_df, hourly_nl_balance_df
+           vre_investment_df, hourly_nl_balance_df, yearly_emissions_df
+
+
+def export_yearly_emissions_to_emlab(db_emlab, yearly_emissions_df, current_emlab_tick):
+    print('Exporting YearlyEmissions object...')
+    db_emlab.import_object_classes(['YearlyEmissions'])
+    db_emlab.import_objects([('YearlyEmissions', 'YearlyEmissions')])
+    param_names = []
+    param_values = []
+    for index, row in yearly_emissions_df.iterrows():
+        param_names.append(['YearlyEmissions', row[0]])
+        param_values.append(('YearlyEmissions', 'YearlyEmissions', row[0], row[2], str(current_emlab_tick)))
+
+    db_emlab.import_data({'object_parameters': param_names})
+    db_emlab.import_object_parameter_values(param_values)
+    print('Done exporting YearlyEmissions')
 
 
 def export_decommissioning_decisions_to_emlab_and_competes(db_competes, db_emlab, db_competes_powerplants,
@@ -402,7 +419,7 @@ def export_all_competes_results():
 
         print('Loading sheets...')
         hourly_nodal_prices_df, unit_generation_df, new_generation_capacity_df, decommissioning_df, vre_investment_df, \
-        hourly_nl_balance_df = read_excel_sheets(path_to_competes_results, file_name_gentransinv,
+        hourly_nl_balance_df, yearly_emissions_df = read_excel_sheets(path_to_competes_results, file_name_gentransinv,
                                                  file_name_gentransdisp)
 
         new_generation_capacity_df = crop_dataframe_until_first_empty_row(new_generation_capacity_df)
@@ -417,7 +434,6 @@ def export_all_competes_results():
         print('Done loading sheets')
 
         hourly_nodal_prices_nl = get_hourly_nodal_prices(hourly_nodal_prices_df)
-        # hourly_nodal_prices_nl = [i if i < 2000 else 2000 for i in hourly_nodal_prices_nl]  # Limit nodal prices to 2000 (VOLL)
         export_vre_investment_decisions(db_emlab, db_competes, current_emlab_tick, current_competes_tick,
                                         vre_investment_df, db_emlab_technologies, db_competes_vre_capacities,
                                         step, look_ahead)
@@ -431,6 +447,7 @@ def export_all_competes_results():
                                                                decommissioning_df, current_competes_tick,
                                                                current_emlab_tick, look_ahead)
         export_total_sum_exports_to_emlab(db_emlab, hourly_nl_balance_df, current_emlab_tick)
+        export_yearly_emissions_to_emlab(db_emlab, yearly_emissions_df, current_emlab_tick)
 
         print('Committing...')
         db_emlab.commit('Imported from COMPETES run ' + str(current_competes_tick))
