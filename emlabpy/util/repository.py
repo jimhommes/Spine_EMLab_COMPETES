@@ -39,7 +39,6 @@ class Repository:
         self.co2_markets = dict()
         self.power_plant_dispatch_plans = dict()
         self.power_generating_technologies = dict()
-        self.load = dict()
         self.market_clearing_points = dict()
         self.power_grid_nodes = dict()
         self.trends = dict()
@@ -47,6 +46,9 @@ class Repository:
         self.national_governments = dict()
         self.governments = dict()
         self.market_stability_reserves = dict()
+
+        self.load = dict()
+        self.emissions = dict()
 
         self.exports = dict()
 
