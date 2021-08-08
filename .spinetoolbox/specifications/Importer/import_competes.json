@@ -1826,15 +1826,32 @@
                         "mapping": [
                             {
                                 "map_type": "ObjectClass",
-                                "position": "hidden"
+                                "position": "table_name"
                             },
                             {
                                 "map_type": "Object",
-                                "position": "hidden"
+                                "position": 0
                             },
                             {
                                 "map_type": "ObjectMetadata",
                                 "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterDefinition",
+                                "position": 1
+                            },
+                            {
+                                "map_type": "Alternative",
+                                "position": "hidden",
+                                "value": "0"
+                            },
+                            {
+                                "map_type": "ParameterValueMetadata",
+                                "position": "hidden"
+                            },
+                            {
+                                "map_type": "ParameterValue",
+                                "position": 2
                             }
                         ]
                     }
@@ -1874,7 +1891,9 @@
             "VRE LoadFactors": {},
             "Biomass Potential": {},
             "VRE FLH": {},
-            "EU_ETS_CO2price": {}
+            "EU_ETS_CO2price": {
+                "header": true
+            }
         },
         "table_types": {
             "Days": {
@@ -2293,7 +2312,7 @@
             "EU_ETS_CO2price": {
                 "0": "string",
                 "1": "string",
-                "2": "string"
+                "2": "float"
             }
         },
         "table_row_types": {
@@ -2385,9 +2404,11 @@
             }
         },
         "selected_tables": [
+            "Select All",
             "VRE LoadFactors",
             "VRE FLH",
             "Unit Commitment Database",
+            "EU_ETS_CO2price",
             "Trading Capacities",
             "SeasonTime",
             "SeasonDayHourCombo",

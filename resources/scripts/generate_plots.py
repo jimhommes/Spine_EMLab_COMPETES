@@ -6,7 +6,7 @@ from spinedb import SpineDB
 import pandas as pd
 
 
-def plot_mcps_with_filter(db_mcps, market, years_to_generate, path_to_plots, title, file_name):
+def plot_mcps_with_filter(db_mcps, market, years_to_generate, path_to_plots, title, file_name, yl):
     # MCP Plots
     filtered_mcps = [i['object_name'] for i in db_mcps if
                      i['parameter_name'] == 'Market' and i['parameter_value'] == market]
@@ -22,10 +22,10 @@ def plot_mcps_with_filter(db_mcps, market, years_to_generate, path_to_plots, tit
     fig7 = plt.figure()
     axs7 = plt.axes()
     plt.grid(b=True)
-    axs7.plot(mcp_x, mcp_y, 'bo')
+    axs7.plot(mcp_x, mcp_y, 'o')
     axs7.set_axisbelow(True)
     plt.xlabel('Years')
-    plt.ylabel('Euro / ton')
+    plt.ylabel(yl)
     axs7.set_title(title)
     fig7.savefig(path_to_plots + '/' + file_name, bbox_inches='tight')
 
@@ -36,11 +36,11 @@ def plot_annual_balances(annual_balance, years_to_generate, path_to_plots):
     plt.figure()
     annual_balance_df = pd.DataFrame(annual_balance, index=years_to_generate)
     axs125 = annual_balance_df.plot.bar(stacked=True, rot=0, colormap='tab20', grid=True)
-    plt.xlabel('Years')
-    plt.ylabel('MWh')
+    plt.xlabel('Years', fontsize='medium')
+    plt.ylabel('Supply or Demand (MWh)', fontsize='medium')
     axs125.set_title('NL Annual Balance per Technology')
     axs125.set_axisbelow(True)
-    plt.legend(fontsize='x-small', loc='upper left', bbox_to_anchor=(1, 1.1))
+    plt.legend(fontsize='medium', loc='upper left', bbox_to_anchor=(1, 1.1))
     fig125 = axs125.get_figure()
     fig125.savefig(path_to_plots + '/' + 'NL Annual Balance.png', bbox_inches='tight')
 
@@ -52,9 +52,9 @@ def plot_vre_nl_installed_capacity(vre_investment_sums, years_to_generate, path_
     vre_investments_df = pd.DataFrame(vre_investment_sums, index=years_to_generate)
     axs5 = vre_investments_df.plot.bar(stacked=True, rot=0, colormap='tab20')
     axs5.set_axisbelow(True)
-    plt.xlabel('Years')
-    plt.ylabel('MW')
-    plt.legend(fontsize='x-small', loc='upper left', bbox_to_anchor=(1, 1.1))
+    plt.xlabel('Years', fontsize='medium')
+    plt.ylabel('Capacity (MW)', fontsize='medium')
+    plt.legend(fontsize='medium', loc='upper left', bbox_to_anchor=(1, 1.1))
     axs5.set_title('NL VRE Installed Capacity')
     fig5 = axs5.get_figure()
     fig5.savefig(path_to_plots + '/' + 'NL Installed Capacity.png', bbox_inches='tight')
@@ -68,10 +68,10 @@ def plot_investments(investment_sums, years_to_generate, path_to_plots, look_ahe
                                   index=list(range(years_to_generate[0], years_to_generate[-1] + look_ahead + 1)))
     axs6 = investments_df.plot.bar(stacked=True, rot=0, colormap='tab20', grid=True)
     axs6.set_axisbelow(True)
-    plt.xlabel('Years')
-    plt.ylabel('MW')
-    plt.legend(fontsize='x-small', loc='upper left', bbox_to_anchor=(1, 1.1))
-    axs6.set_title('EU Investments')
+    plt.xlabel('Years', fontsize='medium')
+    plt.ylabel('Capacity (MW)', fontsize='medium')
+    plt.legend(fontsize='medium', loc='upper left', bbox_to_anchor=(1, 1.1))
+    axs6.set_title('EU Capacity Investments per Technology')
     fig6 = axs6.get_figure()
     fig6.savefig(path_to_plots + '/' + 'EU Investments.png', bbox_inches='tight')
 
@@ -83,10 +83,10 @@ def plot_nl_investments(investment_sums, years_to_generate, path_to_plots, look_
     investments_df = pd.DataFrame(investment_sums,
                                   index=list(range(years_to_generate[0], years_to_generate[-1] + look_ahead + 1)))
     axs6 = investments_df.plot.bar(stacked=True, rot=0, colormap='tab20', grid=True)
-    plt.xlabel('Years')
-    plt.ylabel('MW')
-    plt.legend(fontsize='x-small', loc='upper left', bbox_to_anchor=(1, 1.1))
-    axs6.set_title('NL Investments')
+    plt.xlabel('Years', fontsize='medium')
+    plt.ylabel('Capacity (MW)', fontsize='medium')
+    plt.legend(fontsize='medium', loc='upper left', bbox_to_anchor=(1, 1.1))
+    axs6.set_title('NL Capacity Investments per Technology')
     axs6.set_axisbelow(True)
     fig6 = axs6.get_figure()
     fig6.savefig(path_to_plots + '/' + 'NL Investments.png', bbox_inches='tight')
@@ -98,11 +98,11 @@ def plot_co2_emissions(co2_emission_sums, years_to_generate, path_to_plots):
     plt.figure()
     co2_df = pd.DataFrame(co2_emission_sums, index=years_to_generate)
     axs4 = co2_df.plot.bar(stacked=True, rot=0, colormap='tab20', grid=True)
-    plt.xlabel('Years')
-    plt.ylabel('tons')
-    axs4.set_title('NL CO2 Emissions')
+    plt.xlabel('Years', fontsize='medium')
+    plt.ylabel('Emissions (ton CO2)', fontsize='medium')
+    axs4.set_title('NL CO2 Emissions per Technology')
     axs4.set_axisbelow(True)
-    plt.legend(fontsize='x-small', loc='upper left', bbox_to_anchor=(1, 1.1))
+    plt.legend(fontsize='medium', loc='upper left', bbox_to_anchor=(1, 1.1))
     fig4 = axs4.get_figure()
     fig4.savefig(path_to_plots + '/' + 'NL CO2 Emissions.png', bbox_inches='tight')
 
@@ -116,9 +116,9 @@ def plot_nl_unit_generation(path_and_filename_dispatch, year, path_to_plots):
     plt.figure()
     axs3 = nl_unit_generation_df.plot()
     axs3.set_axisbelow(True)
-    plt.xlabel('Hours')
-    plt.ylabel('MWh')
-    plt.legend(fontsize='xx-small', loc='upper left', bbox_to_anchor=(1, 1.1))
+    plt.xlabel('Hours', fontsize='medium')
+    plt.ylabel('Generation (MWh)', fontsize='medium')
+    plt.legend(fontsize='medium', loc='upper left', bbox_to_anchor=(1, 1.1))
     axs3.set_title('NL Unit Generation ' + str(year))
     fig3 = axs3.get_figure()
     fig3.savefig(path_to_plots + '/' + 'NL Unit Generation ' + str(year) + '.png', bbox_inches='tight')
@@ -131,8 +131,8 @@ def plot_and_prepare_hourly_nodal_price_duration_curve(hourly_nodal_prices_df, y
     plt.figure()
     axs25 = hourly_nodal_prices_df['NED'].sort_values(ascending=False).plot(use_index=False, grid=True)
     plt.xlabel('Hours')
-    plt.ylabel('Euro')
-    axs25.set_title('NL Hourly Market Price Duration Curve ' + str(year))
+    plt.ylabel('Price (Euro / MWh)')
+    axs25.set_title('NL Hourly Electricity Spot Market Price Duration Curve ' + str(year))
     axs25.set_axisbelow(True)
     fig25 = axs25.get_figure()
     fig25.savefig(path_to_plots + '/' + 'NL Nodal Prices Duration Curve ' + str(year) + '.png', bbox_inches='tight')
@@ -146,16 +146,16 @@ def plot_hourly_nodal_prices(path_and_filename_dispatch, year, path_to_plots):
     print('Read and create hourly nodal prices plot')
     hourly_nodal_prices_df = pandas.read_excel(path_and_filename_dispatch, 'Hourly Nodal Prices', skiprows=1,
                                                index_col=0)
-    hourly_nodal_prices_df[hourly_nodal_prices_df > 250] = 250
+    # hourly_nodal_prices_df[hourly_nodal_prices_df > 250] = 250
 
     plt.figure()
     axs2 = hourly_nodal_prices_df['NED'].plot(grid=True)
     axs2.set_axisbelow(True)
     plt.xlabel('Hours')
-    plt.ylabel('Euro')
+    plt.ylabel('Price (Euro / MWh)')
     plt.xlim([0, 8760])
     plt.ylim([0, min(hourly_nodal_prices_df['NED'].max() + 10, 250)])
-    axs2.set_title('NL Hourly Market Prices ' + str(year))
+    axs2.set_title('NL Hourly Electricity Spot Market Prices ' + str(year))
     fig2 = axs2.get_figure()
     fig2.savefig(path_to_plots + '/' + 'NL Nodal Prices ' + str(year) + '.png', bbox_inches='tight')
 
@@ -175,7 +175,7 @@ def plot_and_prepare_residual_load_duration_curve(hourly_nl_balance_demand, hour
     axs175.set_title('NL Residual Load Duration Curve ' + str(year))
     axs175.set_axisbelow(True)
     plt.xlabel('Hours')
-    plt.ylabel('MWh')
+    plt.ylabel('Residual Load (MWh)')
     plt.xlim([0, 8760])
     fig175 = axs175.get_figure()
     fig175.savefig(path_to_plots + '/' + 'NL Residual Load Duration Curve ' + str(year) + '.png', bbox_inches='tight')
@@ -192,7 +192,7 @@ def plot_and_prepare_load_duration_curve(hourly_nl_balance_demand, year, path_to
     axs15.set_title('NL Load Duration Curve ' + str(year))
     axs15.set_axisbelow(True)
     plt.xlabel('Hours')
-    plt.ylabel('MWh')
+    plt.ylabel('Load (MWh)')
     plt.xlim([0, 8760])
     fig15 = axs15.get_figure()
     fig15.savefig(path_to_plots + '/' + 'NL Load Duration Curve ' + str(year) + '.png', bbox_inches='tight')
@@ -236,10 +236,10 @@ def plot_hourly_nl_balance(path_and_filename_dispatch, path_to_plots, year):
     axs = hourly_nl_balance_df_resampled.plot.area(colormap='tab20', linewidth=0)
     axs.set_title('Hourly NL Balance - All Technologies ' + str(year))
     axs.set_axisbelow(True)
-    plt.xlabel('Hours')
-    plt.ylabel('MWh')
+    plt.xlabel('Hours', fontsize='medium')
+    plt.ylabel('Supply or Demand (MWh)', fontsize='medium')
     plt.xlim([0, 8760])
-    plt.legend(fontsize='x-small', loc='best', bbox_to_anchor=(1, 1.1))
+    plt.legend(fontsize='medium', loc='best', bbox_to_anchor=(1, 1.1))
     fig = axs.get_figure()
     fig.savefig(path_to_plots + '/' + 'NL Hourly Balance ' + str(year) + '.png', bbox_inches='tight')
     return hourly_nl_balance_df, hourly_nl_balance_demand
@@ -377,22 +377,23 @@ def plot_annual_installed_capacity(annual_installed_capacity, years_to_generate,
     annual_installed_capacity_df = pd.DataFrame(annual_installed_capacity, index=years_to_generate)
     axs10 = annual_installed_capacity_df.plot.bar(stacked=True, rot=0, colormap='tab20', grid=True)
     axs10.set_axisbelow(True)
-    plt.xlabel('Years')
-    plt.ylabel('MW')
-    plt.legend(fontsize='x-small', loc='upper left', bbox_to_anchor=(1, 1.1))
+    plt.xlabel('Years', fontsize='medium')
+    plt.ylabel('Capacity (MW)', fontsize='medium')
+    plt.legend(fontsize='medium', loc='upper left', bbox_to_anchor=(1, 1.1))
     axs10.set_title('NL Installed Capacity per Technology')
     fig10 = axs10.get_figure()
     fig10.savefig(path_to_plots + '/' + 'NL Installed Capacity per Technology.png', bbox_inches='tight')
 
 
-def plot_combined_curves(df, title, yl, path_to_plots):
+def plot_combined_curves(df, title, yl, path_to_plots, ymax):
     plt.figure()
     axs = df.plot(grid=True, use_index=False)
     axs.set_axisbelow(True)
-    plt.xlabel('Hours')
-    plt.ylabel(yl)
-    plt.xlim([-10, 8760])
-    plt.legend(fontsize='x-small', loc='upper left', bbox_to_anchor=(1, 1.1))
+    plt.xlabel('Hours', fontsize='medium')
+    plt.ylabel(yl, fontsize='medium')
+    plt.xlim([-100, 8760])
+    plt.ylim([df.min(axis=1).min(), min(df.max(axis=1).max(), ymax)])
+    plt.legend(fontsize='medium', loc='upper left', bbox_to_anchor=(1, 1.1))
     axs.set_title(title)
     fig = axs.get_figure()
     fig.savefig(path_to_plots + '/' + title + '.png', bbox_inches='tight')
@@ -400,7 +401,7 @@ def plot_combined_curves(df, title, yl, path_to_plots):
 
 def generate_plots():
     # Select what years you want to generate plots for
-    path_to_competes_results = '../../COMPETES/Results/Run 20210730 COMPETES Only, no VOLL'
+    path_to_competes_results = '../../COMPETES/Results/Run 20210806 10M CO2 Cap, discountr 2.5, hedging 1, no exports, VOLL'
     filename_to_load_dispatch = 'Output_Dynamic_Gen&Trans_?_Dispatch.xlsx'
     filename_to_load_investment = 'Output_Dynamic_Gen&Trans_?_Investments.xlsx'
 
@@ -502,13 +503,13 @@ def generate_plots():
     plot_annual_balances(annual_balance, years_to_generate, path_to_plots)
     plot_annual_installed_capacity(annual_installed_capacity, years_to_generate, path_to_plots)
     plot_mcps_with_filter(db_mcps, 'CO2Auction', years_to_generate, path_to_plots, 'NL CO2 Market Clearing Prices',
-                          'NL CO2 Market Clearing Prices.png')
+                          'NL CO2 Market Clearing Prices.png', 'Price (Euro / ton CO2)')
     plot_mcps_with_filter(db_mcps, 'DutchCapacityMarket', years_to_generate, path_to_plots, 'NL Capacity Market Prices',
-                          'NL Capacity Market Prices.png')
+                          'NL Capacity Market Prices.png', 'Price (Euro / MW)')
 
-    plot_combined_curves(residual_load_curves, 'NL Residual Load Duration Curves', 'MWh', path_to_plots)
-    plot_combined_curves(load_duration_curves, 'NL Load Duration Curves', 'MWh', path_to_plots)
-    plot_combined_curves(price_duration_curves, 'NL Hourly Market Price Duration Curves', 'Euro/MWh', path_to_plots)
+    plot_combined_curves(residual_load_curves, 'NL Residual Load Duration Curves', 'Residual Load (MWh)', path_to_plots, 2000000)
+    plot_combined_curves(load_duration_curves, 'NL Load Duration Curves', 'Load (MWh)', path_to_plots, 2000000)
+    plot_combined_curves(price_duration_curves, 'NL Hourly Market Price Duration Curves', 'Price (Euro / MWh)', path_to_plots, 250)
 
     # print('Showing plots...')
     # plt.show()
