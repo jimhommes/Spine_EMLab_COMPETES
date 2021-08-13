@@ -351,7 +351,7 @@ def prepare_investment_data(investments, investment_sums, years_to_generate, yea
         if row['CombinedIndex'] not in investment_sums.keys():
             investment_sums[row['CombinedIndex']] = [0] * len(index_years)
 
-        investment_sums[row['CombinedIndex']][index_years.index(online_in_year)] = row['MW']
+        investment_sums[row['CombinedIndex']][index_years.index(online_in_year)] += row['MW']
 
     return investment_sums, investments
 
