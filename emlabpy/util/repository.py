@@ -104,7 +104,10 @@ class Repository:
         return res
 
     def get_power_plant_emissions_by_tick(self, time: int) -> Dict[str, float]:
-        res = self.emissions['YearlyEmissions'].emissions[time]
+        if 'YearlyEmissions' in self.emissions.keys():
+            res = self.emissions['YearlyEmissions'].emissions[time]
+        else:
+            res = {}
         for power_plant in [i for i in self.power_plants.values() if i.status == self.power_plant_status_operational and i.name not in res.keys()]:
             # Total Capacity is in MWh
             total_capacity = self.get_total_accepted_amounts_by_power_plant_and_tick_and_market(power_plant, time,
@@ -192,17 +195,17 @@ class Repository:
     def get_co2_market_for_zone(self, zone: Zone) -> Optional[CO2Market]:
         try:
             return next(i for i in self.co2_markets.values()
-                        if i.parameters['zone'] == self.power_grid_nodes[zone.name].parameters['Country'])
+                        if i.parameters['zone'] == zone.name)
         except StopIteration:
             return None
 
     def get_co2_market_for_plant(self, power_plant: PowerPlant) -> Optional[CO2Market]:
-        return self.get_co2_market_for_zone(power_plant.location)
+        return self.get_co2_market_for_zone(self.zones[power_plant.location.parameters['Country']])
 
     def get_market_stability_reserve_for_market(self, market: Market) -> Optional[MarketStabilityReserve]:
         try:
             return next(i for i in self.market_stability_reserves.values()
-                        if i.zone == market.parameters['zone'])
+                        if i.zone.name == market.parameters['zone'])
         except StopIteration:
             return None
 

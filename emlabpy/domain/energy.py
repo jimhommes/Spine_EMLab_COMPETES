@@ -259,16 +259,6 @@ class PowerPlantDispatchPlan(ImportObject):
             self.status = parameter_value
 
 
-class ExportsCO2TonnesCurrentTick(ImportObject):
-    def __init__(self, name):
-        super().__init__(name)
-        self.amount_of_co2 = 0
-
-    def add_parameter_value(self, reps, parameter_name: str, parameter_value, alternative: str):
-        if parameter_name == 'Exports':
-            self.amount_of_co2 = parameter_value
-
-
 class YearlyEmissions(ImportObject):
     def __init__(self, name):
         super().__init__(name)

@@ -21,7 +21,7 @@ class TestTrend:
         prev_price = 100
         for i in range(1, 1000):
             new_price = tt.get_value(i)
-            assert 0.5 <= new_price - prev_price <= 1.5
+            assert prev_price * (1 + (0 * 1 - 0.5)) <= new_price <= prev_price * (1 + 1 * 1.5 - 1)
             prev_price = new_price
 
     def test_step_trend(self):

@@ -124,7 +124,7 @@ def export_decommissioning_decisions_to_emlab_and_competes(db_competes, db_emlab
 
 
 def export_vre_investment_decisions(db_emlab, db_competes, current_emlab_tick, current_competes_tick, vre_investment_df,
-                                    db_emlab_technologies, db_competes_vre_capacities, step, look_ahead):
+                                    db_emlab_technologies, db_competes_vre_capacities, step):
     """
     This function exports all VRE Investment decisions.
     Column titles are not printed if they are empty. 'New' is the column title if an investment has been made. If not,
@@ -185,7 +185,7 @@ def get_plant_efficiency_and_availability_by_fuel_and_tech(db_competes_new_techn
 
 
 def export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, current_emlab_tick,
-                                                      new_generation_capacity_df, current_competes_tick, look_ahead,
+                                                      new_generation_capacity_df, current_competes_tick,
                                                       db_emlab_technologies, db_competes_new_technologies):
     """
     This function exports all Investment decisions.
@@ -436,12 +436,12 @@ def export_all_competes_results():
         hourly_nodal_prices_nl = get_hourly_nodal_prices(hourly_nodal_prices_df)
         export_vre_investment_decisions(db_emlab, db_competes, current_emlab_tick, current_competes_tick,
                                         vre_investment_df, db_emlab_technologies, db_competes_vre_capacities,
-                                        step, look_ahead)
+                                        step)
         export_market_clearing_points_to_emlab(db_emlab, current_emlab_tick, hourly_nodal_prices_nl, db_emlab_mcps)
         export_power_plant_dispatch_plans_to_emlab(db_emlab, current_emlab_tick, unit_generation_df, db_emlab_ppdps,
                                                    hourly_nodal_prices_nl, db_emlab_powerplants)
         export_investment_decisions_to_emlab_and_competes(db_emlab, db_competes, current_emlab_tick,
-                                                          new_generation_capacity_df, current_competes_tick, look_ahead,
+                                                          new_generation_capacity_df, current_competes_tick,
                                                           db_emlab_technologies, db_competes_new_technologies)
         export_decommissioning_decisions_to_emlab_and_competes(db_competes, db_emlab, db_competes_powerplants,
                                                                decommissioning_df, current_competes_tick,
@@ -463,6 +463,7 @@ def export_all_competes_results():
         db_config.close_connection()
 
 
-print('===== Starting COMPETES Output Interpretation script =====')
-export_all_competes_results()
-print('===== End of COMPETES Output Interpretation script =====')
+if __name__ == "__main__":
+    print('===== Starting COMPETES Output Interpretation script =====')
+    export_all_competes_results()
+    print('===== End of COMPETES Output Interpretation script =====')

@@ -128,7 +128,6 @@ def execute_all_initialization_preprocessing():
         import_initial_vre_fixed_oc_start_values(db_emlab, db_competes_vre_technologies, db_emlab_technologies,
                                                  start_simulation_year)
 
-
         print('Committing...')
         db_emlab.commit('DB EMLAB Initialization Preprocessing')
 
@@ -141,6 +140,7 @@ def execute_all_initialization_preprocessing():
         db_config.close_connection()
 
 
-print('===== Start EMLAB Preprocessing script =====')
-execute_all_initialization_preprocessing()
-print('===== End of EMLAB Preprocessing script =====')
+if __name__ == "__main__":
+    print('===== Start EMLAB Preprocessing script =====')
+    execute_all_initialization_preprocessing()
+    print('===== End of EMLAB Preprocessing script =====')

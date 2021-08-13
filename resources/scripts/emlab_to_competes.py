@@ -14,7 +14,7 @@ from helper_functions import get_current_ticks
 
 
 def export_capacity_market_revenues_for_technology_vre(db_competes, participating_technology, current_competes_tick,
-                                                       cm_market_clearing_price, look_ahead, step):
+                                                       cm_market_clearing_price, look_ahead):
     """
     This function exports the capacity market revenues for VRE technologies. It looks at the VRE Technologies table,
     which contains both the CAPEX and Fixed O&M costs.
@@ -31,30 +31,30 @@ def export_capacity_market_revenues_for_technology_vre(db_competes, participatin
     vre_technologies = db_competes.query_object_parameter_values_by_object_class_and_object_name(
         'VRE Technologies', participating_technology)[0]['parameter_value']
 
-    init_fixed_om = init_vre_technologies.get_value(str(current_competes_tick - step)) \
+    init_fixed_om = init_vre_technologies.get_value(str(current_competes_tick)) \
         .get_value('Fixed O&M(Euro/kW/yr)')
     print('INIT Fixed O&M: ' + str(init_fixed_om))
 
     if init_fixed_om - cm_market_clearing_price < 0:
         print('CM Price > Fixed O&M')
-        parameter_map = vre_technologies.get_value(str(current_competes_tick - step))
-        parameter_map_with_step = vre_technologies.get_value(str(current_competes_tick + look_ahead - step))
+        parameter_map = vre_technologies.get_value(str(current_competes_tick))
+        parameter_map_with_step = vre_technologies.get_value(str(current_competes_tick + look_ahead))
         parameter_map.set_value('Fixed O&M(Euro/kW/yr)', float(0))
 
-        init_capex = init_vre_technologies.get_value(str(current_competes_tick + look_ahead - step)) \
+        init_capex = init_vre_technologies.get_value(str(current_competes_tick + look_ahead)) \
             .get_value('Capex(Euro/kW)')
         print('INIT CAPEX: ' + str(init_capex))
 
         parameter_map_with_step.set_value('Capex(Euro/kW)', float(init_capex - (cm_market_clearing_price - init_fixed_om)))
         print('New CAPEX: ' + str(init_capex - (cm_market_clearing_price - init_fixed_om)))
-        vre_technologies.set_value(str(current_competes_tick - step), parameter_map)
-        vre_technologies.set_value(str(current_competes_tick + look_ahead - step), parameter_map_with_step)
+        vre_technologies.set_value(str(current_competes_tick), parameter_map)
+        vre_technologies.set_value(str(current_competes_tick + look_ahead), parameter_map_with_step)
     else:
         print('CM Price <= Fixed O&M')
-        parameter_map = vre_technologies.get_value(str(current_competes_tick - step))
+        parameter_map = vre_technologies.get_value(str(current_competes_tick))
         parameter_map.set_value('Fixed O&M(Euro/kW/yr)', float(init_fixed_om - cm_market_clearing_price))
         print('New Fixed O&M: ' + str(init_fixed_om - cm_market_clearing_price))
-        vre_technologies.set_value(str(current_competes_tick - step), parameter_map)
+        vre_technologies.set_value(str(current_competes_tick), parameter_map)
 
     db_competes.import_object_parameter_values([('VRE Technologies', participating_technology,
                                                  'VRE Technologies', vre_technologies, '0')])
@@ -62,8 +62,7 @@ def export_capacity_market_revenues_for_technology_vre(db_competes, participatin
 
 def export_capacity_market_revenues_for_technology_nonvre(db_competes, participating_technology,
                                                           db_technology_combi_map_list, participating_fuel,
-                                                          cm_market_clearing_price, current_competes_tick, look_ahead,
-                                                          step):
+                                                          cm_market_clearing_price, current_competes_tick, look_ahead):
     """
     This function exports the capacity market revenues for Non VRE technologies. It does so by using the Technologies
     and Overnight Cost (OC) tables.
@@ -106,10 +105,10 @@ def export_capacity_market_revenues_for_technology_nonvre(db_competes, participa
 
             # Set CAPEX
             init_capex = db_initial_overnight_cost_map.get_value(participating_fuel).get_value(str(current_competes_tick +
-                                                                                                   look_ahead - step))
+                                                                                                   look_ahead))
             print('INIT CAPEX: ' + str(init_capex))
             capex_map = db_overnight_cost_map.get_value(participating_fuel)
-            capex_map.set_value(str(current_competes_tick + look_ahead - step),
+            capex_map.set_value(str(current_competes_tick + look_ahead),
                                 float(init_capex - (cm_market_clearing_price - fixed_om)))
             print('New CAPEX: ' + str(init_capex - (cm_market_clearing_price - fixed_om)))
             db_overnight_cost_map.set_value(current_technorder, capex_map)
@@ -153,10 +152,10 @@ def export_capacity_market_revenues_for_technology(db_competes, participating_te
         export_capacity_market_revenues_for_technology_nonvre(db_competes, participating_technology,
                                                               db_technology_combi_map_list, participating_fuel,
                                                               cm_market_clearing_price, current_competes_tick,
-                                                              look_ahead, step)
+                                                              look_ahead)
     else:
         export_capacity_market_revenues_for_technology_vre(db_competes, participating_technology, current_competes_tick,
-                                                           cm_market_clearing_price, look_ahead, step)
+                                                           cm_market_clearing_price, look_ahead)
 
 
 def get_cm_market_clearing_price(tick, db_emlab_marketclearingpoints):
@@ -174,26 +173,6 @@ def get_cm_market_clearing_price(tick, db_emlab_marketclearingpoints):
     market_clearing_price = market_clearing_price / 1000  # EMLAB is in Euro / MWh - COMPETES is in Euro / kWh
     print('Current CM Market Clearing Price: ' + str(market_clearing_price))
     return market_clearing_price
-
-
-def get_previous_cm_market_clearing_price(current_emlab_tick, db_emlab_marketclearingpoints, step):
-    """
-    This function gets the previous MCP in reference to the current year.
-
-    :param current_emlab_tick: int
-    :param db_emlab_marketclearingpoints: MCPs as queried from SpineDB EMLab
-    :param step: Time step of model
-    :return: CM Market Clearing Price (float)
-    """
-    if current_emlab_tick > step:
-        previous_cm_market_clearing_price = get_cm_market_clearing_price(current_emlab_tick - 2 * step,
-                                                                         db_emlab_marketclearingpoints)
-        print('Current EMLab tick > 1, previous Capacity Market clearing price is ' + str(
-            previous_cm_market_clearing_price))
-        return previous_cm_market_clearing_price
-    else:
-        print('Current EMLab tick <= 1, previous CM clearing price set to 0')
-        return 0.0
 
 
 def get_participating_technologies_in_capacity_market(db_emlab_powerplantdispatchplans, current_emlab_tick,
@@ -384,6 +363,7 @@ def execute_export_to_competes():
         db_config.close_connection()
 
 
-print('===== Starting EMLab to COMPETES script =====')
-execute_export_to_competes()
-print('===== End of EMLab to COMPETES script =====')
+if __name__ == "__main__":
+    print('===== Starting EMLab to COMPETES script =====')
+    execute_export_to_competes()
+    print('===== End of EMLab to COMPETES script =====')

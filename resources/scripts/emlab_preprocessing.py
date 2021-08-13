@@ -69,7 +69,7 @@ def set_correct_power_plant_statuses(db_emlab, db_emlab_powerplants, current_com
 
 def decom_power_plants_and_return_sum(list_of_plants, powerplant_statuses, current_competes_tick, db_emlab_powerplants):
     """
-    This function decom's a list of plants and sums the MW until the current year is reached.
+    This function decoms a list of plants and sums the MW until the current year is reached.
     There is one object with SUM in it's name: this represents the total amount in operation of the VRE.
 
     :param list_of_plants: List
@@ -144,6 +144,7 @@ def execute_all_preprocessing():
         db_config.close_connection()
 
 
-print('===== Start EMLAB Preprocessing script =====')
-execute_all_preprocessing()
-print('===== End of EMLAB Preprocessing script =====')
+if __name__ == "__main__":
+    print('===== Start EMLAB Preprocessing script =====')
+    execute_all_preprocessing()
+    print('===== End of EMLAB Preprocessing script =====')
