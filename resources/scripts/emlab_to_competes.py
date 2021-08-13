@@ -13,176 +13,150 @@ from spinedb import SpineDB
 from helper_functions import get_current_ticks
 
 
-def export_fixed_om_and_capex_to_competes(db_competes, db_technology_map_key, capex_map, current_competes_tick,
-                                          current_cm_market_clearing_price, fixed_om, db_overnight_cost_map,
-                                          db_technology_map, db_technology_combi_map, participating_technology, fuel):
+def export_capacity_market_revenues_for_technology_vre(db_competes, participating_technology, current_competes_tick,
+                                                       cm_market_clearing_price, look_ahead, step):
     """
-    This function handles the actual export to COMPETES for the Fixed O&M and CAPEX.
+    This function exports the capacity market revenues for VRE technologies. It looks at the VRE Technologies table,
+    which contains both the CAPEX and Fixed O&M costs.
 
     :param db_competes: SpineDB
-    :param db_technology_map_key: From the previous function so the function knows where to replace the value in the map
-    :param capex_map: Extracted from SpineDB
-    :param current_competes_tick: int
-    :param current_cm_market_clearing_price: float
-    :param fixed_om: float
-    :param db_overnight_cost_map: Extracted from SpineDB
-    :param db_technology_map: Extracted from SpineDB
-    :param db_technology_combi_map: Extracted from SpineDB
-    :param participating_technology: Technology name (str)
-    :param fuel: Fuel name (str)
+    :param participating_technology: Tech name that will receive reduction (combi with fuel)
+    :param current_competes_tick: Current clock tick
+    :param cm_market_clearing_price: CM price
+    :param look_ahead: Investment horizon (years)
+    :param step: Time step of model
     """
-    if capex_map is not None:
-        current_capex = capex_map.get_value(str(current_competes_tick))
+    init_vre_technologies = db_competes.query_object_parameter_values_by_object_class_and_object_name(
+        'INIT VRE Technologies', participating_technology)[0]['parameter_value']
+    vre_technologies = db_competes.query_object_parameter_values_by_object_class_and_object_name(
+        'VRE Technologies', participating_technology)[0]['parameter_value']
 
-        # Now subtract
-        fixed_om -= current_cm_market_clearing_price
-        if fixed_om < 0:
-            current_capex += fixed_om  # Fixed_OM is negative
-            fixed_om = 0
+    init_fixed_om = init_vre_technologies.get_value(str(current_competes_tick - step)) \
+        .get_value('Fixed O&M(Euro/kW/yr)')
+    print('INIT Fixed O&M: ' + str(init_fixed_om))
 
-        print('New Fixed O&M: ' + str(fixed_om))
-        print('New CAPEX: ' + str(current_capex))
-        capex_map.set_value(str(current_competes_tick), float(current_capex))
-        db_overnight_cost_map.set_value(fuel, capex_map)
-        db_technology_map.set_value('FIXED O&M', float(fixed_om))
-        db_technology_combi_map.set_value(db_technology_map_key, db_technology_map)
+    if init_fixed_om - cm_market_clearing_price < 0:
+        print('CM Price > Fixed O&M')
+        parameter_map = vre_technologies.get_value(str(current_competes_tick - step))
+        parameter_map_with_step = vre_technologies.get_value(str(current_competes_tick + look_ahead - step))
+        parameter_map.set_value('Fixed O&M(Euro/kW/yr)', float(0))
+
+        init_capex = init_vre_technologies.get_value(str(current_competes_tick + look_ahead - step)) \
+            .get_value('Capex(Euro/kW)')
+        print('INIT CAPEX: ' + str(init_capex))
+
+        parameter_map_with_step.set_value('Capex(Euro/kW)', float(init_capex - (cm_market_clearing_price - init_fixed_om)))
+        print('New CAPEX: ' + str(init_capex - (cm_market_clearing_price - init_fixed_om)))
+        vre_technologies.set_value(str(current_competes_tick - step), parameter_map)
+        vre_technologies.set_value(str(current_competes_tick + look_ahead - step), parameter_map_with_step)
+    else:
+        print('CM Price <= Fixed O&M')
+        parameter_map = vre_technologies.get_value(str(current_competes_tick - step))
+        parameter_map.set_value('Fixed O&M(Euro/kW/yr)', float(init_fixed_om - cm_market_clearing_price))
+        print('New Fixed O&M: ' + str(init_fixed_om - cm_market_clearing_price))
+        vre_technologies.set_value(str(current_competes_tick - step), parameter_map)
+
+    db_competes.import_object_parameter_values([('VRE Technologies', participating_technology,
+                                                 'VRE Technologies', vre_technologies, '0')])
+
+
+def export_capacity_market_revenues_for_technology_nonvre(db_competes, participating_technology,
+                                                          db_technology_combi_map_list, participating_fuel,
+                                                          cm_market_clearing_price, current_competes_tick, look_ahead,
+                                                          step):
+    """
+    This function exports the capacity market revenues for Non VRE technologies. It does so by using the Technologies
+    and Overnight Cost (OC) tables.
+
+    :param db_competes: SpineDB
+    :param participating_technology: The Tech name that will receive the reduction (combination with Fuel)
+    :param db_technology_combi_map_list: The list of parameters (maps) from the technology table.
+    :param participating_fuel: The Fuel name that will receive the reduction (combination with Tech)
+    :param cm_market_clearing_price: CM price
+    :param current_competes_tick: Clock tick
+    :param look_ahead: Investment horizon
+    :param step: Time step of model
+    """
+    # In case of Overnight Cost and Technologies, there is always only 1 parameter which is a SpineDB Map
+    db_overnight_cost_map = db_competes.query_object_parameter_values_by_object_class_and_object_name(
+        'Overnight Cost (OC)', participating_technology)[0]['parameter_value']
+    db_initial_overnight_cost_map = db_competes.query_object_parameter_values_by_object_class_and_object_name(
+        'INIT Overnight Cost (OC)', participating_technology)[0]['parameter_value']
+    db_technology_combi_map = db_technology_combi_map_list[0]['parameter_value']
+    db_initial_technology_combi_map = db_competes.query_object_parameter_values_by_object_class_and_object_name(
+        'INIT Technologies', participating_technology)[0]['parameter_value']
+
+    current_technorder = ''
+    for technorder in db_technology_combi_map.indexes:
+        if db_technology_combi_map.get_value(technorder).get_value('FUELNEW') == participating_fuel:
+            current_technorder = technorder
+            break
+
+    db_technology_map = db_technology_combi_map.get_value(current_technorder)
+    db_initial_technology_map = db_initial_technology_combi_map.get_value(current_technorder)
+    if db_initial_technology_map is not None:
+        fixed_om = float(db_initial_technology_map.get_value('FIXED O&M'))
+        print('INIT Fixed O&M: ' + str(fixed_om))
+
+        if cm_market_clearing_price > fixed_om:
+            print('CM Price > Fixed O&M')
+
+            if participating_technology == 'CHP' and participating_fuel == 'Derived GAS':
+                participating_fuel = 'GAS' # Hotfix for data inconsistency
+
+            # Set CAPEX
+            init_capex = db_initial_overnight_cost_map.get_value(participating_fuel).get_value(str(current_competes_tick +
+                                                                                                   look_ahead - step))
+            print('INIT CAPEX: ' + str(init_capex))
+            capex_map = db_overnight_cost_map.get_value(participating_fuel)
+            capex_map.set_value(str(current_competes_tick + look_ahead - step),
+                                float(init_capex - (cm_market_clearing_price - fixed_om)))
+            print('New CAPEX: ' + str(init_capex - (cm_market_clearing_price - fixed_om)))
+            db_overnight_cost_map.set_value(current_technorder, capex_map)
+            # Set Fixed O&M
+            db_technology_map.set_value('FIXED O&M', float(0))
+            db_technology_combi_map.set_value(current_technorder, db_technology_map)
+        else:
+            print('CM Price <= Fixed O&M')
+            db_technology_map.set_value('FIXED O&M', float(fixed_om - cm_market_clearing_price))
+            print('New Fixed O&M: ' + str(fixed_om - cm_market_clearing_price))
+            db_technology_combi_map.set_value(current_technorder, db_technology_map)
 
         db_competes.import_object_parameter_values(
             [('Technologies', participating_technology, 'Technologies', db_technology_combi_map, '0'),
              ('Overnight Cost (OC)', participating_technology, 'Overnight Cost (OC)',
               db_overnight_cost_map, '0')])
     else:
-        print('Fuel ' + fuel + ' not in Overnight Cost (OC) table for tech ' + participating_technology)
+        print('Techn. Map not found for ' + str(participating_technology) + ', ' + str(participating_fuel))
 
 
-def add_market_clearing_price_to_fixed_om_with_backtracking_if_necessary(fixed_om, db_overnight_cost_map,
-                                                                         db_initial_overnight_cost_map, fuel,
-                                                                         current_competes_tick,
-                                                                         previous_cm_market_clearing_price, step):
+def export_capacity_market_revenues_for_technology(db_competes, participating_technology, participating_fuel,
+                                                   current_competes_tick, cm_market_clearing_price, look_ahead, step):
     """
-    This function adds the market clearing price to the provided fixed O&M. The function checks whether backtracking
-    is necessary. This is the case if a previous reduction has happened and the values are now skewed.
-    This is checked by checking whether the fixed O&M is 0 - if this is the case, the CAPEX cost has to be increased
-    and the overflow added to the Fixed O&M. If the previous mcp is 0, this does not matter.
-
-    :param fixed_om: Fixed O&M as extracted from SpineDB EMLab
-    :param db_overnight_cost_map: Map
-    :param db_initial_overnight_cost_map: Map
-    :param fuel: String with Fuel Name as extracted from SpineDB EMLab
-    :param current_competes_tick: int
-    :param previous_cm_market_clearing_price: float
-    :return: New fixed O&M
-    """
-    if fixed_om == 0:
-        print('Fixed O&M is 0, so backtrack CAPEX difference from previous tick')
-        print('Backtracking previous CAPEX reduction...')
-        previous_capex = db_overnight_cost_map.get_value(fuel).get_value(str(current_competes_tick - step))
-        previous_original_capex = db_initial_overnight_cost_map.get_value(fuel).get_value(
-            str(current_competes_tick - step))
-
-        # First backtrack original value of CAPEX and Fixed O&M
-        if previous_capex + previous_cm_market_clearing_price > previous_original_capex:
-            fixed_om = previous_capex + previous_cm_market_clearing_price - previous_original_capex
-            print('Previous CAPEX ' + str(previous_capex) + ' with MCP ' + str(
-                previous_cm_market_clearing_price) + ' exceeded original price ' + str(
-                previous_original_capex) + ' so adjust Fixed O&M to ' + str(fixed_om))
-    else:
-        print('Fixed O&M greater than 0, so add entire previous MCP')
-        fixed_om += previous_cm_market_clearing_price
-    return fixed_om
-
-
-def get_fuel_and_fixed_om_from_technology_map(db_technology_map):
-    """
-    This function is used to extract the 'FUELNEW' parameter value and 'FIXED O&M' parameter value for further use.
-
-    :param db_technology_map: DB_tecnology_map as extracted from the queried data from SpineDB EMLab
-    :return: Fuel parameter value and Fixed O&M parameter value
-    """
-    fuel = ''
-    fixed_om = 0
-    for key in db_technology_map.indexes:
-        if key == 'FUELNEW':
-            fuel = db_technology_map.get_value(key)
-        elif key == 'FIXED O&M':
-            fixed_om = float(db_technology_map.get_value(key))
-    print('Technology FUEL ' + fuel + ' and Fixed O&M ' + str(fixed_om))
-    return fuel, fixed_om
-
-
-def export_capacity_market_revenues_for_technology(db_competes, participating_technology, current_competes_tick,
-                                                   current_cm_market_clearing_price, previous_cm_market_clearing_price,
-                                                   step):
-    """
-    This function exports all capacity market revenues as Fixed O&M and CAPEX costs.
+    This function exports all capacity market revenues as Fixed O&M and CAPEX costs. It checks whether the technology
+    is VRE or Non-VRE, and uses the appropriate function.
 
     :param db_competes: SpineDB
     :param participating_technology: A Technology worthy of receiving the reductions (str)
+    :param participating_fuel: The Fuel that makes the Tech Fuel combination
     :param current_competes_tick: int
-    :param current_cm_market_clearing_price: float
-    :param previous_cm_market_clearing_price: float
+    :param cm_market_clearing_price: float
+    :param look_ahead: Investment horizon in years
+    :param step: Time step of model
     """
     # Query the Overnight Cost (OC), INIT Overnight Cost (OC) and Technologies tables from SpineDB
-    db_technology_combi_map_list = db_competes.query_object_parameter_values_by_object_class_and_object_name('Technologies',
-                                                                                                        participating_technology)
+    db_technology_combi_map_list = db_competes.query_object_parameter_values_by_object_class_and_object_name(
+        'Technologies', participating_technology)
+
     # If the list is 0, it's VRE which is not in Technologies
     if len(db_technology_combi_map_list) > 0:
-        db_overnight_cost_map = db_competes.query_object_parameter_values_by_object_class_and_object_name(
-            'Overnight Cost (OC)', participating_technology)[0]['parameter_value']
-        db_initial_overnight_cost_map = db_competes.query_object_parameter_values_by_object_class_and_object_name(
-            'INIT Overnight Cost (OC)', participating_technology)[0]['parameter_value']
-        db_technology_combi_map = db_technology_combi_map_list[0]['parameter_value']
-
-        for db_technology_map_key in db_technology_combi_map.indexes:
-            db_technology_map = db_technology_combi_map.get_value(db_technology_map_key)
-            fuel, fixed_om = get_fuel_and_fixed_om_from_technology_map(db_technology_map)
-
-            fixed_om = add_market_clearing_price_to_fixed_om_with_backtracking_if_necessary(fixed_om, db_overnight_cost_map,
-                                                                                            db_initial_overnight_cost_map,
-                                                                                            fuel, current_competes_tick,
-                                                                                            previous_cm_market_clearing_price,
-                                                                                            step)
-
-            capex_map = db_overnight_cost_map.get_value(fuel)
-            export_fixed_om_and_capex_to_competes(db_competes, db_technology_map_key, capex_map, current_competes_tick,
-                                                  current_cm_market_clearing_price, fixed_om, db_overnight_cost_map,
-                                                  db_technology_map, db_technology_combi_map, participating_technology,
-                                                  fuel)
+        export_capacity_market_revenues_for_technology_nonvre(db_competes, participating_technology,
+                                                              db_technology_combi_map_list, participating_fuel,
+                                                              cm_market_clearing_price, current_competes_tick,
+                                                              look_ahead, step)
     else:
-        init_vre_technologies = db_competes.query_object_parameter_values_by_object_class_and_object_name(
-            'INIT VRE Technologies', participating_technology)[0]['parameter_value']
-        vre_technologies = db_competes.query_object_parameter_values_by_object_class_and_object_name(
-            'VRE Technologies', participating_technology)[0]['parameter_value']
-
-        current_competes_tick_rounded_on_tens = int(10 * math.floor(float(current_competes_tick) / 10))
-
-        init_fixed_om = init_vre_technologies.get_value(str(current_competes_tick_rounded_on_tens))\
-            .get_value('Fixed O&M(Euro/kW/yr)')
-        print('Old INIT Fixed O&M: ' + str(init_fixed_om))
-
-        if init_fixed_om - current_cm_market_clearing_price < 0:
-            print('New Fixed O&M: 0')
-            retr_map = vre_technologies.get_value(str(current_competes_tick_rounded_on_tens))
-            retr_map.set_value('Fixed O&M(Euro/kW/yr)', 0)
-
-            init_capex = init_vre_technologies.get_value(str(current_competes_tick_rounded_on_tens)) \
-                .get_value('Capex(Euro/kW)')
-            print('Old INIT Capex: ' + str(init_capex))
-
-            retr_map.set_value('Capex(Euro/kW)', init_capex + (init_fixed_om - current_cm_market_clearing_price))
-            print('New Capex: ' + str(init_capex + (init_fixed_om - current_cm_market_clearing_price)))
-            vre_technologies.set_value(str(current_competes_tick_rounded_on_tens), retr_map)
-        else:
-            retr_map = vre_technologies.get_value(str(current_competes_tick_rounded_on_tens))
-            retr_map.set_value('Fixed O&M(Euro/kW/yr)',
-                               init_fixed_om -
-                               current_cm_market_clearing_price)
-            print('New Fixed O&M: ' + str(init_fixed_om -
-                                          current_cm_market_clearing_price))
-            vre_technologies.set_value(str(current_competes_tick_rounded_on_tens), retr_map)
-
-        db_competes.import_object_parameter_values([('VRE Technologies', participating_technology,
-                                                     'VRE Technologies', vre_technologies, '0')])
+        export_capacity_market_revenues_for_technology_vre(db_competes, participating_technology, current_competes_tick,
+                                                           cm_market_clearing_price, look_ahead, step)
 
 
 def get_cm_market_clearing_price(tick, db_emlab_marketclearingpoints):
@@ -208,6 +182,7 @@ def get_previous_cm_market_clearing_price(current_emlab_tick, db_emlab_marketcle
 
     :param current_emlab_tick: int
     :param db_emlab_marketclearingpoints: MCPs as queried from SpineDB EMLab
+    :param step: Time step of model
     :return: CM Market Clearing Price (float)
     """
     if current_emlab_tick > step:
@@ -221,11 +196,14 @@ def get_previous_cm_market_clearing_price(current_emlab_tick, db_emlab_marketcle
         return 0.0
 
 
-def get_participating_technologies_in_capacity_market(db_emlab_powerplantdispatchplans, current_emlab_tick, step, db_emlab_powerplants):
+def get_participating_technologies_in_capacity_market(db_emlab_powerplantdispatchplans, current_emlab_tick,
+                                                      step, db_emlab_powerplants):
     """
     This function returns all participating technologies that get revenue from the Capacity Market.
     It returns a set so all values are distinct.
 
+    :param db_emlab_powerplants: Power plants as extracted from SpineDB EM-Lab
+    :param step: Time step of model
     :param db_emlab_powerplantdispatchplans: PPDPs as queried from SpineDB EMLab
     :param current_emlab_tick: int
     :return: Set of technology names
@@ -239,14 +217,21 @@ def get_participating_technologies_in_capacity_market(db_emlab_powerplantdispatc
     capacity_market_participating_plants = [row['parameter_value'] for row in db_emlab_powerplantdispatchplans if
                                             row['object_name'] in capacity_market_accepted_ppdps and row[
                                                 'parameter_name'] == 'Plant']
-    capacity_market_participating_technologies = {row['parameter_value'] for row in db_emlab_powerplants if
-                                                  row['object_name'] in capacity_market_participating_plants and row[
-                                                      'parameter_name'] == 'TECHTYPENL'}
-    return capacity_market_participating_technologies
+    capacity_market_participating_tech_fuel_combinations = set()
+    for plant in capacity_market_participating_plants:
+        tech = next(row['parameter_value'] for row in db_emlab_powerplants if
+                    row['object_name'] == plant and
+                    row['parameter_name'] == 'TECHTYPENL')
+        fuel = next(row['parameter_value'] for row in db_emlab_powerplants if
+                    row['object_name'] == plant and
+                    row['parameter_name'] == 'FUELNL')
+        capacity_market_participating_tech_fuel_combinations.add((tech, fuel))
+    return capacity_market_participating_tech_fuel_combinations
 
 
 def export_capacity_market_revenues(db_competes, current_emlab_tick, db_emlab_powerplantdispatchplans,
-                                    db_emlab_marketclearingpoints, current_competes_tick, step, db_emlab_powerplants):
+                                    db_emlab_marketclearingpoints, current_competes_tick, step, db_emlab_powerplants,
+                                    look_ahead):
     """
     In the conceptual COMPETES EMLab coupling, the CM revenues are exported as Fixed O&M and CAPEX reduction.
     For all participating technologies the CM price gets subtracted from the Fixed O&M. If the Fixed O&M reaches 0,
@@ -254,6 +239,9 @@ def export_capacity_market_revenues(db_competes, current_emlab_tick, db_emlab_po
     In order to correctly subtract this from year > 1 onwards, the function backtracks the previous Fixed O&M and
     CAPEX. In order to do this a second table, INIT Overnight Cost (OC) is used with the original CAPEX.
 
+    :param db_emlab_powerplants: Power plants as extracted from EM-Lab SpineDB
+    :param step: Model time step (years)
+    :param look_ahead: Investment horizon (years)
     :param db_competes: SpineDB
     :param current_emlab_tick: int
     :param db_emlab_powerplantdispatchplans: PPDPs as queried from EMLab SpineDB
@@ -269,17 +257,15 @@ def export_capacity_market_revenues(db_competes, current_emlab_tick, db_emlab_po
         print('The participating technologies in the capacity market were: ' + str(
             capacity_market_participating_technologies))
 
-        previous_cm_market_clearing_price = get_previous_cm_market_clearing_price(current_emlab_tick,
-                                                                                  db_emlab_marketclearingpoints, step)
         current_cm_market_clearing_price = get_cm_market_clearing_price(current_emlab_tick - step,
                                                                         db_emlab_marketclearingpoints)
 
         # For every participating technology the Fixed O&M, and if too little Fixed O&M the CAPEX will be reduced
-        for participating_technology in capacity_market_participating_technologies:
-            print('Editing CAPEX and Fixed O&M for ' + str(participating_technology))
-            export_capacity_market_revenues_for_technology(db_competes, participating_technology, current_competes_tick,
-                                                           current_cm_market_clearing_price,
-                                                           previous_cm_market_clearing_price, step)
+        for participating_technology, participating_fuel in capacity_market_participating_technologies:
+            print('Editing CAPEX and Fixed O&M for ' + str(participating_technology) + ', ' + participating_fuel)
+            export_capacity_market_revenues_for_technology(db_competes, participating_technology, participating_fuel,
+                                                           current_competes_tick, current_cm_market_clearing_price,
+                                                           look_ahead, step)
 
     else:
         print('Current tick == 0, so not exporting anything of the CM revenues')
@@ -380,7 +366,8 @@ def execute_export_to_competes():
         export_co2_market_clearing_price(db_competes, db_emlab_marketclearingpoints, current_emlab_tick,
                                          co2_object_class_name, current_competes_tick, months, look_ahead)
         export_capacity_market_revenues(db_competes, current_emlab_tick, db_emlab_powerplantdispatchplans,
-                                        db_emlab_marketclearingpoints, current_competes_tick, time_step, db_emlab_powerplants)
+                                        db_emlab_marketclearingpoints, current_competes_tick, time_step,
+                                        db_emlab_powerplants, look_ahead)
 
         print('Committing...')
         db_competes.commit('Committing EMLAB to COMPETES script. EMLab tick: ' + str(current_emlab_tick) +
