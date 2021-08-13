@@ -6,6 +6,53 @@ from spinedb import SpineDB
 import pandas as pd
 
 
+def get_participating_technologies_in_capacity_market(db_emlab_powerplantdispatchplans, years_to_generate, years_emlab,
+                                                      db_emlab_powerplants):
+    """
+    This function returns all participating technologies that get revenue from the Capacity Market.
+    It returns a set so all values are distinct.
+
+    :param db_emlab_powerplantdispatchplans: PPDPs as queried from SpineDB EMLab
+    :return: Set of technology names
+    """
+    capacity_market_aggregated_per_tech = pd.DataFrame()
+    for year in years_emlab:
+        capacity_market_ppdps = [row['object_name'] for row in db_emlab_powerplantdispatchplans if
+                                 row['parameter_name'] == 'Market' and
+                                 row['parameter_value'] == 'DutchCapacityMarket' and
+                                 row['alternative'] == str(year)]
+        capacity_market_accepted_ppdps = [row['object_name'] for row in db_emlab_powerplantdispatchplans if
+                                          row['object_name'] in capacity_market_ppdps and
+                                          row['parameter_name'] == 'AcceptedAmount' and
+                                          row['parameter_value'] > 0]
+
+        list_of_tech_fuel_cominations = []
+        capacity_market_participating_capacities = []
+        for ppdp in capacity_market_accepted_ppdps:
+            plant_name = next(row['parameter_value'] for row in db_emlab_powerplantdispatchplans if
+                              row['object_name'] == ppdp and
+                              row['parameter_name'] == 'Plant')
+            plant_accepted_amount = next(row['parameter_value'] for row in db_emlab_powerplantdispatchplans if
+                                  row['object_name'] == ppdp and
+                                  row['parameter_name'] == 'AcceptedAmount')
+            plant_technology = next(row['parameter_value'] for row in db_emlab_powerplants if
+                                    row['object_name'] == plant_name and
+                                    row['parameter_name'] == 'TECHTYPENL')
+            plant_fuel = next(row['parameter_value'] for row in db_emlab_powerplants if
+                              row['object_name'] == plant_name and
+                              row['parameter_name'] == 'FUELNL')
+            list_of_tech_fuel_cominations.append(plant_technology + ', ' + plant_fuel)
+            capacity_market_participating_capacities.append(plant_accepted_amount)
+
+        df_year = pd.DataFrame({'technology_fuel': list_of_tech_fuel_cominations,
+                                'capacity': capacity_market_participating_capacities})
+        capacity_market_aggregated_per_tech[year] = df_year.groupby('technology_fuel').sum()
+    years_dictionary = dict(zip(years_emlab, years_to_generate))
+    capacity_market_aggregated_per_tech.rename(columns=years_dictionary,
+                                               inplace=True)
+    return capacity_market_aggregated_per_tech.fillna(0)
+
+
 def plot_mcps_with_filter(db_mcps, market, years_to_generate, path_to_plots, title, file_name, yl):
     # MCP Plots
     filtered_mcps = [i['object_name'] for i in db_mcps if
@@ -399,6 +446,38 @@ def plot_combined_curves(df, title, yl, path_to_plots, ymax):
     fig.savefig(path_to_plots + '/' + title + '.png', bbox_inches='tight')
 
 
+def plot_capacity_market_technologies(capacity_market_participating_technologies_peryear, path_to_plots,
+                                      years_to_generate, title, file_name, yl):
+    fig1 = capacity_market_participating_technologies_peryear.T.plot.bar(stacked=True, grid=True)
+    fig1.set_axisbelow(True)
+    plt.xlabel('Years', fontsize='medium')
+    plt.ylabel(yl, fontsize='medium')
+    plt.legend(fontsize='medium', loc='upper left', bbox_to_anchor=(1, 1.1))
+    plt.title(title)
+    plt.savefig(path_to_plots + '/' + file_name, bbox_inches='tight')
+
+
+def plot_capacity_market_revenues(capacity_market_participating_technologies_peryear, db_mcps, path_to_plots,
+                                  years_to_generate, years_emlab, title, file_name, yl):
+    filtered_mcps = [i['object_name'] for i in db_mcps if
+                     i['parameter_name'] == 'Market' and i['parameter_value'] == 'DutchCapacityMarket']
+
+    years_dictionary = dict(zip(years_emlab, years_to_generate))
+    for row in [i for i in db_mcps if i['object_name'] in filtered_mcps]:
+        for yearemlab, yearreal in years_dictionary.items():
+            if int(row['alternative']) == yearemlab and row['parameter_name'] == 'Price':
+                capacity_market_participating_technologies_peryear[yearreal] = \
+                capacity_market_participating_technologies_peryear[yearreal].multiply(row['parameter_value'] / 1000000)
+
+    fig2 = capacity_market_participating_technologies_peryear.T.plot.bar(stacked=True, grid=True)
+    fig2.set_axisbelow(True)
+    plt.xlabel('Years', fontsize='medium')
+    plt.ylabel(yl, fontsize='medium')
+    plt.legend(fontsize='medium', loc='upper left', bbox_to_anchor=(1, 1.1))
+    plt.title(title)
+    plt.savefig(path_to_plots + '/' + file_name, bbox_inches='tight')
+
+
 def generate_plots():
     # Select what years you want to generate plots for
     path_to_competes_results = '../../COMPETES/Results/Run 20210806 10M CO2 Cap, discountr 2.5, hedging 1, no exports, VOLL'
@@ -411,6 +490,8 @@ def generate_plots():
         os.makedirs(path_to_plots)
 
     years_to_generate = [2020, 2021, 2022, 2023, 2024, 2025]
+    start_simulation_year = 2020
+    years_emlab = [i - start_simulation_year for i in years_to_generate]
     look_ahead = 7
 
     co2_emission_sums = dict()
@@ -435,17 +516,25 @@ def generate_plots():
         spine_powerplants_tech_dict = dict(list({str(i['object_name']): str(i['parameter_value']) for i in
                                                  emlab_spine_powerplants if
                                                  i['parameter_name'] == 'TECHTYPENL'}.items()) +
-                                           list({str(i['object_name']): str(i['parameter_value'].decode()).replace("\"", '') for i in
+                                           list({str(i['object_name']): str(i['parameter_value'].decode()).replace("\"",
+                                                                                                                   '')
+                                                 for i in
                                                  competes_spine_powerplants
                                                  if i['parameter_name'] == 'TECHTYPEU'}.items()))
         spine_powerplants_fuel_dict = dict(list({str(i['object_name']): str(i['parameter_value']) for i in
                                                  emlab_spine_powerplants if i['parameter_name'] == 'FUELNL'}.items()) +
-                                           list({str(i['object_name']): str(i['parameter_value'].decode()).replace("\"", '') for i in
+                                           list({str(i['object_name']): str(i['parameter_value'].decode()).replace("\"",
+                                                                                                                   '')
+                                                 for i in
                                                  competes_spine_powerplants
                                                  if i['parameter_name'] == 'FUELEU'}.items()))
         emlab_spine_technologies = emlab_spinedb.query_object_parameter_values_by_object_class(
             'PowerGeneratingTechnologies')
         db_mcps = emlab_spinedb.query_object_parameter_values_by_object_class('MarketClearingPoints')
+        db_emlab_powerplantdispatchplans = emlab_spinedb.query_object_parameter_values_by_object_class(
+            'PowerPlantDispatchPlans')
+        capacity_market_participating_technologies_peryear = get_participating_technologies_in_capacity_market(
+            db_emlab_powerplantdispatchplans, years_to_generate, years_emlab, emlab_spine_powerplants)
     finally:
         competes_spinedb.close_connection()
         emlab_spinedb.close_connection()
@@ -487,10 +576,12 @@ def generate_plots():
         # More plots
         load_duration_curves = plot_and_prepare_load_duration_curve(hourly_nl_balance_demand, year, path_to_plots,
                                                                     load_duration_curves)
-        residual_load_curves = plot_and_prepare_residual_load_duration_curve(hourly_nl_balance_demand, hourly_nl_balance_df, year,
+        residual_load_curves = plot_and_prepare_residual_load_duration_curve(hourly_nl_balance_demand,
+                                                                             hourly_nl_balance_df, year,
                                                                              path_to_plots, residual_load_curves)
         hourly_nodal_prices_df = plot_hourly_nodal_prices(path_and_filename_dispatch, year, path_to_plots)
-        price_duration_curves = plot_and_prepare_hourly_nodal_price_duration_curve(hourly_nodal_prices_df, year, path_to_plots,
+        price_duration_curves = plot_and_prepare_hourly_nodal_price_duration_curve(hourly_nodal_prices_df, year,
+                                                                                   path_to_plots,
                                                                                    price_duration_curves)
         # plot_nl_unit_generation(path_and_filename_dispatch, year, path_to_plots)
         plt.close('all')
@@ -507,9 +598,18 @@ def generate_plots():
     plot_mcps_with_filter(db_mcps, 'DutchCapacityMarket', years_to_generate, path_to_plots, 'NL Capacity Market Prices',
                           'NL Capacity Market Prices.png', 'Price (Euro / MW)')
 
-    plot_combined_curves(residual_load_curves, 'NL Residual Load Duration Curves', 'Residual Load (MWh)', path_to_plots, 2000000)
+    plot_combined_curves(residual_load_curves, 'NL Residual Load Duration Curves', 'Residual Load (MWh)', path_to_plots,
+                         2000000)
     plot_combined_curves(load_duration_curves, 'NL Load Duration Curves', 'Load (MWh)', path_to_plots, 2000000)
-    plot_combined_curves(price_duration_curves, 'NL Hourly Market Price Duration Curves', 'Price (Euro / MWh)', path_to_plots, 250)
+    plot_combined_curves(price_duration_curves, 'NL Hourly Market Price Duration Curves', 'Price (Euro / MWh)',
+                         path_to_plots, 250)
+
+    plot_capacity_market_technologies(capacity_market_participating_technologies_peryear, path_to_plots,
+                                      years_to_generate, 'NL Capacity Market technologies',
+                                     'NL Capacity Market Technologies.png', 'Awarded capacity (MW)')
+    plot_capacity_market_revenues(capacity_market_participating_technologies_peryear, db_mcps, path_to_plots,
+                                  years_to_generate, years_emlab, 'NL Capacity Market Revenues',
+                                 'NL Capacity Market revenues.png', 'CM Revenues [Millions]')
 
     # print('Showing plots...')
     # plt.show()
