@@ -53,7 +53,7 @@ def get_participating_technologies_in_capacity_market(db_emlab_powerplantdispatc
     return capacity_market_aggregated_per_tech.fillna(0)
 
 
-def plot_mcps_with_filter(db_mcps, market, years_to_generate, path_to_plots, title, file_name, yl):
+def plot_mcps_with_filter(db_mcps, market, years_to_generate, path_to_plots, title, file_name, yl, ylim):
     # MCP Plots
     filtered_mcps = [i['object_name'] for i in db_mcps if
                      i['parameter_name'] == 'Market' and i['parameter_value'] == market]
@@ -73,8 +73,9 @@ def plot_mcps_with_filter(db_mcps, market, years_to_generate, path_to_plots, tit
     axs7.set_axisbelow(True)
     plt.xlabel('Years')
     plt.ylabel(yl)
+    plt.ylim(ylim)
     axs7.set_title(title)
-    fig7.savefig(path_to_plots + '/' + file_name, bbox_inches='tight')
+    fig7.savefig(path_to_plots + '/' + file_name, bbox_inches='tight', dpi=300)
 
 
 def plot_annual_balances(annual_balance, years_to_generate, path_to_plots):
@@ -82,14 +83,14 @@ def plot_annual_balances(annual_balance, years_to_generate, path_to_plots):
     print('Create Annual Balance plot')
     plt.figure()
     annual_balance_df = pd.DataFrame(annual_balance, index=years_to_generate)
-    axs125 = annual_balance_df.plot.bar(stacked=True, rot=0, colormap='tab20', grid=True)
+    axs125 = annual_balance_df.plot.bar(stacked=True, rot=0, colormap='tab20', grid=True, legend=False)
     plt.xlabel('Years', fontsize='medium')
     plt.ylabel('Supply or Demand (MWh)', fontsize='medium')
     axs125.set_title('NL Annual Balance per Technology')
     axs125.set_axisbelow(True)
-    plt.legend(fontsize='medium', loc='upper left', bbox_to_anchor=(1, 1.1))
+    plt.ylim([-0.6e8, 1.75e8])
     fig125 = axs125.get_figure()
-    fig125.savefig(path_to_plots + '/' + 'NL Annual Balance.png', bbox_inches='tight')
+    fig125.savefig(path_to_plots + '/' + 'NL Annual Balance.png', bbox_inches='tight', dpi=300)
 
 
 def plot_vre_nl_installed_capacity(vre_investment_sums, years_to_generate, path_to_plots):
@@ -97,14 +98,13 @@ def plot_vre_nl_installed_capacity(vre_investment_sums, years_to_generate, path_
     print('Create VRE Investments plot')
     plt.figure()
     vre_investments_df = pd.DataFrame(vre_investment_sums, index=years_to_generate)
-    axs5 = vre_investments_df.plot.bar(stacked=True, rot=0, colormap='tab20')
+    axs5 = vre_investments_df.plot.bar(stacked=True, rot=0, colormap='tab20', legend=False)
     axs5.set_axisbelow(True)
     plt.xlabel('Years', fontsize='medium')
     plt.ylabel('Capacity (MW)', fontsize='medium')
-    plt.legend(fontsize='medium', loc='upper left', bbox_to_anchor=(1, 1.1))
     axs5.set_title('NL VRE Installed Capacity')
     fig5 = axs5.get_figure()
-    fig5.savefig(path_to_plots + '/' + 'NL Installed Capacity.png', bbox_inches='tight')
+    fig5.savefig(path_to_plots + '/' + 'NL Installed Capacity.png', bbox_inches='tight', dpi=300)
 
 
 def plot_investments(investment_sums, years_to_generate, path_to_plots, look_ahead):
@@ -113,14 +113,15 @@ def plot_investments(investment_sums, years_to_generate, path_to_plots, look_ahe
     plt.figure()
     investments_df = pd.DataFrame(investment_sums,
                                   index=list(range(years_to_generate[0], years_to_generate[-1] + look_ahead + 1)))
-    axs6 = investments_df.plot.bar(stacked=True, rot=0, colormap='tab20', grid=True)
+    axs6 = investments_df.plot.bar(stacked=True, rot=0, colormap='tab20', grid=True, legend=False)
     axs6.set_axisbelow(True)
     plt.xlabel('Years', fontsize='medium')
     plt.ylabel('Capacity (MW)', fontsize='medium')
-    plt.legend(fontsize='medium', loc='upper left', bbox_to_anchor=(1, 1.1))
+    plt.ylim([-4.3e5, 5.5e5])
+    # leg = plt.legend(fontsize='medium', loc='upper left', bbox_to_anchor=(1, 1.1))
     axs6.set_title('EU Capacity Investments per Technology')
     fig6 = axs6.get_figure()
-    fig6.savefig(path_to_plots + '/' + 'EU Investments.png', bbox_inches='tight')
+    fig6.savefig(path_to_plots + '/' + 'EU Investments.png', bbox_inches='tight', dpi=300)
 
 
 def plot_nl_investments(investment_sums, years_to_generate, path_to_plots, look_ahead):
@@ -129,14 +130,15 @@ def plot_nl_investments(investment_sums, years_to_generate, path_to_plots, look_
     plt.figure()
     investments_df = pd.DataFrame(investment_sums,
                                   index=list(range(years_to_generate[0], years_to_generate[-1] + look_ahead + 1)))
-    axs6 = investments_df.plot.bar(stacked=True, rot=0, colormap='tab20', grid=True)
+    axs6 = investments_df.plot.bar(stacked=True, rot=0, colormap='tab20', grid=True, legend=False)
     plt.xlabel('Years', fontsize='medium')
     plt.ylabel('Capacity (MW)', fontsize='medium')
-    plt.legend(fontsize='medium', loc='upper left', bbox_to_anchor=(1, 1.1))
+    # plt.legend(fontsize='medium', loc='upper left', bbox_to_anchor=(1, 1.1))
     axs6.set_title('NL Capacity Investments per Technology')
     axs6.set_axisbelow(True)
+    plt.ylim([-20e3, 33e3])
     fig6 = axs6.get_figure()
-    fig6.savefig(path_to_plots + '/' + 'NL Investments.png', bbox_inches='tight')
+    fig6.savefig(path_to_plots + '/' + 'NL Investments.png', bbox_inches='tight', dpi=300)
 
 
 def plot_co2_emissions(co2_emission_sums, years_to_generate, path_to_plots):
@@ -144,14 +146,15 @@ def plot_co2_emissions(co2_emission_sums, years_to_generate, path_to_plots):
     print('Create annual CO2 Emission per tech plot')
     plt.figure()
     co2_df = pd.DataFrame(co2_emission_sums, index=years_to_generate)
-    axs4 = co2_df.plot.bar(stacked=True, rot=0, colormap='tab20', grid=True)
+    axs4 = co2_df.plot.bar(stacked=True, rot=0, colormap='tab20', grid=True, legend=False)
     plt.xlabel('Years', fontsize='medium')
     plt.ylabel('Emissions (ton CO2)', fontsize='medium')
     axs4.set_title('NL CO2 Emissions per Technology')
     axs4.set_axisbelow(True)
-    plt.legend(fontsize='medium', loc='upper left', bbox_to_anchor=(1, 1.1))
+    plt.ylim([0, 3.5e7])
+    # plt.legend(fontsize='medium', loc='upper left', bbox_to_anchor=(1, 1.1))
     fig4 = axs4.get_figure()
-    fig4.savefig(path_to_plots + '/' + 'NL CO2 Emissions.png', bbox_inches='tight')
+    fig4.savefig(path_to_plots + '/' + 'NL CO2 Emissions.png', bbox_inches='tight', dpi=300)
 
 
 def plot_nl_unit_generation(path_and_filename_dispatch, year, path_to_plots):
@@ -168,7 +171,7 @@ def plot_nl_unit_generation(path_and_filename_dispatch, year, path_to_plots):
     plt.legend(fontsize='medium', loc='upper left', bbox_to_anchor=(1, 1.1))
     axs3.set_title('NL Unit Generation ' + str(year))
     fig3 = axs3.get_figure()
-    fig3.savefig(path_to_plots + '/' + 'NL Unit Generation ' + str(year) + '.png', bbox_inches='tight')
+    fig3.savefig(path_to_plots + '/' + 'NL Unit Generation ' + str(year) + '.png', bbox_inches='tight', dpi=300)
 
 
 def plot_and_prepare_hourly_nodal_price_duration_curve(hourly_nodal_prices_df, year, path_to_plots,
@@ -176,13 +179,14 @@ def plot_and_prepare_hourly_nodal_price_duration_curve(hourly_nodal_prices_df, y
     # Plot 2.5 Hourly Market Price Duration Curve
     print('Create Hourly Nodal Price duration curve')
     plt.figure()
-    axs25 = hourly_nodal_prices_df['NED'].sort_values(ascending=False).plot(use_index=False, grid=True)
+    axs25 = hourly_nodal_prices_df['NED'].sort_values(ascending=False).plot(use_index=False, grid=True, legend=False)
     plt.xlabel('Hours')
     plt.ylabel('Price (Euro / MWh)')
     axs25.set_title('NL Hourly Electricity Spot Market Price Duration Curve ' + str(year))
     axs25.set_axisbelow(True)
+    plt.ylim([0, min(hourly_nodal_prices_df['NED'].max() + 50, 250)])
     fig25 = axs25.get_figure()
-    fig25.savefig(path_to_plots + '/' + 'NL Nodal Prices Duration Curve ' + str(year) + '.png', bbox_inches='tight')
+    fig25.savefig(path_to_plots + '/' + 'NL Nodal Prices Duration Curve ' + str(year) + '.png', bbox_inches='tight', dpi=300)
 
     price_duration_curves[year] = hourly_nodal_prices_df['NED'].sort_values(ascending=False).values
     return price_duration_curves
@@ -201,10 +205,10 @@ def plot_hourly_nodal_prices(path_and_filename_dispatch, year, path_to_plots):
     plt.xlabel('Hours')
     plt.ylabel('Price (Euro / MWh)')
     plt.xlim([0, 8760])
-    plt.ylim([0, min(hourly_nodal_prices_df['NED'].max() + 10, 250)])
+    plt.ylim([0, min(hourly_nodal_prices_df['NED'].max() + 50, 250)])
     axs2.set_title('NL Hourly Electricity Spot Market Prices ' + str(year))
     fig2 = axs2.get_figure()
-    fig2.savefig(path_to_plots + '/' + 'NL Nodal Prices ' + str(year) + '.png', bbox_inches='tight')
+    fig2.savefig(path_to_plots + '/' + 'NL Nodal Prices ' + str(year) + '.png', bbox_inches='tight', dpi=300)
 
     return hourly_nodal_prices_df
 
@@ -218,14 +222,14 @@ def plot_and_prepare_residual_load_duration_curve(hourly_nl_balance_demand, hour
         .subtract(hourly_nl_balance_df['Wind Offshore']) \
         .subtract(hourly_nl_balance_df['Sun']) \
         .subtract(hourly_nl_balance_df['Hydro Conv.'])
-    axs175 = hourly_nl_balance_residual_load.sort_values(ascending=False).plot(use_index=False, grid=True)
+    axs175 = hourly_nl_balance_residual_load.sort_values(ascending=False).plot(use_index=False, grid=True, legend=False)
     axs175.set_title('NL Residual Load Duration Curve ' + str(year))
     axs175.set_axisbelow(True)
     plt.xlabel('Hours')
     plt.ylabel('Residual Load (MWh)')
     plt.xlim([0, 8760])
     fig175 = axs175.get_figure()
-    fig175.savefig(path_to_plots + '/' + 'NL Residual Load Duration Curve ' + str(year) + '.png', bbox_inches='tight')
+    fig175.savefig(path_to_plots + '/' + 'NL Residual Load Duration Curve ' + str(year) + '.png', bbox_inches='tight', dpi=300)
 
     residual_load_curves[year] = hourly_nl_balance_residual_load.sort_values(ascending=False).values
     return residual_load_curves
@@ -235,14 +239,14 @@ def plot_and_prepare_load_duration_curve(hourly_nl_balance_demand, year, path_to
     # Plot 1.5: Load duration curve
     print('Create Load duration curve plot')
     plt.figure()
-    axs15 = hourly_nl_balance_demand.sort_values(ascending=False).plot(use_index=False, grid=True)
+    axs15 = hourly_nl_balance_demand.sort_values(ascending=False).plot(use_index=False, grid=True, legend=False)
     axs15.set_title('NL Load Duration Curve ' + str(year))
     axs15.set_axisbelow(True)
     plt.xlabel('Hours')
     plt.ylabel('Load (MWh)')
     plt.xlim([0, 8760])
     fig15 = axs15.get_figure()
-    fig15.savefig(path_to_plots + '/' + 'NL Load Duration Curve ' + str(year) + '.png', bbox_inches='tight')
+    fig15.savefig(path_to_plots + '/' + 'NL Load Duration Curve ' + str(year) + '.png', bbox_inches='tight', dpi=300)
 
     load_duration_curves[year] = hourly_nl_balance_demand.sort_values(ascending=False).values
     return load_duration_curves
@@ -280,15 +284,15 @@ def plot_hourly_nl_balance(path_and_filename_dispatch, path_to_plots, year):
     hourly_nl_balance_df_resampled = hourly_nl_balance_df_resampled.drop(['T'], axis=1)
     hourly_nl_balance_df_resampled = hourly_nl_balance_df_resampled.interpolate(method='cubic')
     hourly_nl_balance_df_resampled.index = [i * 50 for i in range(0, len(hourly_nl_balance_df_resampled))]
-    axs = hourly_nl_balance_df_resampled.plot.area(colormap='tab20', linewidth=0)
+    axs = hourly_nl_balance_df_resampled.plot.area(colormap='tab20', linewidth=0, legend=False)
     axs.set_title('Hourly NL Balance - All Technologies ' + str(year))
     axs.set_axisbelow(True)
     plt.xlabel('Hours', fontsize='medium')
     plt.ylabel('Supply or Demand (MWh)', fontsize='medium')
     plt.xlim([0, 8760])
-    plt.legend(fontsize='medium', loc='best', bbox_to_anchor=(1, 1.1))
+    # plt.legend(fontsize='medium', loc='best', bbox_to_anchor=(1, 1.1))
     fig = axs.get_figure()
-    fig.savefig(path_to_plots + '/' + 'NL Hourly Balance ' + str(year) + '.png', bbox_inches='tight')
+    fig.savefig(path_to_plots + '/' + 'NL Hourly Balance ' + str(year) + '.png', bbox_inches='tight', dpi=300)
     return hourly_nl_balance_df, hourly_nl_balance_demand
 
 
@@ -422,65 +426,69 @@ def plot_annual_installed_capacity(annual_installed_capacity, years_to_generate,
     print('Annual installed capacity NL')
     plt.figure()
     annual_installed_capacity_df = pd.DataFrame(annual_installed_capacity, index=years_to_generate)
-    axs10 = annual_installed_capacity_df.plot.bar(stacked=True, rot=0, colormap='tab20', grid=True)
+    axs10 = annual_installed_capacity_df.plot.bar(stacked=True, rot=0, colormap='tab20', grid=True, legend=False)
     axs10.set_axisbelow(True)
     plt.xlabel('Years', fontsize='medium')
     plt.ylabel('Capacity (MW)', fontsize='medium')
-    plt.legend(fontsize='medium', loc='upper left', bbox_to_anchor=(1, 1.1))
+    # plt.legend(fontsize='medium', loc='upper left', bbox_to_anchor=(1, 1.1))
     axs10.set_title('NL Installed Capacity per Technology')
     fig10 = axs10.get_figure()
-    fig10.savefig(path_to_plots + '/' + 'NL Installed Capacity per Technology.png', bbox_inches='tight')
+    fig10.savefig(path_to_plots + '/' + 'NL Installed Capacity per Technology.png', bbox_inches='tight', dpi=300)
 
 
 def plot_combined_curves(df, title, yl, path_to_plots, ymax):
-    plt.figure()
-    axs = df.plot(grid=True, use_index=False)
-    axs.set_axisbelow(True)
-    plt.xlabel('Hours', fontsize='medium')
-    plt.ylabel(yl, fontsize='medium')
-    plt.xlim([-100, 8760])
-    plt.ylim([df.min(axis=1).min(), min(df.max(axis=1).max(), ymax)])
-    plt.legend(fontsize='medium', loc='upper left', bbox_to_anchor=(1, 1.1))
-    axs.set_title(title)
-    fig = axs.get_figure()
-    fig.savefig(path_to_plots + '/' + title + '.png', bbox_inches='tight')
+    if len(df.index) > 0:
+        plt.figure()
+        axs = df.plot(grid=True, use_index=False, legend=False)
+        axs.set_axisbelow(True)
+        plt.xlabel('Hours', fontsize='medium')
+        plt.ylabel(yl, fontsize='medium')
+        plt.xlim([-100, 8760])
+        plt.ylim([df.min(axis=1).min(), min(df.max(axis=1).max(), ymax)])
+        # plt.legend(fontsize='medium', loc='upper left', bbox_to_anchor=(1, 1.1))
+        axs.set_title(title)
+        fig = axs.get_figure()
+        fig.savefig(path_to_plots + '/' + title + '.png', bbox_inches='tight', dpi=300)
 
 
 def plot_capacity_market_technologies(capacity_market_participating_technologies_peryear, path_to_plots,
                                       years_to_generate, title, file_name, yl):
-    fig1 = capacity_market_participating_technologies_peryear.T.plot.bar(stacked=True, grid=True)
-    fig1.set_axisbelow(True)
-    plt.xlabel('Years', fontsize='medium')
-    plt.ylabel(yl, fontsize='medium')
-    plt.legend(fontsize='medium', loc='upper left', bbox_to_anchor=(1, 1.1))
-    plt.title(title)
-    plt.savefig(path_to_plots + '/' + file_name, bbox_inches='tight')
+    if len(capacity_market_participating_technologies_peryear.index) > 0:
+        fig1 = capacity_market_participating_technologies_peryear.T.plot.bar(stacked=True, grid=True, legend=False)
+        fig1.set_axisbelow(True)
+        plt.xlabel('Years', fontsize='medium')
+        plt.ylabel(yl, fontsize='medium')
+        plt.ylim([0, 30e3])
+        # plt.legend(fontsize='medium', loc='upper left', bbox_to_anchor=(1, 1.1))
+        plt.title(title)
+        plt.savefig(path_to_plots + '/' + file_name, bbox_inches='tight', dpi=300)
 
 
 def plot_capacity_market_revenues(capacity_market_participating_technologies_peryear, db_mcps, path_to_plots,
                                   years_to_generate, years_emlab, title, file_name, yl):
-    filtered_mcps = [i['object_name'] for i in db_mcps if
-                     i['parameter_name'] == 'Market' and i['parameter_value'] == 'DutchCapacityMarket']
+    if len(capacity_market_participating_technologies_peryear.index) > 0:
+        filtered_mcps = [i['object_name'] for i in db_mcps if
+                         i['parameter_name'] == 'Market' and i['parameter_value'] == 'DutchCapacityMarket']
 
-    years_dictionary = dict(zip(years_emlab, years_to_generate))
-    for row in [i for i in db_mcps if i['object_name'] in filtered_mcps]:
-        for yearemlab, yearreal in years_dictionary.items():
-            if int(row['alternative']) == yearemlab and row['parameter_name'] == 'Price':
-                capacity_market_participating_technologies_peryear[yearreal] = \
-                capacity_market_participating_technologies_peryear[yearreal].multiply(row['parameter_value'] / 1000000)
+        years_dictionary = dict(zip(years_emlab, years_to_generate))
+        for row in [i for i in db_mcps if i['object_name'] in filtered_mcps]:
+            for yearemlab, yearreal in years_dictionary.items():
+                if int(row['alternative']) == yearemlab and row['parameter_name'] == 'Price':
+                    capacity_market_participating_technologies_peryear[yearreal] = \
+                    capacity_market_participating_technologies_peryear[yearreal].multiply(row['parameter_value'] / 1000000)
 
-    fig2 = capacity_market_participating_technologies_peryear.T.plot.bar(stacked=True, grid=True)
-    fig2.set_axisbelow(True)
-    plt.xlabel('Years', fontsize='medium')
-    plt.ylabel(yl, fontsize='medium')
-    plt.legend(fontsize='medium', loc='upper left', bbox_to_anchor=(1, 1.1))
-    plt.title(title)
-    plt.savefig(path_to_plots + '/' + file_name, bbox_inches='tight')
+        fig2 = capacity_market_participating_technologies_peryear.T.plot.bar(stacked=True, grid=True, legend=False)
+        fig2.set_axisbelow(True)
+        plt.xlabel('Years', fontsize='medium')
+        plt.ylabel(yl, fontsize='medium')
+        # plt.legend(fontsize='medium', loc='upper left', bbox_to_anchor=(1, 1.1))
+        plt.title(title)
+        plt.savefig(path_to_plots + '/' + file_name, bbox_inches='tight', dpi=300)
 
 
 def generate_plots():
     # Select what years you want to generate plots for
-    path_to_competes_results = '../../COMPETES/Results/Run 20210806 10M CO2 Cap, discountr 2.5, hedging 1, no exports, VOLL'
+    path_to_competes_results = '../../COMPETES/Results/Run 20210730 10M CO2 Cap, discountr 2.5, hedging 1, no exports, no VOLL'
     filename_to_load_dispatch = 'Output_Dynamic_Gen&Trans_?_Dispatch.xlsx'
     filename_to_load_investment = 'Output_Dynamic_Gen&Trans_?_Investments.xlsx'
 
@@ -494,10 +502,12 @@ def generate_plots():
     years_emlab = [i - start_simulation_year for i in years_to_generate]
     look_ahead = 7
 
+    static_fuel_technology_legend = sorted(['GAS, CCGT', 'COAL, PC (D)', 'LIGNITE, PC (D)', 'RESE, others (D)', 'GAS, CCS CCGT', 'NUCLEAR, -', 'BIOMASS, Cofiring (D)', 'BIOMASS, Standalone (D)', 'Derived GAS, CHP (D)', 'Derived GAS, IC (D)', 'GAS, CCGT (D)', 'GAS, CHP (D)', 'OIL, - (D)', 'GAS, GT (D)', 'GAS, CCS CCGT (D)', 'NUCLEAR, - (D)'])
+
     co2_emission_sums = dict()
     vre_nl_installed_capacity = dict()
-    nl_investment_sums = dict()
-    investment_sums = dict()
+    nl_investment_sums = {i: [0] * len(range(years_to_generate[0], years_to_generate[-1] + look_ahead + 1)) for i in static_fuel_technology_legend}
+    investment_sums = {i: [0] * len(range(years_to_generate[0], years_to_generate[-1] + look_ahead + 1)) for i in static_fuel_technology_legend}
     annual_balance = dict()
     annual_installed_capacity = dict()
     residual_load_curves = pd.DataFrame()
@@ -594,9 +604,9 @@ def generate_plots():
     plot_annual_balances(annual_balance, years_to_generate, path_to_plots)
     plot_annual_installed_capacity(annual_installed_capacity, years_to_generate, path_to_plots)
     plot_mcps_with_filter(db_mcps, 'CO2Auction', years_to_generate, path_to_plots, 'NL CO2 Market Clearing Prices',
-                          'NL CO2 Market Clearing Prices.png', 'Price (Euro / ton CO2)')
+                          'NL CO2 Market Clearing Prices.png', 'Price (Euro / ton CO2)', None)
     plot_mcps_with_filter(db_mcps, 'DutchCapacityMarket', years_to_generate, path_to_plots, 'NL Capacity Market Prices',
-                          'NL Capacity Market Prices.png', 'Price (Euro / MW)')
+                          'NL Capacity Market Prices.png', 'Price (Euro / MW)', [0, 75e3])
 
     plot_combined_curves(residual_load_curves, 'NL Residual Load Duration Curves', 'Residual Load (MWh)', path_to_plots,
                          2000000)
@@ -609,7 +619,7 @@ def generate_plots():
                                      'NL Capacity Market Technologies.png', 'Awarded capacity (MW)')
     plot_capacity_market_revenues(capacity_market_participating_technologies_peryear, db_mcps, path_to_plots,
                                   years_to_generate, years_emlab, 'NL Capacity Market Revenues',
-                                 'NL Capacity Market revenues.png', 'CM Revenues [Millions]')
+                                 'NL Capacity Market revenues.png', 'CM Revenues (Million Euro)')
 
     # print('Showing plots...')
     # plt.show()
