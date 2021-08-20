@@ -18,8 +18,9 @@ class ElectricitySpotMarket(Market):
 
 
 class CapacityMarket(Market):
-
+    """"""
     def __init__(self, name: str):
+        """"""
         super().__init__(name)
         self.sloping_demand_curve = None
 
